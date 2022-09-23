@@ -1,0 +1,7 @@
+bottom: config files; dictionaries, constants
+    config files know nothing
+middle: objects; skills, characters
+    characters know about skills but skills shouldn't know about characters
+    skills know about config files and effects
+    effects know how to apply themselves but nothing else
+top: gameplay; battle, city
