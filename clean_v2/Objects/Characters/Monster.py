@@ -4,6 +4,8 @@ from Config.Dictionaries.Monster_Dict import *
 M = Monster_Dict()
 from Config.Dictionaries.Skill_Dict import *
 S = Skill_Dict()
+from Config.Dictionaries.Element_Dict import *
+E = Element_Dict()
 from Character import *
 
 @dataclass
@@ -25,6 +27,17 @@ class Monster(Character):
         self.passive_skills = []
         self.turn = True
         self.skills = True
+        self.update_element()
+
+    def update_element(self):
+        element = self.dictionary.get("Element")
+        self.element = Element(**E.ELEMENTS.get(element))
+
+    def check_attack_element(self):
+        return self.element
+
+    def check_defense_element(self):
+        return self.element
 
     def update_skills(self):
         skill_list = self.dictionary.get("Skill_List")
@@ -32,7 +45,8 @@ class Monster(Character):
             skill = Skill(**S.ALL_SKILLS.get(word))
             self.skill_list.append(skill)
 
-    def standby_phase(self):
+    def standby_phase(self, allies, spirits, enemies):
+        self.update_battle_state(allies, spirits, enemies)
         for skill in self.skill_list:
             skill : Skill
             if skill.cooldown > 0:
@@ -51,11 +65,25 @@ class Monster(Character):
                 self.statuses.remove(status)
         for skill in self.passive_skills:
             skill : Skill
-            skill.use(self, self.allies, [], self.enemies)
+            skill.use(self, self.allies, self.spirits, self.enemies)
 
     def use_skill(self):
         skill : Skill = self.skill_list[random.randint(0, len(self.skill_list) - 1)]
-        skill.use(self, self.allies, [], self.enemies)
+        if skill.effect == "Summon":
+            self.summon(skill)
+        else:
+            skill.use(self, self.allies, self.spirits, self.enemies)
+
+    def summon(self, name: str):
+        summon = Monster(name)
+        summon.update_for_battle()
+        self.allies.append(summon)
+
+    def summon_skill(self, skill : Skill):
+        self.skill -= skill.cost
+        if self.skill >= 0 and skill.cooldown <= 0:
+            skill.apply_cooldown()
+            self.summon(skill.effect_specifics)
 
     def choose_action(self):
         if len(self.enemies) > 0:
@@ -63,5 +91,5 @@ class Monster(Character):
             if self.skill > 0 and self.skills:
                 self.use_skill()
             else:
+                self.skill += 1
                 self.basic_attack(self.target)
-        

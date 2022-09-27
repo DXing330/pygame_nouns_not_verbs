@@ -10,6 +10,7 @@ from General_Functions.Pick import *
 
 @dataclass
 class Hero(Character):
+    exp: int = 0
 
     def update_stats(self):
         self.dictionary = H.STATS.get(self.name)
@@ -49,13 +50,20 @@ class Hero(Character):
         pick_from = Pick(self.skill_list, False)
         used_skill : Skill = pick_from.pick()
         if used_skill.effect == "Summon":
-            self.skill -= used_skill.cost
-            used_skill.apply_cooldown()
-            summon = Hero(used_skill.effect_specifics, self.level)
-            summon.update_for_battle()
-            self.allies.append(summon)
+            self.summon(used_skill)
         else:
             used_skill.use(self, self.allies, self.spirits, self.enemies)
+
+    def summon(self, name: str):
+        summon = Hero(name)
+        summon.update_for_battle()
+        self.allies.append(summon)
+
+    def summon_skill(self, skill: Skill):
+        self.skill -= skill.cost
+        if self.skill >= 0 and skill.cooldown <= 0:
+            skill.apply_cooldown()
+            self.summon(skill.effect_specifics)
 
     def choose_action(self):
         while len(self.enemies) > 0 and self.turn:

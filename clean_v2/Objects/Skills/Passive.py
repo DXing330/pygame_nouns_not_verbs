@@ -7,7 +7,6 @@ class Passive:
     name : str
     effect : str
     effect_specifics : str
-    timing : str
     type : str
     power : int = 1
     turns : int = -1

@@ -8,6 +8,7 @@ S = Skill_Dict()
 
 @dataclass
 class Spirit(Character):
+    exp: int = 0
 
     def update_skills(self):
         self.dictionary = SP.SKILLS.get(self.name)
@@ -17,10 +18,11 @@ class Spirit(Character):
                 skill = Skill(**S.ALL_SKILLS.get(word))
                 self.skill_list.append(skill)
 
-    def choose_action(self, allies: list, enemies: list):
+    def choose_action(self, allies: list, spirits: list, enemies: list):
         self.skill = 999
         self.allies = allies
+        self.spirits = spirits
         self.enemies = enemies
         if len(self.allies) > 0 and len(self.enemies) > 0:
             used_skill : Skill = self.skill_list[random.randint(0, len(self.skill_list) - 1)]
-            used_skill.use(self, self.allies, [], self.enemies)
+            used_skill.use(self, self.allies, self.spirits, self.enemies)

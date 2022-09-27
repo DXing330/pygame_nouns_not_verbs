@@ -1,7 +1,7 @@
 import sys
-sys.path.append("./General_Functions")
+sys.path.append("../../General_Functions")
 from dataclasses import dataclass
-from Pick import *
+from General_Functions.Pick import *
 from Effect import *
 
 
@@ -64,8 +64,6 @@ class Skill:
                 for number in range(0, self.power):
                     if "Basic" in self.effect_specifics:
                         self.user.basic_attack(target)
-        elif "Summon" in self.effect:
-            pass
         else:
             effect = Effect(self.effect, self.effect_specifics, self.target_list,
             self.power * self.user.level)

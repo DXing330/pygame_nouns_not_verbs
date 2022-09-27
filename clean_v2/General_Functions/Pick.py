@@ -1,6 +1,4 @@
-import sys
-sys.path.append("./Config/Constants")
-from Constants import *
+from Config.Constants.Constants import *
 C = Constants()
 import pygame
 pygame.init()
