@@ -18,8 +18,17 @@ class Character_Dict:
         self.MONSTER_STATS = {
         "Goblin" : {
             "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1
+        },
+        "Turret" : {
+            "level" : 1, "variance" : 0, "health" : 5, "attack" : 5, "defense" : 1, "skill" : 0
+        },
+        "Wolf" : {
+            "level" : 3, "variance" : 1, "health" : 10, "attack" : 4, "defense" : 1, "skill" : 1
         }
         }
         self.MONSTER_SKILLS = {
-        "Goblin" : []
+        "Goblin" : ["Blind"], "Turret" : [], "Wolf" : ["Howl"]
+        }
+        self.MONSTER_PASSIVES = {
+        "Goblin" : [], "Turret" : [], "Wolf" : []
         }

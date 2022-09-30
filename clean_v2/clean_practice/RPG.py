@@ -7,4 +7,5 @@ sys.path.append("./Config")
 sys.path.append("./Skills")
 sys.path.append("./Utility")
 from Battle.Battle_Encounter import *
+from Characters.Party import *
 WIN = pygame.display.set_mode((C.WIDTH, C.HEIGHT), pygame.RESIZABLE)

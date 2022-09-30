@@ -2,8 +2,10 @@ import pygame
 pygame.init()
 from dataclasses import dataclass
 from Character import Character
+from Config.Constants import *
 from Config.Character_Dict import *
-C = Character_Dict()
+C = Constants()
+CD = Character_Dict()
 
 
 @dataclass
@@ -14,10 +16,9 @@ class Hero(Character):
     spells: bool = True
     weapon: any = None
     armor: any =  None
-    accessory: any = None
 
     def update_stats(self):
-        self.dict = C.HERO_STATS.get(self.name)
+        self.dict = CD.HERO_STATS.get(self.name)
         self.max_health = self.dict.get("health") * self.level
         self.attack = self.dict.get("attack") * self.level
         self.defense = self.dict.get("defense") * self.level
@@ -27,17 +28,16 @@ class Hero(Character):
         self.skill = self.max_skill
         self.mana = self.max_mana
 
-    def update_skills(self, skill_list: list):
-        self.battle_skills = skill_list
-
     def learn_skill(self, skill: str):
         if skill not in self.skill_list:
             self.skill_list.append(skill)
 
     def level_up(self):
-        if self.exp > self.level ** 2:
+        if self.exp > self.level ** 2 and self.level < C.LEVEL_LIMIT:
             self.level += 1
-            self.dict = C.HERO_SKILLS.get(self.name)
-            new_skill = self.dict.get(self.level)
-            if new_skill != None:
-                self.learn_skill(new_skill)
+            self.update_stats()
+            self.dict = CD.HERO_SKILLS.get(self.name)
+            for number in range(0, self.level):
+                new_skill = self.dict.get(self.level)
+                if new_skill != None:
+                    self.learn_skill(new_skill)

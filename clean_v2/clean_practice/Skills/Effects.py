@@ -12,6 +12,13 @@ class Passive:
     power: int = 1
     turns: int = -1
 
+    def check_turns(self):
+        if self.turns > 0:
+            self.turns -= 1
+        if self.turns == 0:
+            return True
+        return False
+
 
 @dataclass
 class Effect(ABC):
@@ -35,6 +42,12 @@ class Change_Stats(Effect):
             self.target.attack += self.power
         if "Defense" in self.effect_specifics:
             self.target.defense += self.power
+        if "Skill" in self.effect_specifics:
+            self.target.skill += self.power
+        if "All" in self.effect_specifics:
+            self.target.health += self.power
+            self.target.attack += self.power//2
+            self.target.defense += self.power//4
 
 
 @dataclass
@@ -66,7 +79,7 @@ class Cure_Status(Effect):
 class Disable(Effect):
 
     def apply_effect(self):
-        if self.effect_specifics == "ALL":
+        if self.effect_specifics == "All":
             self.target.turn = False
         elif self.effect_specifics == "Skills":
             self.target.skills = False

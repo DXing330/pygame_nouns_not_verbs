@@ -32,3 +32,9 @@ class Character(ABC):
 
     def add_buff(self, effect):
         self.buffs.append(effect)
+
+    def update_skills(self, skill_list: list):
+        self.battle_skills = skill_list
+
+    def update_passive_skills(self, skill_list: list):
+        self.battle_passives = skill_list
