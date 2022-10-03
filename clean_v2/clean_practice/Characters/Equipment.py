@@ -6,6 +6,7 @@ class Equipment:
     name: str
     # Weapon/Armor
     type: str
+    target: str
     power: int
     effect: str
     effect_specifics: str

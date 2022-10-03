@@ -11,9 +11,6 @@ CD = Character_Dict()
 @dataclass
 class Hero(Character):
     exp: int = 0
-    max_mana: int = 0
-    mana: int = 0
-    spells: bool = True
     weapon: any = None
     armor: any =  None
 
@@ -41,3 +38,17 @@ class Hero(Character):
                 new_skill = self.dict.get(self.level)
                 if new_skill != None:
                     self.learn_skill(new_skill)
+
+    def choose_action(self):
+        choose = True
+        choice = None
+        while choose:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    pygame.event.clear()
+                    if event.key == pygame.K_a:
+                        choice = "Attack"
+                        return choice
+                    if event.key == pygame.K_s:
+                        choice = "Skill"
+                        return choice

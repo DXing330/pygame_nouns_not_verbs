@@ -1,5 +1,5 @@
 import copy
-from Battle.Skill_Effect_Factory import *
+from Battle.Effect_Factory import *
 from Characters.Party import *
 from Characters.Monster import *
 from Utility.Pick import *
@@ -7,36 +7,17 @@ from Skills.Skill import *
 from Config.Skill_Dict import *
 S = Skill_Dict()
 
-@dataclass
-class Monster_Encounter:
-    party: any
-    location: str
-    monsters: list
-
-    def generate_monsters(self):
-        if len(self.monsters) <= 0:
-            pass
-        for monster in self.monsters:
-            battle_skills = []
-            for word in CD.MONSTER_SKILLS.get(monster.name):
-                bskill = Skill(**S.ALL_SKILLS.get(word))
-                battle_skills.append(bskill)
-            monster.update_skills(battle_skills)
-            battle_passives = []
-            for word in CD.MONSTER_PASSIVES.get(monster.name):
-                if word != None:
-                    bpassive = Skill(**S.ALL_SKILLS.get(word))
-                    battle_passives.append(bpassive)
-            monster.update_passive_skills(battle_passives)
 
 @dataclass
 class Monster_Encounter:
     party: Party
     location: str
-    heroes: list
-    spirits: list
     monsters: list
     battle: bool = True
+
+    def generate_monsters(self):
+        for monster in self.monsters:
+            self.update_monster_for_battle(monster)
 
     def prepare_for_battle(self):
         self.heroes = copy.deepcopy(self.party.battle_party)
@@ -62,12 +43,13 @@ class Monster_Encounter:
     def update_monster_for_battle(self, monster: Monster):
         monster.update_stats()
         battle_skills = []
-        for word in CD.MONSTER_SKILLS.get(monster.name):
+        dictionary = CD.MONSTER_STATS.get(monster.name)
+        for word in dictionary.get("skills"):
             bskill = Skill(**S.ALL_SKILLS.get(word))
             battle_skills.append(bskill)
         monster.update_skills(battle_skills)
         battle_passives = []
-        for word in CD.MONSTER_PASSIVES.get(monster.name):
+        for word in dictionary.get("passives"):
             bpassive = Skill(**S.ALL_SKILLS.get(word))
             battle_passives.append(bpassive)
         monster.update_passive_skills(battle_passives)
@@ -134,7 +116,11 @@ class Monster_Encounter:
 
     def hero_turn(self, hero: Hero):
         if len(self.monsters) > 0 and hero.turn:
-            pass
+            action = hero.choose_action()
+            if action == "Attack":
+                pass
+            elif action == "Skill" and hero.skills:
+                pass
 
     def spirit_turn(self, spirit: Spirit):
         if len(self.heroes) > 0 and len(self.monsters) > 0:
@@ -151,15 +137,15 @@ class Monster_Encounter:
                 self.attack_step(monster, target)
 
     def attack_step(self, attacker, defender):
-        damage = attacker.attack
+        self.damage = attacker.attack
         if attacker.weapon != None:
-            attack_effect = Effect_Factory(attacker.weapon.effect, attacker.weapon.effect_specifics, attacker.weapon.power, [defender])
+            attack_effect = Equipment_Effect_Factory(attacker.weapon, self.damage, defender)
             attack_effect.make_effect()
-        damage -= defender.defense
         if defender.armor != None:
-            defense_effect = Effect_Factory(defender.armor.effect, defender.armor.effect_specifics, defender.armor.power, [attacker])
-            defense_effect.make_effect()
-        defender.health -= min(damage, 1)
+            attack_effect = Equipment_Effect_Factory(defender.armor, self.damage, attacker)
+            attack_effect.make_effect()
+        self.damage -= defender.defense
+        defender.health -= min(self.damage, 1)
 
     def passive_step(self, character):
         character.turn = True

@@ -83,3 +83,27 @@ class Disable(Effect):
             self.target.turn = False
         elif self.effect_specifics == "Skills":
             self.target.skills = False
+
+
+@dataclass
+class Increase_Damage(Effect):
+
+    def apply_effect(self):
+        if self.effect_specifics == "Flat":
+            self.target += self.power
+        elif self.effect_specifics == "Scale":
+            scale = self.power / (self.power + 50)
+            change = round(self.target * scale)
+            self.target += change
+
+
+@dataclass
+class Decrease_Damage(Effect):
+
+    def apply_effect(self):
+        if self.effect_specifics == "Flat":
+            self.target -= self.power
+        elif self.effect_specifics == "Scale":
+            scale = self.power / (self.power + 50)
+            change = round(self.target * scale)
+            self.target -= change
