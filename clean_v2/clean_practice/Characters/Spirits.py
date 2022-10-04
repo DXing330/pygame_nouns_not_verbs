@@ -14,6 +14,13 @@ class Spirit:
     def update_skills(self, skill_list: list):
         self.battle_skills = skill_list
 
+    def update_skill_list(self):
+        self.dict = CD.SPIRIT_SKILLS.get(self.name)
+        for number in range(0, self.level):
+            new_skill = self.dict.get(number)
+            if new_skill != None:
+                self.learn_skill(new_skill)
+
     def learn_skill(self, skill: str):
         if skill not in self.skill_list:
             self.skill_list.append(skill)
@@ -21,10 +28,7 @@ class Spirit:
     def level_up(self):
         if self.exp > self.level ** 2:
             self.level += 1
-            self.dict = CD.SPIRIT_SKILLS.get(self.name)
-            new_skill = self.dict.get(self.level)
-            if new_skill != None:
-                self.learn_skill(new_skill)
+            self.update_skill_list()
 
     def choose_action(self):
         self.skill = 999

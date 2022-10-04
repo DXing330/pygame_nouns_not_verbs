@@ -17,15 +17,15 @@ class Character_Dict:
         }
         self.MONSTER_STATS = {
         "Goblin" : {
-            "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "skills" : ["Blind"], "passives" : []
+            "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "skills" : ["Blind"], "passives" : [], "death_effect" : []
         },
         "Hob Goblin" : {
-            "level" : 4, "variance" : 1, "health" : 12, "attack" : 3, "defense" : 1, "skill" : 2, "skills" : ["Blind"], "passives" : []
+            "level" : 4, "variance" : 1, "health" : 12, "attack" : 3, "defense" : 1, "skill" : 2, "skills" : ["Blind"], "passives" : [], "death_effect" : []
         },
         "Turret" : {
-            "level" : 1, "variance" : 0, "health" : 5, "attack" : 5, "defense" : 1, "skill" : 0, "skills" : [], "passives" : []
+            "level" : 1, "variance" : 0, "health" : 5, "attack" : 5, "defense" : 1, "skill" : 0, "skills" : [], "passives" : [], "death_effect" : []
         },
         "Wolf" : {
-            "level" : 3, "variance" : 1, "health" : 10, "attack" : 4, "defense" : 1, "skill" : 1, "skills" : ["Howl"], "passives" : []
+            "level" : 3, "variance" : 1, "health" : 10, "attack" : 4, "defense" : 1, "skill" : 1, "skills" : ["Howl"], "passives" : [], "death_effect" : []
         }
         }

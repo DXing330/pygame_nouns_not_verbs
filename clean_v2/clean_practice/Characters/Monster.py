@@ -18,6 +18,7 @@ class Monster(Character):
         self.statuses = []
         self.skill_list = []
         self.passive_skills = []
+        self.death_skills = []
         self.weapon = None
         self.armor = None
         while self.level == 0:

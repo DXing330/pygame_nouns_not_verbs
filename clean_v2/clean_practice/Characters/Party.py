@@ -20,7 +20,8 @@ class Party:
     heroes: list[Hero] = None
     spirits: list[Spirit] = None
     equipment: list[Equipment] = None
-    items: Item_Bag = None
+    items: Item_Bag = Item_Bag(10, 1, 1)
+    ranking: int = 0
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
 
@@ -86,14 +87,26 @@ class Party:
             load_equip_list.append(equipment)
         return load_equip_list
 
+    def new_party(self):
+        starter_hero = Hero("Summoner", 1, 0, 0, 0, 0, 0, 0, [], [], [], [])
+        starter_hero.update_stats()
+        starter_hero.update_skill_list()
+        self.add_hero(starter_hero)
+        starter_spirit = Spirit("Angel", 1, [])
+        starter_spirit.update_skill_list()
+        self.add_spirit(starter_spirit)
+
     def load(self):
-        heroes_list = self.read_hero_objects("_heroes")
-        self.heroes = heroes_list
-        ally_list = self.read_ally_objects("_spirits")
-        self.spirits = ally_list
-        equipment_list = self.read_equipment_objects("_equipment")
-        self.equipment = equipment_list
-        jsonFile = open("_items", "r")
-        item_bag = json.load(jsonFile)
-        item_bag_object = Item_Bag(**item_bag)
-        self.items = item_bag_object
+        try:
+            heroes_list = self.read_hero_objects("_heroes")
+            self.heroes = heroes_list
+            ally_list = self.read_ally_objects("_spirits")
+            self.spirits = ally_list
+            equipment_list = self.read_equipment_objects("_equipment")
+            self.equipment = equipment_list
+            jsonFile = open("_items", "r")
+            item_bag = json.load(jsonFile)
+            item_bag_object = Item_Bag(**item_bag)
+            self.items = item_bag_object
+        except:
+            self.new_party()

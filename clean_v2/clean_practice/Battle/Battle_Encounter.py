@@ -53,40 +53,45 @@ class Monster_Encounter:
             bpassive = Skill(**S.ALL_SKILLS.get(word))
             battle_passives.append(bpassive)
         monster.update_passive_skills(battle_passives)
+        death_effects = []
+        for word in dictionary.get("death_effect"):
+            bdeath = Skill(**S.ALL_SKILLS.get(word))
+            death_effects.append(bdeath)
+        monster.update_death_skills(death_effects)
 
-    def skill_cost_cooldown(self, user, skill: Skill, pick_randomly = True):
+    def skill_apply_cost_cooldown_use(self, user, skill: Skill, pick_randomly = True):
         if skill.cooldown <= 0:
             skill.cooldown += skill.cooldown_counter
             user.skill -= skill.cost
             if user.skill >= 0:
                 self.skill_activation(user, skill, pick_randomly)
 
-    def skill_targetting(self, user, skill, pick_randomly = True):
+    def skill_targeting(self, user, skill : Skill, pick_randomly = True):
         target_list = []
-        if skill.target == "Self":
+        if skill.targets == "Self":
             target_list.append(user)
-        elif skill.target == "Hero":
+        elif skill.targets == "Hero":
             pick_from = Pick(self.heroes, pick_randomly)
             target = pick_from.pick()
             target_list.append(target)
-        elif skill.target == "All_Hero":
+        elif skill.targets == "All_Hero":
             target_list = self.heroes
-        elif skill.target == "Monster":
+        elif skill.targets == "Monster":
             pick_from = Pick(self.monsters, pick_randomly)
             target = pick_from.pick()
             target_list.append(target)
-        elif skill.target == "All_Monster":
+        elif skill.targets == "All_Monster":
             target_list = self.monsters
-        elif skill.target == "Spirit":
+        elif skill.targets == "Spirit":
             pick_from = Pick(self.spirits, pick_randomly)
             target = pick_from.pick()
             target_list.append(target)
-        elif skill.target == "All_Spirit":
+        elif skill.targets == "All_Spirit":
             target_list = self.spirits
         return target_list
 
     def skill_activation(self, user, skill: Skill, pick_randomly = True):
-        targets = self.skill_targetting(user, skill, pick_randomly)
+        targets = self.skill_targeting(user, skill, pick_randomly)
         if skill.effect == "Summon":
             summon = Monster(skill.effect_specifics, max(user.level - 1, skill.power))
             self.update_monster_for_battle(summon)
@@ -114,13 +119,23 @@ class Monster_Encounter:
             activate = Effect_Factory(skill.effect, skill.effect_specifics, skill.power * user.level, targets)
             activate.make_effect()
 
-    def hero_turn(self, hero: Hero):
+    def hero_attack(self, hero):
+        pick_from = Pick(self.monsters, False)
+        target = pick_from.pick()
+        self.attack_step(hero, target)
+
+    def hero_skill(self, hero: Character):
+        pick_from = Pick(hero.battle_skills, False)
+        skill = pick_from.pick()
+        self.skill_apply_cost_cooldown_use(hero, skill, False)
+
+    def hero_turn(self, hero: Character):
         if len(self.monsters) > 0 and hero.turn:
             action = hero.choose_action()
             if action == "Attack":
-                pass
+                self.hero_attack(hero)
             elif action == "Skill" and hero.skills:
-                pass
+                self.hero_skill(hero)
 
     def spirit_turn(self, spirit: Spirit):
         if len(self.heroes) > 0 and len(self.monsters) > 0:
@@ -131,7 +146,7 @@ class Monster_Encounter:
         if len(self.heroes) > 0 and monster.turn:
             skill = monster.choose_action()
             if skill != None:
-                self.skill_cost_cooldown(monster, skill)
+                self.skill_apply_cost_cooldown_use(monster, skill)
             else:
                 target = self.heroes[random.randint(0, len(self.heroes) - 1)]
                 self.attack_step(monster, target)
@@ -147,7 +162,7 @@ class Monster_Encounter:
         self.damage -= defender.defense
         defender.health -= min(self.damage, 1)
 
-    def passive_step(self, character):
+    def passive_step(self, character: Character):
         character.turn = True
         character.skills = True
         for skill in character.skill_list:
@@ -165,7 +180,7 @@ class Monster_Encounter:
             done = status.check_turns()
             if done:
                 character.statuses.remove(status)
-        for skill in character.passive_skills:
+        for skill in character.battle_passives:
             self.skill_activation(character, skill)
 
     def standby_phase(self):
@@ -180,6 +195,8 @@ class Monster_Encounter:
                 self.heroes.remove(hero)
         for monster in self.monsters:
             if monster.health <= 0:
+                for skill in monster.battle_death_skills:
+                    self.skill_activation(monster, skill)
                 self.monsters.remove(monster)
         if len(self.monsters) <= 0 or len(self.heroes) <= 0:
             self.battle = False

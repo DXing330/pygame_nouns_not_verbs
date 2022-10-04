@@ -27,6 +27,10 @@ class Character(ABC):
     def update_skills(self):
         pass
 
+    @abstractmethod
+    def choose_action(self):
+        pass
+
     def add_status(self, effect):
         self.statuses.append(effect)
 
@@ -38,3 +42,6 @@ class Character(ABC):
 
     def update_passive_skills(self, skill_list: list):
         self.battle_passives = skill_list
+
+    def update_death_skills(self, skill_list: list):
+        self.battle_death_skills = skill_list

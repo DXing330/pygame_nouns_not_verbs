@@ -25,6 +25,13 @@ class Hero(Character):
         self.skill = self.max_skill
         self.mana = self.max_mana
 
+    def update_skill_list(self):
+        self.dict = CD.HERO_SKILLS.get(self.name)
+        for number in range(0, self.level):
+            new_skill = self.dict.get(number)
+            if new_skill != None:
+                self.learn_skill(new_skill)
+
     def learn_skill(self, skill: str):
         if skill not in self.skill_list:
             self.skill_list.append(skill)
@@ -33,11 +40,7 @@ class Hero(Character):
         if self.exp > self.level ** 2 and self.level < C.LEVEL_LIMIT:
             self.level += 1
             self.update_stats()
-            self.dict = CD.HERO_SKILLS.get(self.name)
-            for number in range(0, self.level):
-                new_skill = self.dict.get(self.level)
-                if new_skill != None:
-                    self.learn_skill(new_skill)
+            self.update_skill_list()
 
     def choose_action(self):
         choose = True
