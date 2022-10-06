@@ -10,6 +10,9 @@ class Skill_Dict:
         "Command Spirit" : {
             "name" : "Command Spirit", "effect" : "Command", "effect_specifics" : "Spirit", "power" : 1, "targets" : "Spirit", "cost" : -1, "cooldown" : 0, "cooldown_counter" : 0
                 },
+        "Flame Send" : {
+            "name" : "Flame Send", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "Hero", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0
+                },
         "Heal Ally" : {
             "name" : "Heal Ally", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Hero", "cost" : -1, "cooldown" : 0, "cooldown_counter" : 0
                 },

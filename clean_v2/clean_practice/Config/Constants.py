@@ -8,6 +8,8 @@ class Constants:
         self.HEIGHT = 800
         self.WHITE = (255,255,255)
         self.BLACK = (0,0,0)
+        self.PLAYER_SIZE = 50
+        self.MONSTER_SIZE = 60
 
 
         self.PARTY_LIMIT = 3

@@ -10,6 +10,10 @@ class Monster(Character):
         self.name = name
         self.level = level
 
+    def stats_text(self):
+        text = str(self.name+" LVL: "+str(self.level)+" HP: "+str(self.health))
+        return text
+
     def update_stats(self):
         self.dict = CD.MONSTER_STATS.get(self.name)
         self.turn = True
@@ -32,7 +36,9 @@ class Monster(Character):
     def choose_action(self):
         self.skill += 1
         useable_skills = []
-        if self.skills:
+        # Basic monster always has a chance to basic attack.
+        number = random.randint(0, 1)
+        if self.skills and number > 0:
             for skill in self.battle_skills:
                 if skill.cost <= self.skill:
                     useable_skills.append(skill)

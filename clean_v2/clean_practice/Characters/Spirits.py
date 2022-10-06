@@ -1,7 +1,10 @@
 from dataclasses import dataclass
 import random
+from Config.Constants import *
 from Config.Character_Dict import *
+C = Constants()
 CD = Character_Dict()
+
 
 @dataclass
 class Spirit:
@@ -15,9 +18,9 @@ class Spirit:
         self.battle_skills = skill_list
 
     def update_skill_list(self):
-        self.dict = CD.SPIRIT_SKILLS.get(self.name)
+        dict = CD.SPIRIT_SKILLS.get(self.name)
         for number in range(0, self.level):
-            new_skill = self.dict.get(number)
+            new_skill = dict.get(number)
             if new_skill != None:
                 self.learn_skill(new_skill)
 
@@ -26,7 +29,7 @@ class Spirit:
             self.skill_list.append(skill)
 
     def level_up(self):
-        if self.exp > self.level ** 2:
+        if self.exp > self.level ** 2 and self.level < C.LEVEL_LIMIT:
             self.level += 1
             self.update_skill_list()
 

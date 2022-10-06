@@ -21,7 +21,7 @@ class Party:
     spirits: list[Spirit] = None
     equipment: list[Equipment] = None
     items: Item_Bag = Item_Bag(10, 1, 1)
-    ranking: int = 0
+    ranking: int = 1
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
 

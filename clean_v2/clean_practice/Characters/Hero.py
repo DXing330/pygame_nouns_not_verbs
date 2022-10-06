@@ -15,20 +15,22 @@ class Hero(Character):
     armor: any =  None
 
     def update_stats(self):
-        self.dict = CD.HERO_STATS.get(self.name)
-        self.max_health = self.dict.get("health") * self.level
-        self.attack = self.dict.get("attack") * self.level
-        self.defense = self.dict.get("defense") * self.level
-        self.max_skill = self.dict.get("skill") * self.level
-        self.max_mana = self.dict.get("mana") * self.level
+        dict = CD.HERO_STATS.get(self.name)
+        self.max_health = dict.get("health") * self.level
+        self.attack = dict.get("attack") * self.level
+        self.defense = dict.get("defense") * self.level
+        self.max_skill = dict.get("skill") * self.level
         self.health = self.max_health
         self.skill = self.max_skill
-        self.mana = self.max_mana
+
+    def stats_text(self):
+        text = str(self.name+"~ HP: "+str(self.health)+" ATK: "+str(self.attack)+" DEF: "+str(self.defense)+" SKL: "+str(self.skill))
+        return text
 
     def update_skill_list(self):
-        self.dict = CD.HERO_SKILLS.get(self.name)
+        dict = CD.HERO_SKILLS.get(self.name)
         for number in range(0, self.level):
-            new_skill = self.dict.get(number)
+            new_skill = dict.get(number)
             if new_skill != None:
                 self.learn_skill(new_skill)
 

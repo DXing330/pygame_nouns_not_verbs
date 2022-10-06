@@ -2,7 +2,7 @@ class Character_Dict:
     def __init__(self):
         self.HERO_STATS = {
         "Summoner" : {
-            "health" : 10, "attack" : 2, "defense" : 1, "skill" : 3, "mana" : 0
+            "health" : 10, "attack" : 2, "defense" : 1, "skill" : 3
         }
         }
         self.HERO_SKILLS = {
@@ -16,6 +16,9 @@ class Character_Dict:
         }
         }
         self.MONSTER_STATS = {
+        "Imp" : {
+            "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "skills" : ["Flame Send"], "passives" : [], "death_effect" : []
+        },
         "Goblin" : {
             "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "skills" : ["Blind"], "passives" : [], "death_effect" : []
         },

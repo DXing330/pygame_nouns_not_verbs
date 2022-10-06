@@ -28,6 +28,10 @@ class Character(ABC):
         pass
 
     @abstractmethod
+    def stats_text(self):
+        pass
+
+    @abstractmethod
     def choose_action(self):
         pass
 

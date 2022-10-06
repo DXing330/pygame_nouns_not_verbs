@@ -1,8 +1,10 @@
 import copy
 from Battle.Effect_Factory import *
+from Battle.Location import *
 from Characters.Party import *
 from Characters.Monster import *
 from Utility.Pick import *
+from Utility.Draw import *
 from Skills.Skill import *
 from Config.Skill_Dict import *
 S = Skill_Dict()
@@ -11,11 +13,30 @@ S = Skill_Dict()
 @dataclass
 class Monster_Encounter:
     party: Party
-    location: str
+    location: Location
+    amount: int
     monsters: list
     battle: bool = True
+    draw: Draw = Draw()
+
+    def start_phase(self):
+        self.prepare_for_battle()
+        self.generate_monsters()
+        self.update_draw()
+        self.battle_phase()
+
+    def update_draw(self):
+        self.draw.update_heroes(self.heroes)
+        self.draw.update_monsters(self.monsters)
+        self.draw.update_spirits(self.spirits)
 
     def generate_monsters(self):
+        if len(self.monsters) <= 0:
+            # Plus one here in case self.amount is zero.
+            for number in range(0, self.amount + 1):
+                monster_name = self.location.monsters[random.randint(0, len(self.location.monsters) - 1)]
+                monster = Monster(monster_name)
+                self.monsters.append(monster)
         for monster in self.monsters:
             self.update_monster_for_battle(monster)
 
@@ -25,6 +46,7 @@ class Monster_Encounter:
             battle_skills = []
             for skill in hero.skill_list:
                 bskill = Skill(**S.ALL_SKILLS.get(skill))
+                print (bskill.__dict__)
                 battle_skills.append(bskill)
             hero.update_skills(battle_skills)
             battle_passives = []
@@ -32,13 +54,16 @@ class Monster_Encounter:
                 bpassive = Skill(**S.ALL_SKILLS.get(skill))
                 battle_passives.append(bpassive)
             hero.update_passive_skills(battle_passives)
-        self.spirits = self.party.spirits
+        self.spirits = copy.deepcopy(self.party.spirits)
         for spirit in self.spirits:
+            print (spirit.__dict__)
             battle_skills = []
             for skill in spirit.skill_list:
                 bskill = Skill(**S.ALL_SKILLS.get(skill))
+                print (bskill.__dict__)
                 battle_skills.append(bskill)
                 spirit.update_skills(battle_skills)
+                print (spirit.battle_skills)
 
     def update_monster_for_battle(self, monster: Monster):
         monster.update_stats()
@@ -165,7 +190,7 @@ class Monster_Encounter:
     def passive_step(self, character: Character):
         character.turn = True
         character.skills = True
-        for skill in character.skill_list:
+        for skill in character.battle_skills:
             if skill.cooldown > 0:
                 skill.cooldown -= 1
         for buff in character.buffs:
@@ -200,10 +225,13 @@ class Monster_Encounter:
                 self.monsters.remove(monster)
         if len(self.monsters) <= 0 or len(self.heroes) <= 0:
             self.battle = False
+        self.update_draw()
 
     def battle_phase(self):
         while self.battle:
             self.standby_phase()
+            self.draw.draw_battle_state()
+            self.draw.draw_battle_stats()
             for hero in self.heroes:
                 self.hero_turn(hero)
                 self.cleanup_phase()
@@ -217,6 +245,10 @@ class Monster_Encounter:
 
     def end_phase(self):
         if len(self.heroes) > 0:
-            pass
-        for hero in self.party.battle_party:
-            pass
+            self.party.items.coins += 1
+            for spirit in self.party.spirits:
+                spirit.exp += 1
+                spirit.level_up()
+            for hero in self.party.heroes:
+                hero.exp += 1
+                hero.level_up()
