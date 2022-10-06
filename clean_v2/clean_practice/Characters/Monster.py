@@ -1,9 +1,7 @@
 import random
 from Character import *
 from Config.Character_Dict import *
-from Config.Skill_Dict import *
 CD = Character_Dict()
-S = Skill_Dict()
 
 class Monster(Character):
     def __init__(self, name, level = 0):
@@ -48,3 +46,26 @@ class Monster(Character):
         if len(useable_skills) > 0:
             return useable_skills[random.randint(0, len(useable_skills) - 1)]
         return None
+
+
+class Summon(Monster):
+    def __init__(self, name, level = 0):
+        self.name = name
+        self.level = level
+
+    def choose_action(self):
+        choose = True
+        choice = None
+        if len(self.skill_list) <= 0:
+            choice = "Attack"
+            return choice
+        while choose:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    pygame.event.clear()
+                    if event.key == pygame.K_a:
+                        choice = "Attack"
+                        return choice
+                    if event.key == pygame.K_s:
+                        choice = "Skill"
+                        return choice

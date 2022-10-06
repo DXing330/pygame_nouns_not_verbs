@@ -30,6 +30,11 @@ class Monster_Encounter:
         self.draw.update_monsters(self.monsters)
         self.draw.update_spirits(self.spirits)
 
+    def draw_battle(self):
+        self.draw.draw_background(self.location.image)
+        self.draw.draw_battle_state()
+        self.draw.draw_battle_stats()
+
     def generate_monsters(self):
         if len(self.monsters) <= 0:
             # Plus one here in case self.amount is zero.
@@ -118,11 +123,13 @@ class Monster_Encounter:
     def skill_activation(self, user, skill: Skill, pick_randomly = True):
         targets = self.skill_targeting(user, skill, pick_randomly)
         if skill.effect == "Summon":
-            summon = Monster(skill.effect_specifics, max(user.level - 1, skill.power))
-            self.update_monster_for_battle(summon)
             if skill.power < 0:
+                summon = Monster(skill.effect_specifics, user.level - 1)
+                self.update_monster_for_battle(summon)
                 self.monsters.append(summon)
             else:
+                summon = Summon(skill.effect_specifics, max(user.level - 1, skill.power))
+                self.update_monster_for_battle(summon)
                 self.heroes.append(summon)
         elif skill.effect == "Command":
             for target in targets:
@@ -230,8 +237,8 @@ class Monster_Encounter:
     def battle_phase(self):
         while self.battle:
             self.standby_phase()
-            self.draw.draw_battle_state()
-            self.draw.draw_battle_stats()
+            self.cleanup_phase()
+            self.draw_battle_state()
             for hero in self.heroes:
                 self.hero_turn(hero)
                 self.cleanup_phase()

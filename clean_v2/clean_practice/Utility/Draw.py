@@ -13,12 +13,20 @@ class Draw:
         self.width = WIN.get_width()
         self.height = WIN.get_height()
 
-    def draw_text(self, text: str):
-        WIN.fill(C.BLACK)
+    def draw_text(self, text: str, height = 1):
+        # WIN.fill(C.BLACK)
         string = FONT.render(text, 1, C.WHITE)
-        WIN.blit(string, ((self.width - string.get_width())//2, C.PADDING))
+        WIN.blit(string, ((self.width - string.get_width())//2, C.PADDING * height))
         pygame.display.update()
-        pygame.time.delay(500)
+        # pygame.time.delay(500)
+
+    def draw_background(self, image):
+        if image == None:
+            WIN.fill(C.BLACK)
+        else:
+            image = pygame.transform.scale(image, (self.width, self.height))
+            WIN.blit(image, (0, 0))
+        pygame.display.update()
 
     def update_heroes(self, heroes: list):
         self.heroes = heroes
@@ -33,14 +41,14 @@ class Draw:
         self.counter = 1
         for hero in self.heroes:
             sprite = I.IMAGES.get(hero.name)
-            WIN.blit(sprite, (self.width - C.PADDING - sprite.get_width() * self.counter, self.height -  C.PADDING - sprite.get_height() * self.counter))
+            WIN.blit(sprite, (self.width - sprite.get_width() - C.PADDING * self.counter, self.height -  C.PADDING - sprite.get_height() * self.counter))
         pygame.display.update()
 
     def draw_monsters(self):
         self.counter = 1
         for monster in self.monsters:
             sprite = I.IMAGES.get(monster.name)
-            WIN.blit(sprite, (sprite.get_width() * self.counter, self.height -  C.PADDING - sprite.get_height() * self.counter))
+            WIN.blit(sprite, (sprite.get_width() + C.PADDING * self.counter, self.height -  C.PADDING - sprite.get_height() * self.counter))
         pygame.display.update()
 
     def draw_spirits(self):
@@ -72,3 +80,8 @@ class Draw:
     def draw_battle_stats(self):
         self.draw_hero_stats()
         self.draw_monster_stats()
+
+    def draw_hero_options(self, hero):
+        self.draw_text("Attack")
+        if len(hero.skill_list > 0):
+            self.draw_text("Skill", 2)

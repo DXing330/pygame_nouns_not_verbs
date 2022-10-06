@@ -6,6 +6,9 @@ class Passive_Dict:
         }
         }
         self.STATUSES = {
+        "Burn" : {
+            "name" : "Burn", "effect" : "Change_Stats", "effect_specifics" : "All", "power" : -1, "turns" : 5
+        },
         "Poison" : {
             "name" : "Poison", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "turns" : 5
         }
