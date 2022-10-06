@@ -259,3 +259,13 @@ class Monster_Encounter:
             for hero in self.party.heroes:
                 hero.exp += 1
                 hero.level_up()
+        for hero in self.party.battle_party:
+            check = None
+            for battler in self.heroes:
+                if hero.name == battler.name:
+                    check = battler.name
+                    hero.health = battler.health
+                    hero.skill = battler.skill
+            if check == None:
+                hero.health = 0
+                hero.skill = 0
