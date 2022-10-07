@@ -10,5 +10,5 @@ class Equipment:
     power: int
     effect: str
     effect_specifics: str
-    # What kind of heroes can use it. Warrior/Summoner/etc.
-    allowed_user: list
+    # What kind of heroes can't use it. Warrior/Summoner/etc.
+    disallowed_user: list

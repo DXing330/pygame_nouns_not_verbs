@@ -16,4 +16,4 @@ class Constants:
 
 
         self.PARTY_LIMIT = 3
-        self.LEVEL_LIMIT = 20
+        self.LEVEL_LIMIT = 10

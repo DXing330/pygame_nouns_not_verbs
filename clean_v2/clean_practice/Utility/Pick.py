@@ -38,10 +38,10 @@ class Pick:
         else:
             pick = True
             while pick:
-                pygame.event.clear()
                 choice_list = [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]
                 for event in pygame.event.get():
                     if event.type == pygame.KEYDOWN:
+                        pygame.event.clear()
                         try:
                             index = choice_list.index(event.key)
                             return self.things[index]

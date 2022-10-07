@@ -9,3 +9,5 @@ class Location:
     dungeon_size: int = 1
     events: list = None
     image: any = None
+    boss: bool = False
+    bosses: list = None

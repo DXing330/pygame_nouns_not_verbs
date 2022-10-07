@@ -1,3 +1,5 @@
+import pygame
+pygame.init()
 import random
 from Character import *
 from Config.Character_Dict import *

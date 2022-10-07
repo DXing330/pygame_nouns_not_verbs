@@ -18,6 +18,9 @@ class Character(ABC):
     statuses: list
     turn: bool = True
     skills: bool = True
+    exp: int = 0
+    weapon: any = None
+    armor: any =  None
     
     @abstractmethod
     def update_stats(self):
@@ -34,6 +37,12 @@ class Character(ABC):
     @abstractmethod
     def choose_action(self):
         pass
+
+    def equip_weapon(self, weapon):
+        self.weapon = weapon
+
+    def equip_armor(self, armor):
+        self.armor = armor
 
     def add_status(self, effect):
         self.statuses.append(effect)

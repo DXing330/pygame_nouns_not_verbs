@@ -7,12 +7,12 @@ class Character_Dict:
         }
         self.HERO_SKILLS = {
         "Summoner" : {
-            0 : "Command Spirit", 2 : "Summon Turret"
+            0 : "Command Spirit", 2 : "Summon Turret", 4 : "Summon Turret+", 6 : "Summon Golem"
         }
         }
         self.SPIRIT_SKILLS = {
         "Angel" : {
-            0 : "Heal Ally"
+            0 : "Heal Hero", 2 : "Heal Heroes", 4 : "Heal Hero+", 6 : "Weaken Monster"
         }
         }
         self.MONSTER_STATS = {
@@ -20,13 +20,16 @@ class Character_Dict:
             "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "skills" : ["Flame Send"], "passives" : [], "death_effect" : []
         },
         "Goblin" : {
-            "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "skills" : ["Blind"], "passives" : [], "death_effect" : []
+            "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "skills" : ["Blind Hero"], "passives" : [], "death_effect" : []
+        },
+        "Golem" : {
+            "level" : 1, "variance" : 0, "health" : 10, "attack" : 4, "defense" : 4, "skill" : 0, "skills" : ["Fortify Hero"], "passives" : [], "death_effect" : []
         },
         "Hob Goblin" : {
-            "level" : 4, "variance" : 1, "health" : 12, "attack" : 3, "defense" : 1, "skill" : 2, "skills" : ["Blind"], "passives" : [], "death_effect" : []
+            "level" : 4, "variance" : 1, "health" : 12, "attack" : 3, "defense" : 1, "skill" : 2, "skills" : ["Blind Hero"], "passives" : [], "death_effect" : []
         },
         "Turret" : {
-            "level" : 1, "variance" : 0, "health" : 5, "attack" : 5, "defense" : 1, "skill" : 0, "skills" : [], "passives" : [], "death_effect" : []
+            "level" : 1, "variance" : 0, "health" : 2, "attack" : 5, "defense" : 1, "skill" : 0, "skills" : [], "passives" : [], "death_effect" : []
         },
         "Wolf" : {
             "level" : 3, "variance" : 1, "health" : 10, "attack" : 4, "defense" : 1, "skill" : 1, "skills" : ["Howl"], "passives" : [], "death_effect" : []

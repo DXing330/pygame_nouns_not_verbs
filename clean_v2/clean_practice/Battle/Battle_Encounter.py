@@ -51,7 +51,6 @@ class Monster_Encounter:
             battle_skills = []
             for skill in hero.skill_list:
                 bskill = Skill(**S.ALL_SKILLS.get(skill))
-                print (bskill.__dict__)
                 battle_skills.append(bskill)
             hero.update_skills(battle_skills)
             battle_passives = []
@@ -61,14 +60,11 @@ class Monster_Encounter:
             hero.update_passive_skills(battle_passives)
         self.spirits = copy.deepcopy(self.party.spirits)
         for spirit in self.spirits:
-            print (spirit.__dict__)
             battle_skills = []
             for skill in spirit.skill_list:
                 bskill = Skill(**S.ALL_SKILLS.get(skill))
-                print (bskill.__dict__)
                 battle_skills.append(bskill)
                 spirit.update_skills(battle_skills)
-                print (spirit.battle_skills)
 
     def update_monster_for_battle(self, monster: Monster):
         monster.update_stats()
@@ -163,6 +159,7 @@ class Monster_Encounter:
 
     def hero_turn(self, hero: Character):
         if len(self.monsters) > 0 and hero.turn:
+            self.draw.draw_hero_options(hero)
             action = hero.choose_action()
             if action == "Attack":
                 self.hero_attack(hero)
@@ -173,15 +170,21 @@ class Monster_Encounter:
         if len(self.heroes) > 0 and len(self.monsters) > 0:
             skill = spirit.choose_action()
             self.skill_activation(spirit, skill)
+            self.draw.draw_text(spirit.name+" uses "+skill.name)
+            pygame.time.delay(500)
 
     def monster_turn(self, monster: Monster):
         if len(self.heroes) > 0 and monster.turn:
             skill = monster.choose_action()
             if skill != None:
                 self.skill_apply_cost_cooldown_use(monster, skill)
+                self.draw.draw_text(monster.name+" uses "+skill.name)
+                pygame.time.delay(500)
             else:
                 target = self.heroes[random.randint(0, len(self.heroes) - 1)]
                 self.attack_step(monster, target)
+                self.draw.draw_text(monster.name+" attacks "+target.name)
+                pygame.time.delay(500)
 
     def attack_step(self, attacker, defender):
         self.damage = attacker.attack
@@ -192,7 +195,7 @@ class Monster_Encounter:
             attack_effect = Equipment_Effect_Factory(defender.armor, self.damage, attacker)
             attack_effect.make_effect()
         self.damage -= defender.defense
-        defender.health -= min(self.damage, 1)
+        defender.health -= max(self.damage, 1)
 
     def passive_step(self, character: Character):
         character.turn = True
@@ -238,14 +241,16 @@ class Monster_Encounter:
         while self.battle:
             self.standby_phase()
             self.cleanup_phase()
-            self.draw_battle_state()
             for hero in self.heroes:
+                self.draw_battle()
                 self.hero_turn(hero)
                 self.cleanup_phase()
             for spirit in self.spirits:
+                self.draw_battle()
                 self.spirit_turn(spirit)
                 self.cleanup_phase()
             for monster in self.monsters:
+                self.draw_battle()
                 self.monster_turn(monster)
                 self.cleanup_phase()
         self.end_phase()
@@ -254,18 +259,18 @@ class Monster_Encounter:
         if len(self.heroes) > 0:
             self.party.items.coins += 1
             for spirit in self.party.spirits:
-                spirit.exp += 1
+                spirit.exp += random.randint(0, 1)
                 spirit.level_up()
             for hero in self.party.heroes:
-                hero.exp += 1
+                hero.exp += random.randint(0, 1)
                 hero.level_up()
         for hero in self.party.battle_party:
             check = None
             for battler in self.heroes:
                 if hero.name == battler.name:
                     check = battler.name
-                    hero.health = battler.health
-                    hero.skill = battler.skill
+                    hero.health = min(battler.health, hero.max_health)
+                    hero.skill = min(battler.skill, hero.max_skill)
             if check == None:
                 hero.health = 0
                 hero.skill = 0

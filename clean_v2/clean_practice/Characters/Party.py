@@ -1,9 +1,11 @@
 import json
 import copy
+from unicodedata import name
 from Hero import *
 from Spirits import *
 from Equipment import *
 from Config.Constants import *
+from Utility.Pick import Pick
 C = Constants()
 
 
@@ -31,14 +33,33 @@ class Party:
     def add_spirit(self, spirit):
         self.spirits.append(spirit)
 
-    def add_equipment(self, equip):
-        self.equipment.append(equip)
+    def add_equipment(self, equip: Equipment):
+        # Avoid duplicate equipment.
+        check = None
+        for equipment in self.equipment:
+            if equip.name == equipment.name:
+                check = equip.name
+                equipment.power += random.randint(0, 1)
+        if check == None:
+            self.equipment.append(equip)
+
+    def party_update_skills(self):
+        for hero in self.heroes:
+            hero.update_skill_list()
+        for spirit in self.spirits:
+            spirit.update_skill_list()
 
     def pick_battle_party(self):
         if len(self.heroes) <= C.PARTY_LIMIT:
             self.battle_party = copy.deepcopy(self.heroes)
         else:
+            possible_picks = copy.copy(self.heroes)
             self.battle_party = []
+            pick_from = Pick(possible_picks, False)
+            while len(self.battle_party) < C.PARTY_LIMIT:
+                hero = pick_from.pick()
+                self.battle_party.append(hero)
+                possible_picks.remove(hero)
 
     def write_object(self, object, filename):
         jsonP = json.dumps(object.__dict__)

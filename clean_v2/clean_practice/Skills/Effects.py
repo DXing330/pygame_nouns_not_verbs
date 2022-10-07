@@ -1,3 +1,4 @@
+import random
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from Config.Passive_Dict import *
@@ -70,6 +71,9 @@ class Add_Status(Effect):
 class Cure_Status(Effect):
 
     def apply_effect(self):
+        if self.effect_specifics == "All":
+            if len(self.target.statuses) > 0:
+                self.target.statuses.pop(-1)
         for status in self.target.statuses:
             if status.name == self.effect_specifics:
                 self.target.statuses.remove(status)
@@ -107,3 +111,21 @@ class Decrease_Damage(Effect):
             scale = self.power / (self.power + 50)
             change = round(self.target * scale)
             self.target -= change
+
+
+@dataclass
+class Critical_Hit(Effect):
+
+    def apply_effect(self):
+        luck = random.randint(0, 99)
+        if luck <= self.power:
+            self.target = self.target * 2
+
+
+@dataclass
+class Dodge(Effect):
+    
+    def apply_effect(self):
+        luck = random.randint(0, 99)
+        if luck <= self.power:
+            self.target = 0

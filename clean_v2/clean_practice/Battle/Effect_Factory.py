@@ -32,6 +32,12 @@ class Effect_Factory:
             if self.effect == "Decrease_Damage":
                 effect = Decrease_Damage(self.effect, self.effect_specifics, self.power, target)
                 effect.apply_effect()
+            if self.effect == "Critical_Hit":
+                effect = Critical_Hit(self.effect, self.effect_specifics, self.power, target)
+                effect.apply_effect()
+            if self.effect == "Dodge":
+                effect = Dodge(self.effect, self.effect_specifics, self.power, target)
+                effect.apply_effect()
 
 
 @dataclass
