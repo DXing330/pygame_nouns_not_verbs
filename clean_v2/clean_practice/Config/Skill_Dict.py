@@ -5,10 +5,22 @@ class Skill_Dict:
             "name" : "Test", "effect" : "None", "effect_specifics" : "None", "power" : 0, "targets" : "None", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0
         },
         "Blind Hero" : {
-            "name" : "Blind", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : -1, "targets" : "Hero", "cost" : 0, "cooldown" : 2, "cooldown_counter" : 2
+            "name" : "Blind", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : -1, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2
+        },
+        "Buff Self" : {
+            "name" : "Buff Self", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 1, "targets" : "Self", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0
+        },
+        "Call Goblin" : {
+            "name" : "Call Goblin", "effect" : "Summon", "effect_specifics" : "Goblin", "power" : -1, "targets" : "None", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
+        },
+        "Call Wolf" : {
+            "name" : "Call Wolf", "effect" : "Summon", "effect_specifics" : "Wolf", "power" : -1, "targets" : "None", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
         },
         "Command Spirit" : {
             "name" : "Command Spirit", "effect" : "Command", "effect_specifics" : "Spirit", "power" : 1, "targets" : "Spirit", "cost" : -1, "cooldown" : 0, "cooldown_counter" : 0
+        },
+        "Double Slash" : {
+            "name" : "Double Slash", "effect" : "Attack", "effect_specifics" : "Basic", "power" : 2, "targets" : "Hero", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
         },
         "Flame Send" : {
             "name" : "Flame Send", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "Hero", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0
@@ -24,6 +36,9 @@ class Skill_Dict:
         },
         "Heal Heroes" : {
             "name" : "Heal Heroes", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "All_Hero", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
+        },
+        "Heal Self" : {
+            "name" : "Heal Self", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Self", "cost" : -1, "cooldown" : 0, "cooldown_counter" : 0
         },
         "Howl" : {
             "name" : "Howl", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 1, "targets" : "All_Monster", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2

@@ -8,6 +8,7 @@ ANGEL = pygame.image.load(os.path.join("Assets", "angel.png"))
 ANGEL = pygame.transform.scale(ANGEL, (C.PLAYER_SIZE//2, C.PLAYER_SIZE//2))
 BEAST = pygame.image.load(os.path.join("Assets", "beast.png"))
 BEAST = pygame.transform.scale(BEAST, (C.MONSTER_SIZE, C.MONSTER_SIZE))
+SMALL_BEAST = pygame.transform.scale(BEAST, (C.PLAYER_SIZE, C.PLAYER_SIZE))
 IMP = pygame.image.load(os.path.join("Assets", "imp.png"))
 IMP = pygame.transform.scale(IMP, (C.PLAYER_SIZE, C.PLAYER_SIZE))
 GOBLIN = pygame.image.load(os.path.join("Assets", "goblin.png"))
@@ -21,10 +22,11 @@ TURRET = pygame.image.load(os.path.join("Assets", "turret.png"))
 TURRET = pygame.transform.scale(TURRET, (C.PLAYER_SIZE, C.PLAYER_SIZE))
 # Backgrounds
 FOREST = pygame.image.load(os.path.join("Assets", "forest1.png"))
+CAVE = pygame.image.load(os.path.join("Assets", "cave.png"))
 
 
 class Image_Dict:
     def __init__(self):
         self.IMAGES = {
-        "Angel" : ANGEL, "Forest" : FOREST, "Goblin" : GOBLIN, "Golem" : GOLEM, "Imp" : IMP, "Summoner" : SUMMONER, "Turret" : TURRET
+        "Angel" : ANGEL, "Cave" : CAVE, "Forest" : FOREST, "Goblin" : GOBLIN, "Golem" : GOLEM, "Imp" : IMP, "Summoner" : SUMMONER, "Turret" : TURRET, "Werewolf" : BEAST, "Wolf" : SMALL_BEAST
         }

@@ -18,12 +18,19 @@ class Item_Bag:
 
 
 @dataclass
+class Records:
+    rank: int = 1
+    rank_exp: int = 0
+    main_story_progress: int = 0
+    
+
+@dataclass
 class Party:
     heroes: list[Hero] = None
     spirits: list[Spirit] = None
     equipment: list[Equipment] = None
     items: Item_Bag = Item_Bag(10, 1, 1)
-    ranking: int = 1
+    records: Records = Records()
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
 
@@ -80,6 +87,7 @@ class Party:
         self.write_object_list(self.spirits, "_spirits")
         self.write_object_list(self.equipment, "_equipment")
         self.write_object(self.items, "_items")
+        self.write_object(self.records, "_records")
 
     def read_hero_objects(self, filename):
         load_heroes_list = []
@@ -127,7 +135,9 @@ class Party:
             self.equipment = equipment_list
             jsonFile = open("_items", "r")
             item_bag = json.load(jsonFile)
-            item_bag_object = Item_Bag(**item_bag)
-            self.items = item_bag_object
+            self.items = Item_Bag(**item_bag)
+            jsonFile = open("_records", "r")
+            records = json.load(jsonFile)
+            self.records = Records(**records)
         except:
             self.new_party()

@@ -71,3 +71,31 @@ class Summon(Monster):
                     if event.key == pygame.K_s:
                         choice = "Skill"
                         return choice
+
+
+class Troll(Monster):
+    def __init__(self, name, level = 0):
+        self.name = name
+        self.level = level
+
+    def choose_action(self):
+        self.skill += 1
+        useable_skills = []
+        number = random.randint(0, 1)
+        # Troll focuses on regenerating when injured.
+        if self.skills and number > 0:
+            if self.health < self.max_health:
+                for skill in self.battle_skills:
+                    if skill.name == "Heal Self":
+                        return skill
+            for skill in self.battle_skills:
+                if skill.cost <= self.skill:
+                    useable_skills.append(skill)
+            for skill in useable_skills:
+                if skill.cooldown > 0:
+                    useable_skills.remove(skill)
+                if skill.name == "Heal Self":
+                    useable_skills.remove(skill)
+        if len(useable_skills) > 0:
+            return useable_skills[random.randint(0, len(useable_skills) - 1)]
+        return None

@@ -1,6 +1,7 @@
 import copy
 from Battle.Effect_Factory import *
 from Battle.Location import *
+from Battle.Monster_Factory import Monster_Factory
 from Characters.Party import *
 from Characters.Monster import *
 from Utility.Pick import *
@@ -18,6 +19,7 @@ class Monster_Encounter:
     monsters: list
     battle: bool = True
     draw: Draw = Draw()
+    monster_factory: Monster_Factory = Monster_Factory()
 
     def start_phase(self):
         self.prepare_for_battle()
@@ -40,7 +42,7 @@ class Monster_Encounter:
             # Plus one here in case self.amount is zero.
             for number in range(0, self.amount + 1):
                 monster_name = self.location.monsters[random.randint(0, len(self.location.monsters) - 1)]
-                monster = Monster(monster_name)
+                monster = self.monster_factory.make_monster(monster_name)
                 self.monsters.append(monster)
         for monster in self.monsters:
             self.update_monster_for_battle(monster)
