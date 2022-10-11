@@ -9,6 +9,7 @@ class Monster(Character):
     def __init__(self, name, level = 0):
         self.name = name
         self.level = level
+        self.action = "Attack"
 
     def stats_text(self):
         text = str(self.name+" LVL: "+str(self.level)+" HP: "+str(self.health))
@@ -34,6 +35,8 @@ class Monster(Character):
         self.health = self.max_health
 
     def choose_action(self):
+        self.action = "Attack"
+        self.used_skill = None
         self.skill += 1
         useable_skills = []
         # Basic monster always has a chance to basic attack.
@@ -46,8 +49,8 @@ class Monster(Character):
                 if skill.cooldown > 0:
                     useable_skills.remove(skill)
         if len(useable_skills) > 0:
-            return useable_skills[random.randint(0, len(useable_skills) - 1)]
-        return None
+            self.used_skill = useable_skills[random.randint(0, len(useable_skills) - 1)]
+            self.action = str(self.used_skill.name)
 
 
 class Summon(Monster):
@@ -79,6 +82,8 @@ class Troll(Monster):
         self.level = level
 
     def choose_action(self):
+        self.action = "Attack"
+        self.used_skill = None
         self.skill += 1
         useable_skills = []
         number = random.randint(0, 1)
@@ -97,5 +102,5 @@ class Troll(Monster):
                 if skill.name == "Heal Self":
                     useable_skills.remove(skill)
         if len(useable_skills) > 0:
-            return useable_skills[random.randint(0, len(useable_skills) - 1)]
-        return None
+            self.used_skill = useable_skills[random.randint(0, len(useable_skills) - 1)]
+            self.action = str(self.used_skill.name)

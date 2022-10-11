@@ -49,6 +49,9 @@ class Hero(Character):
         choice = None
         while choose:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    choose = False
+                    pygame.quit()
                 if event.type == pygame.KEYDOWN:
                     pygame.event.clear()
                     if event.key == pygame.K_a:

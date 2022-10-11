@@ -1,3 +1,4 @@
+from msilib.schema import Font
 import pygame
 pygame.init()
 from Config.Constants import Constants
@@ -48,7 +49,9 @@ class Draw:
         self.counter = 1
         for monster in self.monsters:
             sprite = I.IMAGES.get(monster.name)
-            WIN.blit(sprite, (sprite.get_width() + C.PADDING * self.counter, self.height - C.PADDING - sprite.get_height() * self.counter))
+            text = FONT.render(monster.action, 1, C.WHITE)
+            WIN.blit(sprite, (sprite.get_width() + C.PADDING * self.counter, self.height - (C.PADDING * self.counter) - (sprite.get_height() * self.counter)))
+            WIN.blit(text, (sprite.get_width() - text.get_width()//4 + C.PADDING * self.counter, self.height - (C.PADDING * self.counter) - (sprite.get_height() * self.counter) - text.get_height()))
             self.counter += 1
         pygame.display.update()
 

@@ -131,6 +131,7 @@ class Monster_Encounter:
                 self.heroes.append(summon)
         elif skill.effect == "Command":
             for target in targets:
+                self.draw_battle()
                 if skill.effect_specifics == "Spirit":
                     self.spirit_turn(target)
                 elif skill.effect_specifics == "Hero":
@@ -177,10 +178,9 @@ class Monster_Encounter:
 
     def monster_turn(self, monster: Monster):
         if len(self.heroes) > 0 and monster.turn:
-            skill = monster.choose_action()
-            if skill != None:
-                self.skill_apply_cost_cooldown_use(monster, skill)
-                self.draw.draw_text(monster.name+" uses "+skill.name)
+            if monster.used_skill != None:
+                self.skill_apply_cost_cooldown_use(monster, monster.used_skill)
+                self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
                 pygame.time.delay(500)
             else:
                 target = self.heroes[random.randint(0, len(self.heroes) - 1)]
@@ -197,11 +197,21 @@ class Monster_Encounter:
             attack_effect = Equipment_Effect_Factory(defender.armor, self.damage, attacker)
             attack_effect.make_effect()
         self.damage -= defender.defense
+        if defender.temp_health > 0:
+            defender.temp_health -= max(self.damage, 1)
+            if defender.temp_health <= 0:
+                self.damage = defender.temp_health
         defender.health -= max(self.damage, 1)
 
     def passive_step(self, character: Character):
+        # Unless a status says otherwise, characters get a turn and to use skills.
         character.turn = True
         character.skills = True
+        # Character's can't just spam healing to increase their health pool.
+        character.health = min(character.health, character.max_health)
+        # Temporary health will quickly decay.
+        if character.temp_health > 0:
+            character.temp_health =  character.temp_health//3
         for skill in character.battle_skills:
             if skill.cooldown > 0:
                 skill.cooldown -= 1
@@ -243,6 +253,9 @@ class Monster_Encounter:
         while self.battle:
             self.standby_phase()
             self.cleanup_phase()
+            for monster in self.monsters:
+                monster.choose_action()
+            self.draw_battle()
             for hero in self.heroes:
                 self.draw_battle()
                 self.hero_turn(hero)

@@ -12,7 +12,7 @@ class Character_Dict:
         }
         self.SPIRIT_SKILLS = {
         "Angel" : {
-            0 : "Heal Hero", 2 : "Heal Heroes", 4 : "Heal Hero+", 6 : "Weaken Monster"
+            0 : "Heal Hero", 2 : "Shield Hero", 4 : "Cure Hero", 6 : "Heal Heroes", 8 : "Heal Hero+"
         }
         }
         self.MONSTER_STATS = {

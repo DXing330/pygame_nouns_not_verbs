@@ -37,6 +37,8 @@ class Effect(ABC):
 class Change_Stats(Effect):
 
     def apply_effect(self):
+        if "Temp_Health" in self.effect_specifics:
+            self.target.temp_health += self.power
         if "Health" in self.effect_specifics:
             self.target.health += self.power
         if "Attack" in self.effect_specifics:

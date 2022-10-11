@@ -16,6 +16,9 @@ class Skill_Dict:
         "Call Wolf" : {
             "name" : "Call Wolf", "effect" : "Summon", "effect_specifics" : "Wolf", "power" : -1, "targets" : "None", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
         },
+        "Cure Hero" : {
+            "name" : "Cleanse", "effect" : "Cure_Status", "effect_specifics" : "All", "power" : 1, "targets" : "Hero", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
+        },
         "Command Spirit" : {
             "name" : "Command Spirit", "effect" : "Command", "effect_specifics" : "Spirit", "power" : 1, "targets" : "Spirit", "cost" : -1, "cooldown" : 0, "cooldown_counter" : 0
         },
@@ -43,6 +46,9 @@ class Skill_Dict:
         "Howl" : {
             "name" : "Howl", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 1, "targets" : "All_Monster", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2
         },
+        "Shield Hero" : {
+            "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0
+        },
         "Stun" : {
             "name" : "Stun", "effect" : "Disable", "effect_specifics" : "All", "power" : 1, "targets" : "Monster", "cost" : 5, "cooldown" : 0, "cooldown_counter" : 3
         },
@@ -56,7 +62,7 @@ class Skill_Dict:
             "name" : "Summon Turret+", "effect" : "Skill", "effect_specifics" : "Double Turret", "power" : 1, "targets" : "None", "cost" : 6, "cooldown" : 0, "cooldown_counter" : 3
         },
         "Weaken Monster" : {
-            "name" : "Weaken Monster", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 1, "targets" : "Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
+            "name" : "Weaken", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 1, "targets" : "Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
         },
         }
         self.COMPOUND_SKILLS = {

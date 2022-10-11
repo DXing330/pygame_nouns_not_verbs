@@ -21,6 +21,7 @@ class Character(ABC):
     exp: int = 0
     weapon: any = None
     armor: any =  None
+    temp_health: int = 0
     
     @abstractmethod
     def update_stats(self):
