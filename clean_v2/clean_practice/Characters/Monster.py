@@ -10,6 +10,7 @@ class Monster(Character):
         self.name = name
         self.level = level
         self.action = "Attack"
+        self.counter = 0
 
     def stats_text(self):
         text = str(self.name+" LVL: "+str(self.level)+" HP: "+str(self.health))
@@ -34,22 +35,25 @@ class Monster(Character):
         self.skill = self.dict.get("skill") * self.level
         self.health = self.max_health
 
+    def choose_skill(self):
+        for skill in self.battle_skills:
+                if skill.cost <= self.skill:
+                    self.useable_skills.append(skill)
+        for skill in self.useable_skills:
+            if skill.cooldown > 0:
+                self.useable_skills.remove(skill)
+
     def choose_action(self):
         self.action = "Attack"
         self.used_skill = None
         self.skill += 1
-        useable_skills = []
+        self.useable_skills = []
         # Basic monster always has a chance to basic attack.
         number = random.randint(0, 1)
         if self.skills and number > 0:
-            for skill in self.battle_skills:
-                if skill.cost <= self.skill:
-                    useable_skills.append(skill)
-            for skill in useable_skills:
-                if skill.cooldown > 0:
-                    useable_skills.remove(skill)
-        if len(useable_skills) > 0:
-            self.used_skill = useable_skills[random.randint(0, len(useable_skills) - 1)]
+            self.choose_skill()
+        if len(self.useable_skills) > 0:
+            self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]
             self.action = str(self.used_skill.name)
 
 
@@ -77,30 +81,25 @@ class Summon(Monster):
 
 
 class Troll(Monster):
-    def __init__(self, name, level = 0):
-        self.name = name
-        self.level = level
-
-    def choose_action(self):
-        self.action = "Attack"
-        self.used_skill = None
-        self.skill += 1
-        useable_skills = []
-        number = random.randint(0, 1)
-        # Troll focuses on regenerating when injured.
-        if self.skills and number > 0:
-            if self.health < self.max_health:
-                for skill in self.battle_skills:
-                    if skill.name == "Heal Self":
-                        return skill
+    def choose_skill(self):
+        if self.health < self.max_health:
+            for skill in self.battle_skills:
+                if skill.name == "Heal Self":
+                    self.useable_skills.append(skill)
+        else:
             for skill in self.battle_skills:
                 if skill.cost <= self.skill:
-                    useable_skills.append(skill)
-            for skill in useable_skills:
+                    self.useable_skills.append(skill)
+            for skill in self.useable_skills:
                 if skill.cooldown > 0:
-                    useable_skills.remove(skill)
+                    self.useable_skills.remove(skill)
                 if skill.name == "Heal Self":
-                    useable_skills.remove(skill)
-        if len(useable_skills) > 0:
-            self.used_skill = useable_skills[random.randint(0, len(useable_skills) - 1)]
-            self.action = str(self.used_skill.name)
+                    self.useable_skills.remove(skill)
+
+
+class Explosive(Monster):
+    def choose_skill(self):
+        if self.counter < 3:
+            self.counter += 1
+        else:
+            self.used_skill = "Explode"

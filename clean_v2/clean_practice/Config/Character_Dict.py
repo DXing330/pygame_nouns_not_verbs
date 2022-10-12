@@ -3,16 +3,23 @@ class Character_Dict:
         self.HERO_STATS = {
         "Summoner" : {
             "health" : 10, "attack" : 2, "defense" : 1, "skill" : 3
+        },
+        "Warrior" : {
+            "health" : 10, "attack" : 4, "defense" : 2, "skill" : 1
+
         }
         }
         self.HERO_SKILLS = {
         "Summoner" : {
             0 : "Command Spirit", 2 : "Summon Turret", 4 : "Summon Turret+", 6 : "Summon Golem"
+        },
+        "Warrior" : {
+            0 : "Double Attack", 2 : "Shield Self", 4 : "Focus", 6 : "Wide Slash"
         }
         }
         self.SPIRIT_SKILLS = {
         "Angel" : {
-            0 : "Heal Hero", 2 : "Shield Hero", 4 : "Cure Hero", 6 : "Heal Heroes", 8 : "Heal Hero+"
+            0 : "Heal Hero", 2 : "Shield Hero", 4 : "Cure Hero", 6 : "Heal Heroes", 8 : "Heal Hero+", 10 : "Weaken Monster"
         }
         }
         self.MONSTER_STATS = {

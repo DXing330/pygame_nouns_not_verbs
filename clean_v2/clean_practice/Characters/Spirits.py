@@ -12,7 +12,7 @@ class Spirit:
     level: int
     skill_list: list
     exp: int = 0
-    skill: int = 999
+    skill: int = 0
 
     def update_skills(self, skill_list: list):
         self.battle_skills = skill_list
@@ -34,6 +34,10 @@ class Spirit:
             self.update_skill_list()
 
     def choose_action(self):
-        self.skill = 999
-        skill = self.battle_skills[random.randint(0, len(self.battle_skills) - 1)]
-        return skill
+        if self.skill == 0:
+            self.skill += random.randint(0, self.level)
+            return None
+        else:
+            self.skill -= 1
+            skill = self.battle_skills[random.randint(0, len(self.battle_skills) - 1)]
+            return skill

@@ -5,7 +5,7 @@ class Skill_Dict:
             "name" : "Test", "effect" : "None", "effect_specifics" : "None", "power" : 0, "targets" : "None", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0
         },
         "Blind Hero" : {
-            "name" : "Blind", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : -1, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2
+            "name" : "Throw Sand", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : -1, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2
         },
         "Buff Self" : {
             "name" : "Buff Self", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 1, "targets" : "Self", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0
@@ -22,11 +22,17 @@ class Skill_Dict:
         "Command Spirit" : {
             "name" : "Command Spirit", "effect" : "Command", "effect_specifics" : "Spirit", "power" : 1, "targets" : "Spirit", "cost" : -1, "cooldown" : 0, "cooldown_counter" : 0
         },
+        "Double Attack" : {
+            "name" : "Double Attack", "effect" : "Attack", "effect_specifics" : "Basic", "power" : 2, "targets" : "Monster", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2
+        },
         "Double Slash" : {
             "name" : "Double Slash", "effect" : "Attack", "effect_specifics" : "Basic", "power" : 2, "targets" : "Hero", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
         },
         "Flame Send" : {
             "name" : "Flame Send", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "Hero", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0
+        },
+        "Focus" : {
+            "name" : "Focus", "effect" : "None", "effect_specifics" : "None", "power" : 0, "targets" : "None", "cost" : -1, "cooldown" : 0, "cooldown_counter" : 0
         },
         "Fortify Hero" : {
             "name" : "Fortify", "effect" : "Change_Stats", "effect_specifics" : "Defense", "power" : 1, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2
@@ -49,6 +55,9 @@ class Skill_Dict:
         "Shield Hero" : {
             "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0
         },
+        "Shield Self" : {
+            "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Self", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0
+        },
         "Stun" : {
             "name" : "Stun", "effect" : "Disable", "effect_specifics" : "All", "power" : 1, "targets" : "Monster", "cost" : 5, "cooldown" : 0, "cooldown_counter" : 3
         },
@@ -63,6 +72,9 @@ class Skill_Dict:
         },
         "Weaken Monster" : {
             "name" : "Weaken", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 1, "targets" : "Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
+        },
+        "Wide Slash" : {
+            "name" : "Wide Slash", "effect" : "Attack", "effect_specifics" : "Basic", "power" : 1, "targets" : "All_Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2
         },
         }
         self.COMPOUND_SKILLS = {

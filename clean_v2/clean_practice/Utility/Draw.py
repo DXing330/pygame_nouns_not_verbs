@@ -55,6 +55,15 @@ class Draw:
             self.counter += 1
         pygame.display.update()
 
+    def draw_monsters_without_actions(self):
+        self.counter = 1
+        for monster in self.monsters:
+            sprite = I.IMAGES.get(monster.name)
+            text = FONT.render(monster.action, 1, C.WHITE)
+            WIN.blit(sprite, (sprite.get_width() + C.PADDING * self.counter, self.height - (C.PADDING * self.counter) - (sprite.get_height() * self.counter)))
+            self.counter += 1
+        pygame.display.update()
+
     def draw_spirits(self):
         self.counter = 1
         for spirit in self.spirits:

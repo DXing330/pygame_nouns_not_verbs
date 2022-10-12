@@ -151,13 +151,15 @@ class Monster_Encounter:
             activate.make_effect()
 
     def hero_attack(self, hero):
+        self.draw_battle()
         pick_from = Pick(self.monsters, False)
         target = pick_from.pick()
         self.attack_step(hero, target)
 
     def hero_skill(self, hero: Character):
+        self.draw_battle()
         pick_from = Pick(hero.battle_skills, False)
-        skill = pick_from.pick()
+        skill = pick_from.pick_skill()
         self.skill_apply_cost_cooldown_use(hero, skill, False)
 
     def hero_turn(self, hero: Character):
@@ -172,9 +174,10 @@ class Monster_Encounter:
     def spirit_turn(self, spirit: Spirit):
         if len(self.heroes) > 0 and len(self.monsters) > 0:
             skill = spirit.choose_action()
-            self.skill_activation(spirit, skill)
-            self.draw.draw_text(spirit.name+" uses "+skill.name)
-            pygame.time.delay(500)
+            if skill != None:
+                self.skill_activation(spirit, skill)
+                self.draw.draw_text(spirit.name+" uses "+skill.name)
+                pygame.time.delay(500)
 
     def monster_turn(self, monster: Monster):
         if len(self.heroes) > 0 and monster.turn:
@@ -199,8 +202,9 @@ class Monster_Encounter:
         self.damage -= defender.defense
         if defender.temp_health > 0:
             defender.temp_health -= max(self.damage, 1)
+            self.damage = 0
             if defender.temp_health <= 0:
-                self.damage = defender.temp_health
+                self.damage = - defender.temp_health
         defender.health -= max(self.damage, 1)
 
     def passive_step(self, character: Character):

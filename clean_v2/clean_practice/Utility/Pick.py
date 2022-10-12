@@ -18,9 +18,19 @@ class Pick:
         self.counter = 1
         self.width = WIN.get_width()
         self.height = WIN.get_height()
-        WIN.fill(C.BLACK)
+        #WIN.fill(C.BLACK)
         for thing in self.things:
             text = FONT.render(str(self.counter)+" "+thing.name, 1, C.WHITE)
+            WIN.blit(text, ((self.width - text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+        pygame.display.update()
+
+    def draw_skill_list(self):
+        self.counter = 1
+        self.width = WIN.get_width()
+        self.height = WIN.get_height()
+        for thing in self.things:
+            text = FONT.render(str(self.counter)+" "+thing.name+" CD: "+thing.cooldown, 1, C.WHITE)
             WIN.blit(text, ((self.width - text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()
@@ -53,4 +63,11 @@ class Pick:
             return self.pick_randomly()
         else:
             self.draw_list()
+            return self.pick_from_list()
+
+    def pick_skill(self):
+        if self.random_pick:
+            return self.pick_randomly()
+        else:
+            self.draw_skill_list()
             return self.pick_from_list()

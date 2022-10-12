@@ -21,7 +21,9 @@ class Item_Bag:
 class Records:
     rank: int = 1
     rank_exp: int = 0
+    days: int = 0
     main_story_progress: int = 0
+    guild_progress: int = 0
     
 
 @dataclass
