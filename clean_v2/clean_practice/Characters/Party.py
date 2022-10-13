@@ -8,6 +8,15 @@ from Config.Constants import *
 from Utility.Pick import Pick
 C = Constants()
 
+@dataclass
+class Quest:
+    location: str = None
+    requirement: str = None
+    specifics: str = None
+    start_day: int = 0
+    time_limit: int = 0
+    reward: int = 0
+
 
 @dataclass
 class Item_Bag:
@@ -22,8 +31,9 @@ class Records:
     rank: int = 1
     rank_exp: int = 0
     days: int = 0
-    main_story_progress: int = 0
-    guild_progress: int = 0
+    main_story_progress: int = -1
+    guild_progress: int = -1
+    guild_facilities: dict = None
     
 
 @dataclass
@@ -32,7 +42,8 @@ class Party:
     spirits: list[Spirit] = None
     equipment: list[Equipment] = None
     items: Item_Bag = Item_Bag(10, 1, 1)
-    records: Records = Records()
+    journal: Records = Records()
+    quests: list[Quest] = None
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
 
@@ -88,8 +99,9 @@ class Party:
         self.write_object_list(self.heroes, "_heroes")
         self.write_object_list(self.spirits, "_spirits")
         self.write_object_list(self.equipment, "_equipment")
+        self.write_object_list(self.quests, "_quests")
         self.write_object(self.items, "_items")
-        self.write_object(self.records, "_records")
+        self.write_object(self.journal, "_records")
 
     def read_hero_objects(self, filename):
         load_heroes_list = []
@@ -118,6 +130,15 @@ class Party:
             load_equip_list.append(equipment)
         return load_equip_list
 
+    def read_quest_objects(self, filename):
+        load_list = []
+        jsonFile = open(filename, "r")
+        list = json.load(jsonFile)
+        for thing in list:
+            quest = Quest(**thing)
+            load_list.append(quest)
+        return load_list
+
     def new_party(self):
         starter_hero = Hero("Summoner", 1, 0, 0, 0, 0, 0, 0, [], [], [], [])
         starter_hero.update_stats()
@@ -135,11 +156,12 @@ class Party:
             self.spirits = ally_list
             equipment_list = self.read_equipment_objects("_equipment")
             self.equipment = equipment_list
+            self.quests = self.read_quest_objects("_quests")
             jsonFile = open("_items", "r")
             item_bag = json.load(jsonFile)
             self.items = Item_Bag(**item_bag)
             jsonFile = open("_records", "r")
             records = json.load(jsonFile)
-            self.records = Records(**records)
+            self.journal = Records(**records)
         except:
             self.new_party()

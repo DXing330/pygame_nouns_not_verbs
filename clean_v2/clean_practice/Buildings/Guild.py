@@ -1,4 +1,4 @@
-from Buildings.Guild.Guild_Story import *
+from Buildings.Guild_Folder.Guild_Story import *
 from Characters.Party import Party
 from Utility.Draw import *
 
@@ -8,26 +8,26 @@ class Guild:
         self.party = party
         self.draw = Draw()
         self.oldman = True
-        self.story = GStory(self.party.records.guild_progress)
+        self.story = GStory(self.party.journal.guild_progress)
 
     def draw_text(self, text: str, line: int = 1):
         self.draw.draw_text(text, line)
 
     def draw_background(self):
-        if self.party.records.guild_progress < 2:
+        if self.party.journal.guild_progress < 2:
             self.draw.draw_background("Old_Guild")
         else:
             self.draw.draw_background("New_Guild")
 
     def enter(self):
-        if self.party.records.guild_progress < 2:
+        if self.party.journal.guild_progress < 2:
             self.old_man()
-        if self.party.records.guild_progress >= 2:
+        if self.party.journal.guild_progress >= 2:
             pass
 
     def old_man(self):
         self.oldman = True
-        if self.party.records.guild_progress < 1:
+        if self.party.journal.guild_progress < 1:
             self.draw_background()
             self.draw_text("You see an old man huddled in the corner.")
             self.draw_text("Approach/Leave", 2)
@@ -39,7 +39,7 @@ class Guild:
                 elif keys.key == pygame.K_l:
                     self.draw_background()
                     self.oldman = False
-        if self.party.records.guild_progress == 1:
+        if self.party.journal.guild_progress == 1:
             self.draw_background()
             self.draw_text("The old man is drawing blueprints on the ground.")
             self.draw_text("As you approach he looks up.", 2)
@@ -62,7 +62,7 @@ class Guild:
 
     def old_man_talk(self):
         self.oldman = True
-        if self.party.records.guild_progress < 1:
+        if self.party.journal.guild_progress < 1:
             self.draw_background()
             self.draw_text("The old man stares at you as you approach.")
             self.draw_text("'Welcome to the hall of heroes.' says the old man, smiling.", 2)
@@ -72,7 +72,7 @@ class Guild:
                 keys = pygame.key.get_pressed()
                 if keys.key == pygame.K_y:
                     pygame.event.clear()
-                    self.party.records.guild_progress += 1
+                    self.party.journal.guild_progress += 1
                     self.draw_background()
                     self.story.guild_story()
                     self.oldman = False
@@ -81,11 +81,11 @@ class Guild:
                     self.draw_text("'Ah, young people, always so many things to do. Good luck out there.' waves the old man.")
                     pygame.time.delay(1000)
                     self.oldman = False
-        if self.party.records.guild_progress == 1:
+        if self.party.journal.guild_progress == 1:
             self.draw_background()
             self.party.items.coins -= 1000
             self.draw("You've worked hard for these I'm sure.")
             self.draw("I'll make sure to put it to good use.")
-            self.party.records.guild_progress += 1
+            self.party.journal.guild_progress += 1
             self.oldman = False
             self.enter()

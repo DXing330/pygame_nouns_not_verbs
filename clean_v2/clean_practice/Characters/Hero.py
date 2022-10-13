@@ -39,7 +39,8 @@ class Hero(Character):
             self.skill_list.append(skill)
 
     def level_up(self):
-        if self.exp > self.level ** 3 and self.level < C.LEVEL_LIMIT:
+        if self.exp > self.level ** 2 and self.level < C.LEVEL_LIMIT:
+            self.exp -= self.level ** 2
             self.level += 1
             self.update_stats()
             self.update_skill_list()
