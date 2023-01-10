@@ -45,7 +45,7 @@ class Monster(Character):
 
     def choose_skill(self):
         for skill in self.battle_skills:
-                if skill.cost <= self.skill:
+                if skill.cost <= self.skill or "Target" in skill.cost or "Self" in skill.cost:
                     self.useable_skills.append(skill)
         for skill in self.useable_skills:
             if skill.cooldown > 0:

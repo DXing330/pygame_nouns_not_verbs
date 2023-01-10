@@ -11,3 +11,4 @@ class Skill:
     cost: int
     cooldown: int = 0
     cooldown_counter: int = 0
+    chance: int = 100

@@ -3,6 +3,8 @@ from Buildings.Guild_Folder.Smith import *
 from Characters.Party import Party
 from Characters.Hero import Hero
 from Utility.Draw import *
+from Config.Quest_Dict import *
+Q = Quest_Dict()
 
 class Candidate_Dict:
     def __init__(self):
@@ -38,6 +40,8 @@ class Guild:
                         self.recruit_stage()
                     if event.key == pygame.K_q:
                         self.quest()
+                    if event.key == pygame.K_f and len(self.party.quests) > 0:
+                        self.finish_quests()
                     if event.key == pygame.K_s and "Smith" in self.party.journal.guild_facilities:
                         self.bool = False
                         smith = Smith(self.party)
@@ -63,6 +67,8 @@ class Guild:
             self.draw_text("QUEST / TALK / LEAVE", 2)
             if "Smith" in self.party.journal.guild_facilities:
                 self.draw_text("SMITH", 3)
+            if len(self.party.quests) > 0:
+                self.draw_text("Finish Quest", 4)
 
     def recruit_stage(self):
         recruit, candidate = self.talk()
@@ -97,6 +103,22 @@ class Guild:
             pygame.time.delay(500)
             return False, None
 
+    def random_quest(self):
+            possible_quests = []
+            for number in range(0, self.party.journal.rank):
+                quest = Q.QUEST_RANKS.get(number)
+                if quest != None:
+                    possible_quests.append(quest)
+            given_quest = possible_quests[random.randint(0, len(possible_quests)-1)]
+            if len(self.party.quests) < self.party.journal.rank:
+                self.draw_text("Here's a new request that we got "+str(given_quest)+".")
+                new_quest = Quest(**Q.ALL_QUESTS.get(given_quest))
+                new_quest.start_day = self.party.journal.days
+                self.party.quests.append(new_quest)
+            else:
+                self.draw_text("Still no new quests, sorry kid.")
+            pygame.time.delay(500)
+
     def quest(self):
         self.draw_background()
         if self.party.journal.rank == 1 and self.party.journal.rank_exp == 0:
@@ -124,13 +146,53 @@ class Guild:
             self.draw_text("Well thanks, these are pretty valuable.", 2)
             self.draw_text("We might be able to afford some new armor with this.", 3)
             self.draw_text("Reward? Oh right, here's some coins for your troubles.", 4)
-            self.party.items.coins += 500
+            self.party.items.coins += 50
             self.draw_text("Look you can buy some armor when we get the next shipment, ok?", 5)
             self.party.journal.guild_facilities.append("Smith")
             self.party.journal.rank_exp = 0
             self.party.journal.rank += 1
             pygame.time.delay(2000)
         else:
-            self.draw_text("Still no new quests, sorry kid.")
-            pygame.time.delay(500)
+            self.random_quest()
+        self.inside()
+
+    def check_delivery(self, quest: Quest):
+        if self.party.journal.days > quest.start_day + quest.time_limit:
+                quest.failed = True
+        if quest.specifics_amount > 0 and not quest.failed:
+            # Use things from inventory to try to complete the order.
+            if quest.specifics == "Mana Crystal":
+                while quest.specifics_amount > 0 and self.party.items.mana_crystals > 0:
+                    self.party.items.mana_crystals -= 1
+                    quest.specifics_amount -= 1
+        if quest.specifics_amount <= 0 and not quest.failed:
+            quest.completed = True
+
+    def check_quest(self, quest: Quest):
+        self.draw_background()
+        if quest.requirement == "Deliver":
+            self.check_delivery(quest)
+        if quest.failed:
+            self.party.journal.infamy += 1
+            self.draw_text("It's unfortunate that you couldn't complete the task.")
+            self.draw_text("I'm afraid we'll need to let the requester know about this.", 2)
+            pygame.time.delay(1000)
+        elif quest.completed:
+            if quest.reward_type == "Coins":
+                self.party.items.coins += quest.reward_amount
+                self.party.journal.reputation += 1
+                self.draw_text("Good job finishing that "+quest.name+" job.")
+                pygame.time.delay(500)
+        else:
+            self.draw_text("Look's like you haven't finished this "+quest.name+" job yet.")
+            self.draw_text("There's still time so hurry up and do it.", 2)
+            pygame.time.delay(1000)
+
+    def finish_quests(self):
+        for quest in self.party.quests:
+            if quest.giver == "Guild":
+                self.check_quest(quest)
+            for number in range(0, len(self.party.quests)):
+                if quest.completed or quest.failed:
+                    self.party.quests.remove(quest)
         self.inside()

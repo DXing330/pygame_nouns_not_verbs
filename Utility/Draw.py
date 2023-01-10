@@ -114,6 +114,13 @@ class Draw:
         self.draw_text("Health Potions: "+str(bag.health_potions))
         self.draw_text("Energy Potions: "+str(bag.energy_potions), 2)
 
+    def draw_quests(self, quests):
+        self.counter = 1
+        for quest in quests:
+            if not quest.completed and not quest.failed:
+                self.draw_text("Quest: "+quest.name+" L: "+quest.location+" R: "+quest.requirement+" S: "+quest.specifics+" A: "+str(quest.specifics_amount), self.counter)
+                self.counter += 1
+
     def change_name(self, hero):
         edit = True
         user_text = ""

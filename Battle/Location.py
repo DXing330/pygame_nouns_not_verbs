@@ -11,3 +11,4 @@ class Location:
     image: any = None
     boss: bool = False
     bosses: list = None
+    quest: bool = False

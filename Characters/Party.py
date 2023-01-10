@@ -1,6 +1,5 @@
 import json
 import copy
-from unicodedata import name
 from Hero import *
 from Spirits import *
 from Equipment import *
@@ -10,12 +9,24 @@ C = Constants()
 
 @dataclass
 class Quest:
+    name: str = None
+    # Who gives the quest, where to return to complete the quest.
+    giver: str = None
+    # Where to complete the quest.
     location: str = None
+    # What to do.
     requirement: str = None
     specifics: str = None
+    specifics_amount: int = 0
+    # How long you have to do it.
     start_day: int = 0
     time_limit: int = 0
-    reward: int = 0
+    # Status of the quest.
+    completed: bool = False
+    failed: bool = False
+    # Rewards.
+    reward_type: str = None
+    reward_amount: int = 0
 
 
 @dataclass
@@ -34,6 +45,8 @@ class Records:
     main_story_progress: int = -1
     guild_progress: int = -1
     guild_facilities: list = None
+    reputation: int = 0
+    infamy: int = 0
     
 
 @dataclass
@@ -46,6 +59,14 @@ class Party:
     quests: list[Quest] = None
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
+
+    def check_quest_completion(self):
+        for quest in self.quests:
+            # If the heroes take too long then they fail.
+            if self.journal.days > quest.start_day + quest.time_limit:
+                quest.failed = True
+            if quest.specifics_amount <= 0 and not quest.failed:
+                quest.completed = True
 
     def add_hero(self, hero: Hero):
         hero.update_stats()

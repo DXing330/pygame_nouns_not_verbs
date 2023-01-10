@@ -45,7 +45,10 @@ class Monster_Encounter:
         self.draw.draw_battle_stats()
 
     def generate_monsters(self):
-        if len(self.monsters) <= 0:
+        min_monsters = 0
+        if self.boss:
+            min_monsters = 1
+        if len(self.monsters) <= min_monsters:
             # Plus one here in case self.amount is zero.
             for number in range(0, random.randint(max(self.amount - 1, 1), self.amount + 1)):
                 monster_name = self.location.monsters[random.randint(0, len(self.location.monsters) - 1)]
@@ -61,6 +64,7 @@ class Monster_Encounter:
                 self.update_monster_for_battle(new_monster)
                 self.monsters.remove(monster)
                 self.monsters.append(new_monster)
+        self.monster_list = copy.deepcopy(self.monsters)
 
     def prepare_for_battle(self):
         self.heroes = copy.deepcopy(self.party.battle_party)
@@ -113,17 +117,7 @@ class Monster_Encounter:
             death_effects.append(bdeath)
         monster.update_death_skills(death_effects)
 
-    def skill_apply_cost_cooldown_use(self, user, skill: Skill, pick_randomly = True):
-        if skill.cooldown <= 0:
-            skill.cooldown += skill.cooldown_counter
-            user.skill -= skill.cost
-            if user.skill >= 0:
-                self.skill_activation(user, skill, pick_randomly)
-            else:
-                self.draw_battle()
-                self.draw.draw_text(user.name+" failed to "+skill.name)
-
-    def skill_targeting(self, user, skill : Skill, pick_randomly = True):
+    def skill_targeting(self, user, skill : Skill, pick_randomly = True, cost = True):
         self.draw_battle()
         target_list = []
         if skill.targets == "Self":
@@ -150,10 +144,35 @@ class Monster_Encounter:
             target_list.append(target)
         elif skill.targets == "All_Spirit":
             target_list = self.spirits
-        return target_list
+        if cost:
+            self.skill_apply_cost_cooldown_use(user, skill, target_list, pick_randomly)
+        else:
+            self.skill_activation(user, skill, target_list, pick_randomly)
 
-    def skill_activation(self, user, skill: Skill, pick_randomly = True):
-        targets = self.skill_targeting(user, skill, pick_randomly)
+    def skill_apply_cost_cooldown_use(self, user, skill: Skill, targets: list, pick_randomly = True):
+        cost = skill.cost
+        if skill.cooldown <= 0:
+            skill.cooldown += skill.cooldown_counter
+            if skill.cost == "Target":
+                cost = 0
+                for target in targets:
+                    cost += target.level
+            elif skill.cost == "Self":
+                cost = 0
+                cost += user.level
+            user.skill -= cost
+            if user.skill >= 0:
+                self.skill_activation(user, skill, targets, pick_randomly)
+            else:
+                self.draw_battle()
+                self.draw.draw_text(user.name+" failed to "+skill.name)
+                pygame.time.delay(500)
+        else:
+            self.draw_battle()
+            self.draw.draw_text(user.name+" failed to "+skill.name)
+            pygame.time.delay(500)
+
+    def skill_activation(self, user, skill: Skill, targets: list, pick_randomly = True):
         if skill.effect == "Summon":
             if skill.power < 0:
                 summon = self.monster_factory.make_monster(skill.effect_specifics)
@@ -175,14 +194,17 @@ class Monster_Encounter:
         elif skill.effect == "Skill":
             for word in S.COMPOUND_SKILLS.get(skill.effect_specifics):
                 new_skill = Skill(**S.ALL_SKILLS.get(word))
-                self.skill_activation(user, new_skill, pick_randomly)
+                self.skill_targeting(user, new_skill, pick_randomly, cost=False)
         elif skill.effect == "Attack":
             for target in targets:
                 for number in range(0, skill.power):
                     self.attack_step(user, target)
         else:
-            activate = Effect_Factory(skill.effect, skill.effect_specifics, skill.power * user.level, targets)
-            activate.make_effect()
+            # Some skills will only activate a portion of the time, ex. some status effects.
+            activation = random.randint(0, 99)
+            if activation < skill.chance:
+                activate = Effect_Factory(skill.effect, skill.effect_specifics, skill.power * user.level, targets)
+                activate.make_effect()
 
     def hero_attack(self, hero):
         self.draw_battle()
@@ -194,7 +216,7 @@ class Monster_Encounter:
         self.draw_battle()
         pick_from = Pick(hero.battle_skills, False)
         skill = pick_from.pick_skill()
-        self.skill_apply_cost_cooldown_use(hero, skill, False)
+        self.skill_targeting(hero, skill, False)
 
     def use_item(self, hero: Character):
         self.draw_battle()
@@ -226,10 +248,11 @@ class Monster_Encounter:
                 self.use_item(hero)
 
     def spirit_turn(self, spirit: Spirit):
+        self.draw_battle()
         if len(self.heroes) > 0 and len(self.monsters) > 0:
             skill = spirit.choose_action(self.heroes)
             if skill != None:
-                self.skill_activation(spirit, skill)
+                self.skill_targeting(spirit, skill)
                 self.draw.draw_text(spirit.name+" uses "+skill.name)
                 pygame.time.delay(500)
             else:
@@ -238,8 +261,8 @@ class Monster_Encounter:
 
     def monster_turn(self, monster: Monster):
         if len(self.heroes) > 0 and monster.turn:
-            if monster.used_skill != None:
-                self.skill_apply_cost_cooldown_use(monster, monster.used_skill)
+            if monster.used_skill != None and monster.skills:
+                self.skill_targeting(monster, monster.used_skill)
                 self.draw_battle()
                 self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
                 pygame.time.delay(500)
@@ -287,10 +310,7 @@ class Monster_Encounter:
     def start_step(self, character: Character):
         pass
 
-    def passive_step(self, character: Character):
-        # Unless a status says otherwise, characters get a turn and to use skills.
-        character.turn = True
-        character.skills = True
+    def passive_step(self, character: Character, prandom = True):
         for skill in character.battle_skills:
             if skill.cooldown > 0:
                 skill.cooldown -= 1
@@ -307,9 +327,12 @@ class Monster_Encounter:
             if done:
                 character.statuses.remove(status)
         for skill in character.battle_passives:
-            self.skill_activation(character, skill)
+            self.skill_targeting(character, skill, prandom, False)
 
     def end_step(self, character: Character):
+        # At the end of their turn, a character gets unstunned and unsilenced.
+        character.turn = True
+        character.skills = True
         # Stats slowly return to normal.
         character.accuracy = (character.accuracy+100)//2
         character.evasion = character.evasion//2
@@ -324,9 +347,13 @@ class Monster_Encounter:
             character.temp_health =  character.temp_health//3
 
     def spirit_passives(self, spirit: Spirit):
-        # Spirits will use all their passive skills every turn.
-        for skill in spirit.battle_passives:
-            self.skill_activation(spirit, skill)
+        if len(self.heroes) > 0 and len(self.monsters) > 0:
+            # Spirits will use all their passive skills every turn.
+            for skill in spirit.battle_passives:
+                self.draw_battle()
+                self.skill_targeting(spirit, skill, True, False)
+                self.draw.draw_text(spirit.name+" uses "+skill.name)
+                pygame.time.delay(500)
 
     def standby_phase(self):
         for hero in self.heroes:
@@ -351,28 +378,44 @@ class Monster_Encounter:
 
     def battle_phase(self):
         while self.battle:
-            self.standby_phase()
+            #self.standby_phase() Moved to each character's turn.
             self.cleanup_phase()
             for monster in self.monsters:
                 monster.choose_action()
             self.draw_battle()
             for hero in self.heroes:
                 self.draw_battle()
+                self.passive_step(hero, False)
                 self.hero_turn(hero)
                 self.end_step(hero)
                 self.cleanup_phase()
             for spirit in self.spirits:
                 self.draw_battle()
+                self.spirit_passives(spirit)
                 self.spirit_turn(spirit)
                 self.cleanup_phase()
             for monster in self.monsters:
                 self.draw_battle()
+                self.passive_step(monster)
                 self.monster_turn(monster)
                 self.end_step(monster)
                 self.cleanup_phase()
-        self.end_phase()
+        win = self.end_phase()
+        if win:
+            self.quest_update()
 
     def end_phase(self):
+        # In case there is another battle, the heroes remain injured until they return.
+        for hero in self.party.battle_party:
+            check = None
+            for battler in self.heroes:
+                if hero.name == battler.name:
+                    check = battler.name
+                    hero.health = min(battler.health, hero.max_health)
+                    hero.skill = min(battler.skill, hero.max_skill)
+            if check == None:
+                hero.health = 0
+                hero.skill = 0
         # If the heroes win then they get rewards.
         if len(self.heroes) > 0:
             if self.boss:
@@ -385,16 +428,16 @@ class Monster_Encounter:
             for hero in self.party.heroes:
                 hero.exp += random.randint(1, max(1, self.amount))
                 hero.level_up()
-        for hero in self.party.battle_party:
-            check = None
-            for battler in self.heroes:
-                if hero.name == battler.name:
-                    check = battler.name
-                    hero.health = min(battler.health, hero.max_health)
-                    hero.skill = min(battler.skill, hero.max_skill)
-            if check == None:
-                hero.health = 0
-                hero.skill = 0
-        # If the heroes lose and flee they drop things.
-        if len(self.heroes) <= 0:
-            self.party.items.coins -= self.party.items.coins//6
+            win = True
+        elif len(self.heroes) <= 0:
+            win = False
+        return win
+    
+    def quest_update(self):
+        for quest in self.party.quests:
+            if self.location.name == quest.location and not quest.completed:
+                # For kill quests, keep track of how many monster's are killed.
+                if quest.requirement == "Kill":
+                    for monster in self.monster_list:
+                        if monster.name == quest.specifics:
+                            quest.specifics_amount -= 1
