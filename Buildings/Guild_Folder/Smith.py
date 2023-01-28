@@ -11,82 +11,81 @@ class Smith:
         self.bool = True
 
     def talk(self):
-        self.choices()
         while self.bool:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    pygame.event.clear()
-                    if event.key == pygame.K_l:
-                        self.bool = False
-                    if event.key == pygame.K_s:
-                        self.draw.draw_background("Smith")
-                        pick_from = Pick(self.party.heroes, False)
-                        hero = pick_from.pick()
-                        self.store(hero)
+            self.choices()
+            pick_option = Pick(self.options, False)
+            choice = pick_option.pick()
+            if choice == "SHOP":
+                self.draw.draw_background("Smith")
+                self.draw.draw_text("Who should I take the measurements for?")
+                pygame.time.delay(1000)
+                self.draw.draw_background("Smith")
+                pick_from = Pick(self.party.heroes, False)
+                hero = pick_from.pick()
+                self.store(hero)
+            elif choice == "LEAVE":
+                self.bool = False
 
     def choices(self, option: int = 0):
+        self.draw.draw_background("Smith")
         if option == -1:
             self.draw.draw_bg_and_text("Smith", "Don't waste my time.")
             pygame.time.delay(500)
+            self.bool = False
         if option == 0:
-            self.draw.draw_bg_and_text("Smith", "SHOP / LEAVE")
+            self.options = ["SHOP", "LEAVE"]
         if option == 1:
-            self.draw.draw_bg_and_text("Smith", "ARMOR / WEAPON / LEAVE")
+            self.options = ["ARMOR", "WEAPON", "LEAVE"]
         if option == 2:
-            self.draw.draw_bg_and_text("Smith", "NEW / UPGRADE / LEAVE")
+            self.options = ["NEW", "UPGRADE", "LEAVE"]
 
     def store(self, hero: Hero):
         store = True
         self.choices(1)
         while store and self.bool:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    pygame.event.clear()
-                    if event.key == pygame.K_l:
-                        store = False
-                        self.talk()
-                    if event.key == pygame.K_a:
-                        self.armorer(hero)
-                    if event.key == pygame.K_w:
-                        self.weaponsmith(hero)
+            pick_option = Pick(self.options, False)
+            choice = pick_option.pick()
+            if choice == "LEAVE":
+                store = False
+                self.talk()
+            elif choice == "ARMOR":
+                self.armorer(hero)
+            elif choice == "WEAPON":
+                self.weaponsmith(hero)
 
     def armorer(self, hero: Hero):
         armorer = True
         self.choices(2)
         while armorer and self.bool:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    pygame.event.clear()
-                    if event.key == pygame.K_l:
-                        armorer = False
-                        self.talk()
-                    if event.key == pygame.K_n:
-                        self.new_armor(hero)
-                    if event.key == pygame.K_u:
-                        if hero.armor != None:
-                            self.upgrade_equipment(hero, "Armor")
-                        else:
-                            self.choices(-1)
-                            armorer = False
+            pick_option = Pick(self.options, False)
+            choice = pick_option.pick()
+            if choice == "LEAVE":
+                armorer = False
+                self.talk()
+            if choice == "NEW":
+                self.new_armor(hero)
+            if choice == "UPGRADE":
+                if hero.armor != None:
+                    self.upgrade_equipment(hero, "Armor")
+                else:
+                    self.choices(-1)
 
     def weaponsmith(self, hero: Hero):
         armorer = True
         self.choices(2)
         while armorer and self.bool:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    pygame.event.clear()
-                    if event.key == pygame.K_l:
-                        armorer = False
-                        self.talk()
-                    if event.key == pygame.K_n:
-                        self.new_weapon(hero)
-                    if event.key == pygame.K_u:
-                        if hero.weapon != None:
-                            self.upgrade_equipment(hero, "Weapon")
-                        else:
-                            self.choices(-1)
-                            armorer = False
+            pick_option = Pick(self.options, False)
+            choice = pick_option.pick()
+            if choice == "LEAVE":
+                armorer = False
+                self.talk()
+            if choice == "NEW":
+                self.new_weapon(hero)
+            if choice == "UPGRADE":
+                if hero.armor != None:
+                    self.upgrade_equipment(hero, "Weapon")
+                else:
+                    self.choices(-1)
 
     def upgrade_equipment(self, hero, choice:str):
         if choice == "Weapon":
@@ -129,7 +128,8 @@ class Smith:
         # As the heroes get more respected more options will become available.
         for number in range(0, self.party.journal.rank):
             equipment = E.ARMOR_STORE.get(number)
-            equip_list.append(equipment)
+            if equipment != None:
+                equip_list.append(equipment)
         pick_from = Pick(equip_list, False)
         new_equip = pick_from.pick()
         cost = E.PRICES.get(new_equip)
@@ -146,7 +146,7 @@ class Smith:
         else:
             self.draw.draw_text("Want something else then?")
             pygame.time.delay(500)
-            self.new_armor(hero)
+            self.store(hero)
 
     def new_weapon(self, hero: Hero):
         self.draw.draw_background("Smith")
@@ -154,7 +154,8 @@ class Smith:
         # As the heroes get more respected more options will become available.
         for number in range(0, self.party.journal.rank):
             equipment = E.WEAPON_STORE.get(number)
-            equip_list.append(equipment)
+            if equipment != None:
+                equip_list.append(equipment)
         pick_from = Pick(equip_list, False)
         new_equip = pick_from.pick()
         cost = E.PRICES.get(new_equip)
@@ -171,20 +172,18 @@ class Smith:
         else:
             self.draw.draw_text("Want something else then?")
             pygame.time.delay(500)
-            self.new_weapon(hero)
+            self.store(hero)
 
     def confirm_purchase(self, equip, cost):
         self.draw.draw_background("Smith")
         self.draw.draw_text(str(equip)+", COST: "+str(cost))
         self.draw.draw_text("Do you want to buy this one?", 2)
         self.draw.draw_text("Coins: "+str(self.party.items.coins), 3)
-        self.draw.draw_text("YES / NO", 4)
-        confirm = True
-        while confirm and self.bool:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    pygame.event.clear()
-                    if event.key == pygame.K_y:
-                        return True
-                    if event.key == pygame.K_n:
-                        return False
+        pygame.time.delay(2000)
+        options = ["YES", "NO"]
+        pick_from = Pick(options, False)
+        choice = pick_from.pick()
+        if choice == "YES":
+            return True
+        if choice == "NO":
+            return False

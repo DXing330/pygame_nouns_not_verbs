@@ -15,6 +15,8 @@ class Spirit:
     passive_skills: list
     exp: int = 0
     skill: int = 0
+    max_level: int = 10
+    target = None
 
     def update_skills(self, skill_list: list):
         self.battle_skills = skill_list
@@ -24,13 +26,25 @@ class Spirit:
 
     def update_skill_list(self):
         dict = CD.SPIRIT_SKILLS.get(self.name)
-        for number in range(0, self.level):
-            new_skill = dict.get(number)
+        if len(self.skill_list) <= 0:
+            for number in range(0, self.level):
+                new_skill = dict.get(number)
+                if new_skill != None:
+                    self.learn_skill(new_skill)
+        else:
+            new_skill = dict.get(self.level)
             if new_skill != None:
                 self.learn_skill(new_skill)
+
+    def update_passive_list(self):
         dict = CD.SPIRIT_PASSIVES.get(self.name)
-        for number in range(0, self.level):
-            new_skill = dict.get(number)
+        if len(self.passive_skills) <= 0:
+            for number in range(0, self.level):
+                new_skill = dict.get(number)
+                if new_skill != None:
+                    self.learn_passive(new_skill)
+        else:
+            new_skill = dict.get(self.level)
             if new_skill != None:
                 self.learn_passive(new_skill)
 
@@ -43,10 +57,17 @@ class Spirit:
             self.passive_skills.append(skill)
 
     def level_up(self):
-        if self.exp > self.level ** 2 and self.level < C.LEVEL_LIMIT:
+        if self.exp > self.level ** 2 and self.level < self.max_level:
             self.exp = 0
             self.level += 1
             self.update_skill_list()
+            self.update_passive_list()
+
+    def evolve(self):
+        if "+++" not in self.name:
+            if self.level >= self.max_level:
+                self.max_level += self.max_level
+                self.name += "+"
 
     def choose_action(self, heroes):
         if self.skill <= 0:

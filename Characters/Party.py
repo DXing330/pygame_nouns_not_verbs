@@ -95,6 +95,7 @@ class Party:
             hero.update_skill_list()
         for spirit in self.spirits:
             spirit.update_skill_list()
+            spirit.update_passive_list()
     
     def party_update_stats(self):
         for hero in self.heroes:

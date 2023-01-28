@@ -14,10 +14,42 @@ class Pick:
     things: list
     random_pick: bool = True
 
-    def draw_list(self):
-        self.counter = 1
+    def update_dimensions(self):
         self.width = WIN.get_width()
         self.height = WIN.get_height()
+
+    def remove_previous_pointer(self):
+        self.pointer = pygame.Rect((self.width - self.menu_width)//2, self.pointer_height, C.PADDING, C.PADDING//4)
+        pygame.draw.rect(WIN, (0, 0, 0), self.pointer)
+        pygame.display.flip()
+
+    def draw_pointer(self):
+        self.pointer = pygame.Rect((self.width - self.menu_width)//2, self.pointer_height, C.PADDING, C.PADDING//4)
+        pygame.draw.rect(WIN, (255, 0, 0), self.pointer)
+        pygame.display.flip()
+
+    def update_pointer(self):
+        self.remove_previous_pointer()
+        self.draw_pointer()
+
+    def draw_menu(self):
+        self.menu_length = (len(self.things) + 2) * C.PADDING
+        possible_widths = []
+        for thing in self.things:
+            try:
+                text = FONT.render(str(thing.name), 1, C.WHITE)
+            except:
+                text = FONT.render(str(thing), 1, C.WHITE)
+            possible_widths.append(text.get_width())
+        self.menu_width = max(max(possible_widths)//4+C.PADDING, self.width//4+C.PADDING)
+        self.menu = pygame.Rect((WIN.get_width() - self.menu_width)//2, 0, self.menu_width, self.menu_length)
+        pygame.draw.rect(WIN, C.BLACK, self.menu)
+        pygame.display.flip()
+
+    def draw_list(self):
+        self.update_dimensions()
+        self.draw_menu()
+        self.counter = 1
         for thing in self.things:
             text = FONT.render(str(self.counter)+" "+thing.name, 1, C.WHITE)
             WIN.blit(text, ((self.width - text.get_width())//2, C.PADDING * self.counter))
@@ -25,9 +57,9 @@ class Pick:
         pygame.display.update()
 
     def draw_string_list(self):
+        self.update_dimensions()
+        self.draw_menu()
         self.counter = 1
-        self.width = WIN.get_width()
-        self.height = WIN.get_height()
         for thing in self.things:
             text = FONT.render(str(self.counter)+" "+str(thing), 1, C.WHITE)
             WIN.blit(text, ((self.width - text.get_width())//2, C.PADDING * self.counter))
@@ -35,11 +67,11 @@ class Pick:
         pygame.display.update()
 
     def draw_skill_list(self):
+        self.update_dimensions()
+        self.draw_menu()
         self.counter = 1
-        self.width = WIN.get_width()
-        self.height = WIN.get_height()
         for thing in self.things:
-            text = FONT.render(str(self.counter)+" "+thing.name+" CD: "+str(thing.cooldown), 1, C.WHITE)
+            text = FONT.render(thing.name+" CD: "+str(thing.cooldown)+" Cost: "+str(thing.cost), 1, C.WHITE)
             WIN.blit(text, ((self.width - text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()
@@ -56,16 +88,37 @@ class Pick:
             return self.things[0]
         else:
             pick = True
+            self.pointer_height = C.PADDING * 1.375
+            self.draw_pointer()
+            chosen_index = 0
             while pick:
-                choice_list = [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]
                 for event in pygame.event.get():
                     if event.type == pygame.KEYDOWN:
                         pygame.event.clear()
-                        try:
-                            index = choice_list.index(event.key)
-                            return self.things[index]
-                        except:
-                            pass
+                        if event.key == pygame.K_DOWN:
+                            if chosen_index < len(self.things) - 1:
+                                self.remove_previous_pointer()
+                                self.pointer_height += C.PADDING
+                                chosen_index += 1
+                                self.draw_pointer()
+                            else:
+                                self.remove_previous_pointer()
+                                self.pointer_height = C.PADDING * 1.375
+                                chosen_index = 0
+                                self.draw_pointer()
+                        if event.key == pygame.K_UP:
+                            if chosen_index > 0:
+                                self.remove_previous_pointer()
+                                self.pointer_height -= C.PADDING
+                                chosen_index -= 1
+                                self.draw_pointer()
+                            else:
+                                self.remove_previous_pointer()
+                                self.pointer_height = (C.PADDING * (0.375 + len(self.things)))
+                                chosen_index = len(self.things) - 1
+                                self.draw_pointer()
+                        if event.key == pygame.K_SPACE:
+                            return self.things[chosen_index]
 
     def pick(self):
         if self.random_pick:

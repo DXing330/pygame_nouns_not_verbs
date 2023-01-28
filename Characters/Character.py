@@ -9,13 +9,16 @@ class Character(ABC):
     passive_skills: list
     buffs: list
     statuses: list
+    max_level: int = 10
     level: int = 1
     max_health: int = 0
     health: int = 0
     base_attack: int = 0
     base_defense: int = 0
+    base_speed: int = 0
     attack: int = 0
     defense: int = 0
+    speed: int = 0
     accuracy: int = 100
     evasion: int = 0
     damage_dealt: int = 100
@@ -28,6 +31,7 @@ class Character(ABC):
     weapon: str = None
     armor: str =  None
     temp_health: int = 0
+    target = None
     
     @abstractmethod
     def update_stats(self):
@@ -44,6 +48,10 @@ class Character(ABC):
     @abstractmethod
     def choose_action(self):
         pass
+
+    def possible_actions(self):
+        possible_actions = ["Attack"]
+        return possible_actions
 
     def equip_weapon(self, weapon):
         self.weapon = weapon
@@ -65,3 +73,6 @@ class Character(ABC):
 
     def update_death_skills(self, skill_list: list):
         self.battle_death_skills = skill_list
+
+    def unique_passives(self):
+        pass

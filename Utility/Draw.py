@@ -1,4 +1,3 @@
-from msilib.schema import Font
 import pygame
 pygame.init()
 from Config.Constants import Constants
@@ -65,7 +64,6 @@ class Draw:
         self.counter = 1
         for monster in self.monsters:
             sprite = I.IMAGES.get(monster.name)
-            text = FONT.render(monster.action, 1, C.WHITE)
             WIN.blit(sprite, (sprite.get_width() + C.PADDING * self.counter, self.height - (C.PADDING * self.counter) - (sprite.get_height() * self.counter)))
             self.counter += 1
         pygame.display.update()
@@ -75,6 +73,14 @@ class Draw:
         for spirit in self.spirits:
             sprite = I.IMAGES.get(spirit.name)
             WIN.blit(sprite, (self.width - C.PADDING - sprite.get_width() * self.counter, (self.height//2) - C.PADDING - sprite.get_height() * self.counter))
+            self.counter += 1
+        pygame.display.update()
+
+    def draw_turn_order(self, battlers):
+        self.counter = 1
+        for battler in battlers:
+            text = FONT.render(str(self.counter)+" "+battler.name, 1, C.WHITE)
+            WIN.blit(text, (C.PADDING, self.height//3 + (C.PADDING * self.counter)))
             self.counter += 1
         pygame.display.update()
 

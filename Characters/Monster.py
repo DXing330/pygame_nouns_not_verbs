@@ -13,7 +13,7 @@ class Monster(Character):
         self.counter = 0
 
     def stats_text(self):
-        text = str(self.name+" LVL: "+str(self.level)+" HP: "+str(round(self.health))+" ATK: "+str(round(self.attack)))
+        text = str(self.name+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense)))
         return text
 
     def update_stats(self, flow:int = 0):
@@ -33,6 +33,7 @@ class Monster(Character):
         self.max_health = self.dict.get("health") * self.level + random.randint(0, flow//90)
         self.base_attack = self.dict.get("attack") * self.level
         self.base_defense = self.dict.get("defense") * self.level
+        self.base_speed = self.dict.get("speed")
         self.max_skill = self.dict.get("skill") * self.level
         self.accuracy = 100
         self.evasion = 0
@@ -42,11 +43,23 @@ class Monster(Character):
         self.skill = self.max_skill
         self.attack = self.base_attack
         self.defense = self.base_defense
+        self.speed = self.base_speed
+        self.target = None
+
+    def update_base_stats(self):
+        self.max_health = self.dict.get("health") * self.level
+        self.base_attack = self.dict.get("attack") * self.level
+        self.base_defense = self.dict.get("defense") * self.level
+        self.max_skill = self.dict.get("skill") * self.level 
 
     def choose_skill(self):
         for skill in self.battle_skills:
-                if skill.cost <= self.skill or "Target" in skill.cost or "Self" in skill.cost:
+            try:
+                if skill.cost <= self.skill:
                     self.useable_skills.append(skill)
+            # In case the cost is a string, just append it.
+            except:
+                self.useable_skills.append(skill)
         for skill in self.useable_skills:
             if skill.cooldown > 0:
                 self.useable_skills.remove(skill)
@@ -71,22 +84,14 @@ class Summon(Monster):
         self.name = name
         self.level = level
 
-    def choose_action(self):
-        choose = True
-        choice = None
-        if len(self.skill_list) <= 0:
-            choice = "Attack"
-            return choice
-        while choose:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    pygame.event.clear()
-                    if event.key == pygame.K_a:
-                        choice = "Attack"
-                        return choice
-                    if event.key == pygame.K_s:
-                        choice = "Skill"
-                        return choice
+    def possible_actions(self):
+        possiblities = []
+        if self.turn:
+            possiblities.append(self.name+" Attack")
+        if self.skills and len(self.battle_skills) > 0:
+            possiblities.append(self.name+" Skill")
+        return possiblities
+        
 
 
 class Troll(Monster):
@@ -97,13 +102,80 @@ class Troll(Monster):
                     self.useable_skills.append(skill)
         else:
             for skill in self.battle_skills:
-                if skill.cost <= self.skill:
+                try:
+                    if skill.cost <= self.skill:
+                        self.useable_skills.append(skill)
+                except:
                     self.useable_skills.append(skill)
             for skill in self.useable_skills:
                 if skill.cooldown > 0:
                     self.useable_skills.remove(skill)
                 if skill.name == "Heal Self":
                     self.useable_skills.remove(skill)
+
+    # The troll heals unless he is poisoned.
+    def unique_passives(self):
+        poisoned = False
+        for status in self.statuses:
+            if status.name == "Poison":
+                poisoned = True
+        if not poisoned:
+            self.health += self.level
+
+
+class Serpent(Monster):
+    def choose_skill(self):
+        # First the snake picks a target.
+        if self.target == None:
+            self.counter = 0
+            for skill in self.battle_skills:
+                if "Target" in skill.name:
+                    self.useable_skills.append(skill)
+        else:
+            # Then it bites the target.
+            if self.counter == 0:
+                self.counter += 1
+                for skill in self.battle_skills:
+                    if "Bite" in skill.name:
+                        self.useable_skills.append(skill)
+            # Then it poisons the target.
+            elif self.counter > 0:
+                for skill in self.battle_skills:
+                    if "Poison" in skill.name:
+                        self.useable_skills.append(skill)
+    
+    # The serpent is sneaky until it latches onto someone.
+    def unique_passives(self):
+        if self.target == None:
+            self.evasion += self.level * 10
+
+    def choose_action(self):
+        self.action = "Attack"
+        self.used_skill = None
+        self.skill += 1
+        self.useable_skills = []
+        if self.skills:
+            self.choose_skill()
+        if len(self.useable_skills) > 0:
+            self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]
+            self.action = str(self.used_skill.name)
+
+class Cocoon(Monster):
+    def choose_action(self):
+        self.action = "Nothing"
+        self.used_skill = None
+        self.useable_skills = []
+        if self.skills:
+            self.choose_skill()
+        if len(self.useable_skills) > 0:
+            self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]
+            self.action = str(self.used_skill.name)
+
+    # The cocoon slowly grows stronger until it hatches.
+    def unique_passives(self):
+        self.max_health -= self.level
+        self.health -= self.level
+        self.level += 1
 
 
 class Explosive(Monster):

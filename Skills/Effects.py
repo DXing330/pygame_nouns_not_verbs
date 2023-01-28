@@ -46,7 +46,7 @@ class Change_Stats(Effect):
         elif "Defense" in self.effect_specifics:
             self.target.defense += self.power
         elif "Skill" in self.effect_specifics:
-            self.target.skill += self.power
+            self.target.skill += self.power//10
         elif "Accuracy" in self.effect_specifics:
             self.target.accuracy += self.power
         elif "Evasion" in self.effect_specifics:
@@ -62,9 +62,13 @@ class Change_Stats(Effect):
         elif "Damage_Taken" in self.effect_specifics:
             self.target.damage_taken += self.power
         elif "All" in self.effect_specifics:
-            self.target.health += self.power
-            self.target.attack += self.power//2
-            self.target.defense += self.power//4
+            self.target.health += self.power//2
+            self.target.attack += self.power//4
+            self.target.defense += self.power//8
+        elif "All_Base" in self.effect_specifics:
+            self.target.max_health += self.power//4
+            self.target.base_attack += self.power//8
+            self.target.base_defense += self.power//16
 
 
 @dataclass

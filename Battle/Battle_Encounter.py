@@ -6,6 +6,7 @@ from Characters.Party import *
 from Characters.Monster import *
 from Utility.Pick import *
 from Utility.Draw import *
+from Utility.Sort import *
 from Skills.Skill import *
 from Config.Skill_Dict import *
 from Config.Equip_Dict import *
@@ -22,7 +23,8 @@ class Monster_Encounter:
     party: Party
     location: Location
     amount: int
-    monsters: list
+    monsters: list[Monster]
+    battlers: list[Character]
     battle: bool = True
     boss: bool = False
     draw: Draw = Draw()
@@ -43,11 +45,15 @@ class Monster_Encounter:
         self.draw.draw_background(self.location.image)
         self.draw.draw_battle_state()
         self.draw.draw_battle_stats()
+        self.draw.draw_turn_order(self.battlers)
 
     def generate_monsters(self):
         min_monsters = 0
         if self.boss:
-            min_monsters = 1
+            min_monsters += 1
+            boss = self.location.bosses[random.randint(0, len(self.location.bosses) - 1)]
+            monster = self.monster_factory.make_monster(boss)
+            self.monsters.append(monster)
         if len(self.monsters) <= min_monsters:
             # Plus one here in case self.amount is zero.
             for number in range(0, random.randint(max(self.amount - 1, 1), self.amount + 1)):
@@ -55,15 +61,7 @@ class Monster_Encounter:
                 monster = self.monster_factory.make_monster(monster_name)
                 self.monsters.append(monster)
         for monster in self.monsters:
-            # Normally update a monster for battle.
-            try:
-                self.update_monster_for_battle(monster)
-            # Unless it's a boss monster that was added before the generation step.
-            except:
-                new_monster = self.monster_factory.make_monster(monster)
-                self.update_monster_for_battle(new_monster)
-                self.monsters.remove(monster)
-                self.monsters.append(new_monster)
+            self.update_monster_for_battle(monster)
         self.monster_list = copy.deepcopy(self.monsters)
 
     def prepare_for_battle(self):
@@ -117,10 +115,22 @@ class Monster_Encounter:
             death_effects.append(bdeath)
         monster.update_death_skills(death_effects)
 
+    def monster_targeting(self, user: Monster, skill: Skill):
+        target_list = []
+        for hero in self.heroes:
+            if hero == user.target:
+                target_list.append(hero)
+        if len(target_list) <= 0 and len(self.heroes) > 0:
+            choice = random.randint(0, len(self.heroes)-1)
+            target_list.append(self.heroes[choice])
+        return target_list
+
     def skill_targeting(self, user, skill : Skill, pick_randomly = True, cost = True):
         self.draw_battle()
         target_list = []
-        if skill.targets == "Self":
+        if user.target != None and skill.targets == "Hero":
+            target_list = self.monster_targeting(user, skill)
+        elif skill.targets == "Self":
             target_list.append(user)
         elif skill.targets == "Partner":
             for target in self.heroes:
@@ -151,22 +161,18 @@ class Monster_Encounter:
 
     def skill_apply_cost_cooldown_use(self, user, skill: Skill, targets: list, pick_randomly = True):
         cost = skill.cost
-        if skill.cooldown <= 0:
+        if skill.cooldown <= 0 and user.skill > 0:
             skill.cooldown += skill.cooldown_counter
             if skill.cost == "Target":
                 cost = 0
                 for target in targets:
                     cost += target.level
+            elif skill.cost == "Scale":
+                cost = len(targets)
             elif skill.cost == "Self":
-                cost = 0
-                cost += user.level
+                cost = user.level
             user.skill -= cost
-            if user.skill >= 0:
-                self.skill_activation(user, skill, targets, pick_randomly)
-            else:
-                self.draw_battle()
-                self.draw.draw_text(user.name+" failed to "+skill.name)
-                pygame.time.delay(500)
+            self.skill_activation(user, skill, targets, pick_randomly)
         else:
             self.draw_battle()
             self.draw.draw_text(user.name+" failed to "+skill.name)
@@ -175,13 +181,16 @@ class Monster_Encounter:
     def skill_activation(self, user, skill: Skill, targets: list, pick_randomly = True):
         if skill.effect == "Summon":
             if skill.power < 0:
-                summon = self.monster_factory.make_monster(skill.effect_specifics)
+                summon = self.monster_factory.make_monster(skill.effect_specifics, max(user.level-1, 1))
                 self.update_monster_for_battle(summon)
                 self.monsters.append(summon)
             else:
-                summon = Summon(skill.effect_specifics, max(user.level - 1, skill.power))
+                summon = Summon(skill.effect_specifics, max(user.level//2, skill.power))
                 self.update_monster_for_battle(summon)
                 self.heroes.append(summon)
+        elif skill.effect == "Target":
+            for target in targets:
+                user.target = target
         elif skill.effect == "Command":
             for target in targets:
                 self.draw_battle()
@@ -220,55 +229,71 @@ class Monster_Encounter:
 
     def use_item(self, hero: Character):
         self.draw_battle()
-        self.draw.draw_item_options(self.party.items)
-        pick_from = Pick(self.heroes, False)
-        potion = pick_from.pick_potion()
-        self.draw_battle()
-        if potion == "Health" and self.party.items.health_potions > 0:
-            self.party.items.health_potions -= 1
-            hero.health += hero.max_health//3
-            self.draw.draw_text(hero.name+" drinks a health potion.")
-        elif potion == "Energy" and self.party.items.energy_potions > 0:
-            self.party.items.energy_potions -= 1
-            hero.skill += hero.max_skill//3
-            self.draw.draw_text(hero.name+" drinks an energy potion.")
+        choices = []
+        if self.party.items.health_potions > 0:
+            choices.append("Health")
+        if self.party.items.energy_potions > 0:
+            choices.append("Energy")
+        if len(choices) > 0:
+            pick_from = Pick(choices, False)
+            potion = pick_from.pick()
+            self.draw_battle()
+            if potion == "Health" and self.party.items.health_potions > 0:
+                self.party.items.health_potions -= 1
+                hero.health += hero.max_health//2
+                self.draw.draw_text(hero.name+" drinks a health potion.")
+            elif potion == "Energy" and self.party.items.energy_potions > 0:
+                self.party.items.energy_potions -= 1
+                hero.skill += hero.max_skill//2
+                self.draw.draw_text(hero.name+" drinks an energy potion.")
         else:
             self.draw.draw_text(hero.name+" fails to drink.")
-        pygame.time.delay(500)
+        pygame.time.delay(1000)
 
     def hero_turn(self, hero: Character):
         if len(self.monsters) > 0 and hero.turn:
-            self.draw.draw_hero_options(hero)
-            action = hero.choose_action()
-            if action == "Attack":
+            self.passive_step(hero, False)
+            possible_actions = hero.possible_actions()
+            pick_from = Pick(possible_actions, False)
+            action = pick_from.pick()
+            if "Attack" in action:
                 self.hero_attack(hero)
-            elif action == "Skill" and hero.skills:
+            elif "Skill" in action and hero.skills:
                 self.hero_skill(hero)
-            elif action == "Item":
+            elif "Item" in action:
                 self.use_item(hero)
+        elif len(self.monsters) > 0 and not hero.turn:
+            self.draw.draw_text(hero.name+" is stunned.")
+            pygame.time.delay(1000)
+        self.end_step(hero)
 
     def spirit_turn(self, spirit: Spirit):
         self.draw_battle()
-        if len(self.heroes) > 0 and len(self.monsters) > 0:
-            skill = spirit.choose_action(self.heroes)
-            if skill != None:
-                self.skill_targeting(spirit, skill)
-                self.draw.draw_text(spirit.name+" uses "+skill.name)
-                pygame.time.delay(500)
-            else:
-                self.draw.draw_text(spirit.name+" recharges energy.")
-                pygame.time.delay(500)
+        skill = spirit.choose_action(self.heroes)
+        if skill != None:
+            self.skill_targeting(spirit, skill, True, False)
+            self.draw_battle()
+            self.draw.draw_text(spirit.name+" uses "+skill.name)
+            pygame.time.delay(1000)
+        else:
+            self.draw.draw_text(spirit.name+" recharges energy.")
+            pygame.time.delay(1000)
 
     def monster_turn(self, monster: Monster):
         if len(self.heroes) > 0 and monster.turn:
+            self.passive_step(monster)
             if monster.used_skill != None and monster.skills:
                 self.skill_targeting(monster, monster.used_skill)
                 self.draw_battle()
                 self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
-                pygame.time.delay(500)
+                pygame.time.delay(1000)
             else:
                 target = self.heroes[random.randint(0, len(self.heroes) - 1)]
                 self.attack_step(monster, target)
+        elif len(self.heroes) > 0 and not monster.turn:
+            self.draw.draw_text(monster.name+" is stunned.")
+            pygame.time.delay(1000)
+        self.end_step(monster)
 
     def check_hit(self, attacker, defender):
         chance = attacker.accuracy - defender.evasion
@@ -295,22 +320,34 @@ class Monster_Encounter:
             self.damage.damage -= defender.defense
             # Temporary health is used before actual health, like blocking with a shield.
             if defender.temp_health > 0:
-                defender.temp_health -= max(self.damage, 1)
+                defender.temp_health -= max(self.damage.damage, 1)
                 # First set the damage to zero, then add it back if they get through all the temporary health.
                 self.damage.damage = 0
                 if defender.temp_health <= 0:
                     self.damage.damage = - defender.temp_health
             defender.health -= max(round(self.damage.damage * multiplier), 1)
             self.draw.draw_text(attacker.name+" attacks "+defender.name)
-            pygame.time.delay(500)
+            pygame.time.delay(1000)
         else:
             self.draw.draw_text(attacker.name+" misses "+defender.name)
-            pygame.time.delay(500)
+            pygame.time.delay(1000)
 
-    def start_step(self, character: Character):
+    def start_step(self):
         pass
 
+    def check_on_target(self, character: Character):
+        target = False
+        for hero in self.heroes:
+            if hero == character.target:
+                target = True
+        for monster in self.monsters:
+            if monster == character.target:
+                target = True
+        if not target:
+            character.target = None
+
     def passive_step(self, character: Character, prandom = True):
+        character.unique_passives()
         for skill in character.battle_skills:
             if skill.cooldown > 0:
                 skill.cooldown -= 1
@@ -328,6 +365,12 @@ class Monster_Encounter:
                 character.statuses.remove(status)
         for skill in character.battle_passives:
             self.skill_targeting(character, skill, prandom, False)
+        # Temporary health like shields from the previous round will quickly decay.
+        if character.temp_health > 0:
+            character.temp_health =  character.temp_health//3
+        # Check if the target still exists.
+        if character.target != None:
+            self.check_on_target(character)
 
     def end_step(self, character: Character):
         # At the end of their turn, a character gets unstunned and unsilenced.
@@ -342,35 +385,36 @@ class Monster_Encounter:
         character.damage_taken = (character.damage_taken + 100)//2
         # Character's can't just spam healing to increase their health pool.
         character.health = min(character.health, character.max_health)
-        # Temporary health like shields will quickly decay.
-        if character.temp_health > 0:
-            character.temp_health =  character.temp_health//3
 
     def spirit_passives(self, spirit: Spirit):
-        if len(self.heroes) > 0 and len(self.monsters) > 0:
-            # Spirits will use all their passive skills every turn.
-            for skill in spirit.battle_passives:
-                self.draw_battle()
-                self.skill_targeting(spirit, skill, True, False)
-                self.draw.draw_text(spirit.name+" uses "+skill.name)
-                pygame.time.delay(500)
+        # Spirits will use all their passive skills every turn.
+        for skill in spirit.battle_passives:
+            self.draw_battle()
+            self.skill_targeting(spirit, skill, True, False)
 
-    def standby_phase(self):
+    def speed_rng(self):
+        for battler in self.battlers:
+            battler.speed = round(random.gauss(battler.base_speed, 1))
+
+    def make_turn_order(self):
+        self.battlers = []
         for hero in self.heroes:
-            self.passive_step(hero)
-        for spirit in self.spirits:
-            self.spirit_passives(spirit)
+            self.battlers.append(hero)
         for monster in self.monsters:
-            self.passive_step(monster)
+            self.battlers.append(monster)
+        self.speed_rng()
+        sorter = Sort()
+        self.battlers = sorter.sort_by_speed(self.battlers)
 
     def cleanup_phase(self):
+        pygame.event.clear()
         for hero in self.heroes:
             if hero.health <= 0:
                 self.heroes.remove(hero)
         for monster in self.monsters:
             if monster.health <= 0:
                 for skill in monster.battle_death_skills:
-                    self.skill_activation(monster, skill)
+                    self.skill_targeting(monster, skill, True, False)
                 self.monsters.remove(monster)
         if len(self.monsters) <= 0 or len(self.heroes) <= 0:
             self.battle = False
@@ -383,22 +427,22 @@ class Monster_Encounter:
             for monster in self.monsters:
                 monster.choose_action()
             self.draw_battle()
-            for hero in self.heroes:
-                self.draw_battle()
-                self.passive_step(hero, False)
-                self.hero_turn(hero)
-                self.end_step(hero)
-                self.cleanup_phase()
+            self.make_turn_order()
             for spirit in self.spirits:
-                self.draw_battle()
-                self.spirit_passives(spirit)
-                self.spirit_turn(spirit)
-                self.cleanup_phase()
-            for monster in self.monsters:
-                self.draw_battle()
-                self.passive_step(monster)
-                self.monster_turn(monster)
-                self.end_step(monster)
+                if len(self.heroes) > 0 and len(self.monsters) > 0:
+                    self.draw_battle()
+                    self.spirit_passives(spirit)
+                    self.spirit_turn(spirit)
+                    self.cleanup_phase()
+            for battler in self.battlers:
+                if battler.health > 0:
+                    self.draw_battle()
+                    if isinstance(battler, Hero) and len(self.monsters) > 0:
+                        self.hero_turn(battler)
+                    elif isinstance(battler, Summon) and len(self.monsters) > 0:
+                        self.hero_turn(battler)
+                    elif isinstance(battler, Monster) and len(self.heroes) > 0:
+                        self.monster_turn(battler)
                 self.cleanup_phase()
         win = self.end_phase()
         if win:
