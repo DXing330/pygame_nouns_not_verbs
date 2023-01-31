@@ -70,10 +70,35 @@ class Spirit:
                 self.name += "+"
 
     def choose_action(self, heroes):
+        targets = []
         if self.skill <= 0:
             self.skill += random.randint(1, self.level)
-            return None
+            return None, targets
         else:
-            self.skill -= 1
             skill = self.battle_skills[random.randint(0, len(self.battle_skills) - 1)]
-            return skill
+            # If it's a single target skill, make sure it has a good target.
+            if skill.targets == "Hero":
+                targets = self.choose_target(skill, heroes)
+                # If the chosen skill has no target, then try to use another skill.
+                if len(targets) < 1:
+                    skill, targets = self.choose_action(heroes)
+            self.skill -= 1
+            return skill, targets
+
+    def choose_target(self, skill, heroes):
+        potential_target_list = []
+        target_list = []
+        if skill.effect == "Cure_Status":
+            for hero in heroes:
+                if len(hero.statuses) > 0:
+                    potential_target_list.append(hero)
+        if skill.effect == "Change_Stats" and skill.effect_specifics == "Health":
+            for hero in heroes:
+                if hero.health < hero.max_health:
+                    potential_target_list.append(hero)
+        if len(potential_target_list) > 1:
+            target = potential_target_list[random.randint(0, len(potential_target_list)-1)]
+            target_list.append(target)
+        else:
+            target_list = potential_target_list
+        return target_list

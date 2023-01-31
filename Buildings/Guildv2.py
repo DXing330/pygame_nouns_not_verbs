@@ -133,7 +133,25 @@ class Guild:
                 pygame.time.delay(1000)
                 self.party.journal.rank += 1
             elif not strong:
-                self.draw_text("Lot more requests.")
+                self.draw_text("Lot more requests to work on.")
+                pygame.time.delay(1000)
+                self.random_quest()
+        elif self.party.journal.rank == 4:
+            if self.party.journal.reputation > 10:
+                self.draw_text("You've been helping a lot of people around here.")
+                pygame.time.delay(1000)
+                self.draw_text("It's been awhile since I've seen someone like you.", 2)
+                self.draw_text("Most people move on from here when they're as strong as you are.", 3)
+                pygame.time.delay(1000)
+                self.draw_text("What I'm trying to say is thanks.", 4)
+                pygame.time.delay(1000)
+                self.draw_text("If you want, maybe I can teach you somethings.", 5)
+                self.draw_text("I may be too old to work in the field now but I can at least share what I've learned.", 6)
+                pygame.time.delay(1000)
+                self.party.journal.rank += 1
+                self.party.journal.guild_facilities.append("Trainer")
+            else:
+                self.draw_text("Lot more requests to work on.")
                 pygame.time.delay(1000)
                 self.random_quest()
         else:

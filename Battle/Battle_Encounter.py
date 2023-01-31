@@ -250,16 +250,26 @@ class Monster_Encounter:
             self.draw.draw_text(hero.name+" fails to drink.")
         pygame.time.delay(1000)
 
+    def delay_turn(self, character: Character):
+        # The player can only delay their turn once per round.
+        character.delayed = True
+        # After delaying their action they move to the end of the turn order.
+        self.battlers.append(character)
+
     def hero_turn(self, hero: Character):
         if len(self.monsters) > 0 and hero.turn:
-            self.passive_step(hero, False)
-            possible_actions = hero.possible_actions()
+            # If someone delays their turn they don't get another round of passives.
+            if hero.passives and not hero.delayed:
+                self.passive_step(hero, False)
+            possible_actions = hero.choose_action()
             pick_from = Pick(possible_actions, False)
             action = pick_from.pick()
             if "Attack" in action:
                 self.hero_attack(hero)
-            elif "Skill" in action and hero.skills:
+            elif "Skill" in action:
                 self.hero_skill(hero)
+            elif "Delay" in action:
+                self.delay_turn(hero)
             elif "Item" in action:
                 self.use_item(hero)
         elif len(self.monsters) > 0 and not hero.turn:
@@ -269,8 +279,14 @@ class Monster_Encounter:
 
     def spirit_turn(self, spirit: Spirit):
         self.draw_battle()
-        skill = spirit.choose_action(self.heroes)
-        if skill != None:
+        skill, targets = spirit.choose_action(self.heroes)
+        # If the spirit has already picked targets then activate the skill.
+        if skill != None and len(targets) > 0:
+            self.skill_activation(spirit, skill, targets)
+            self.draw.draw_text(spirit.name+" uses "+skill.name)
+            pygame.time.delay(1000)
+        # If the spirit hasn't already picked targets then pick them normally.
+        elif skill != None and len(targets) <= 0:
             self.skill_targeting(spirit, skill, True, False)
             self.draw_battle()
             self.draw.draw_text(spirit.name+" uses "+skill.name)
@@ -396,6 +412,10 @@ class Monster_Encounter:
         for battler in self.battlers:
             battler.speed = round(random.gauss(battler.base_speed, 1))
 
+    def reset_delayed_turns(self):
+        for battler in self.battlers:
+            battler.delayed = False
+
     def make_turn_order(self):
         self.battlers = []
         for hero in self.heroes:
@@ -405,6 +425,7 @@ class Monster_Encounter:
         self.speed_rng()
         sorter = Sort()
         self.battlers = sorter.sort_by_speed(self.battlers)
+        self.reset_delayed_turns()
 
     def cleanup_phase(self):
         pygame.event.clear()

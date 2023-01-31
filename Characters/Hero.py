@@ -64,30 +64,12 @@ class Hero(Character):
             self.update_skill_list()
 
     def choose_action(self):
-        choose = True
-        choice = None
-        while choose:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    choose = False
-                    pygame.quit()
-                if event.type == pygame.KEYDOWN:
-                    pygame.event.clear()
-                    if event.key == pygame.K_a:
-                        choice = "Attack"
-                        return choice
-                    if event.key == pygame.K_s:
-                        choice = "Skill"
-                        return choice
-                    if event.key == pygame.K_i:
-                        choice = "Item"
-                        return choice
-
-    def possible_actions(self):
         possiblities = []
         if self.turn:
             possiblities.append(self.name+" Attack")
         if self.skills:
             possiblities.append(self.name+" Skill")
+        if self.skills and not self.delayed:
+            possiblities.append(self.name+" Delay Action")
         possiblities.append("Item")
         return possiblities

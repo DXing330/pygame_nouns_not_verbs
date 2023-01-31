@@ -27,6 +27,8 @@ class Character(ABC):
     skill: int = 0
     turn: bool = True
     skills: bool = True
+    passives: bool = True
+    delayed: bool = False
     exp: int = 0
     weapon: str = None
     armor: str =  None

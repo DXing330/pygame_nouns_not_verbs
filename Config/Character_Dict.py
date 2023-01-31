@@ -40,37 +40,37 @@ class Character_Dict:
             "level" : 2, "variance" : 1, "health" : 10, "attack" : 0, "defense" : 3, "skill" : 0, "speed" : 5, "skills" : ["Nothing"], "passives" : [], "death_effect" : ["Create Moth"]
         },
         "Demon" : {
-            "level" : 10, "variance" : 1, "health" : 10, "attack" : 5, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : []
+            "level" : 10, "variance" : 2, "health" : 12, "attack" : 5, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : []
         },
         "Imp" : {
-            "level" : 2, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : []
+            "level" : 2, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : []
         },
         "Goblin" : {
-            "level" : 1, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Blind Hero"], "passives" : [], "death_effect" : []
+            "level" : 1, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Blind Hero"], "passives" : [], "death_effect" : []
         },
         "Golem" : {
             "level" : 1, "variance" : 0, "health" : 10, "attack" : 3, "defense" : 3, "skill" : 1, "speed" : 10, "skills" : ["Fortify Hero"], "passives" : [], "death_effect" : []
         },
         "Hob Goblin" : {
-            "level" : 4, "variance" : 1, "health" : 12, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Blind Hero", "Call Goblin"], "passives" : [], "death_effect" : []
+            "level" : 4, "variance" : 1, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Blind Hero", "Call Goblin"], "passives" : [], "death_effect" : []
         },
         "Moth" : {
-            "level" : 4, "variance" : 1, "health" : 10, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Poison Hero", "Poison Heroes"], "passives" : [], "death_effect" : []
+            "level" : 4, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Poison Hero", "Poison Heroes"], "passives" : [], "death_effect" : []
         },
         "Orc" : {
-            "level" : 6, "variance" : 1, "health" : 10, "attack" : 4, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Double Slash"], "passives" : [], "death_effect" : []
+            "level" : 6, "variance" : 2, "health" : 10, "attack" : 4, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Double Slash"], "passives" : [], "death_effect" : []
         },
         "Serpent" : {
             "level" : 3, "variance" : 1, "health" : 8, "attack" : 3, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Target Hero", "Bite Hero", "Poison Hero"], "passives" : ["Dodge"], "death_effect" : []
         },
         "Turret" : {
-            "level" : 1, "variance" : 0, "health" : 2, "attack" : 4, "defense" : 1, "skill" : 0, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : []
+            "level" : 1, "variance" : 0, "health" : 5, "attack" : 4, "defense" : 1, "skill" : 0, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : []
         },
         "Troll" : {
-            "level" : 6, "variance" : 1, "health" : 15, "attack" : 3, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Heal Self"], "passives" : [], "death_effect" : []
+            "level" : 6, "variance" : 2, "health" : 12, "attack" : 3, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Heal Self"], "passives" : [], "death_effect" : []
         },
         "Vampire" : {
-            "level" : 10, "variance" : 1, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Drain Hero", "Stun Hero", "Bleed Hero"], "passives" : [], "death_effect" : []
+            "level" : 10, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Drain Hero", "Stun Hero", "Bleed Hero"], "passives" : [], "death_effect" : []
         },
         "Werewolf" : {
             "level" : 6, "variance" : 1, "health" : 8, "attack" : 5, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : ["Double Slash"], "passives" : [], "death_effect" : []
