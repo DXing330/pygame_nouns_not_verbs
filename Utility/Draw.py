@@ -6,6 +6,7 @@ from Config.Image_Dict import *
 I = Image_Dict()
 clock = pygame.time.Clock()
 FONT = pygame.font.SysFont("comicsans", C.REG_FONT)
+SFONT = pygame.font.SysFont("comicsans", C.SMALL_FONT)
 WIN = pygame.display.set_mode((C.WIDTH, C.HEIGHT), pygame.RESIZABLE)
 
 class Draw:
@@ -79,7 +80,7 @@ class Draw:
     def draw_turn_order(self, battlers):
         self.counter = 1
         for battler in battlers:
-            text = FONT.render(str(self.counter)+" "+battler.name, 1, C.WHITE)
+            text = SFONT.render(str(self.counter)+" "+battler.name, 1, C.WHITE)
             WIN.blit(text, (C.PADDING, self.height//3 + (C.PADDING * self.counter)))
             self.counter += 1
         pygame.display.update()
@@ -92,7 +93,7 @@ class Draw:
     def draw_monster_stats(self):
         self.counter = 1
         for monster in self.monsters:
-            stat_text = FONT.render(monster.stats_text(), 1, C.WHITE)
+            stat_text = SFONT.render(monster.stats_text(), 1, C.WHITE)
             WIN.blit(stat_text, (C.PADDING, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()
@@ -100,7 +101,7 @@ class Draw:
     def draw_hero_stats(self):
         self.counter = 1
         for hero in self.heroes:
-            stat_text = FONT.render(hero.stats_text(), 1, C.WHITE)
+            stat_text = SFONT.render(hero.stats_text(), 1, C.WHITE)
             WIN.blit(stat_text, (self.width - stat_text.get_width() - C.PADDING, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()

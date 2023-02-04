@@ -70,6 +70,6 @@ class Hero(Character):
         if self.skills:
             possiblities.append(self.name+" Skill")
         if self.skills and not self.delayed:
-            possiblities.append(self.name+" Delay Action")
-        possiblities.append("Item")
+            possiblities.append("Delay Action")
+        possiblities.append("Use Item")
         return possiblities

@@ -107,6 +107,8 @@ class Disable(Effect):
             self.target.turn = False
         elif self.effect_specifics == "Skills":
             self.target.skills = False
+        elif self.effect_specifics == "Passives":
+            self.target.passives = False
 
 
 @dataclass

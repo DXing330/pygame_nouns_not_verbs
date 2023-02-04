@@ -50,7 +50,10 @@ class Monster(Character):
         self.max_health = self.dict.get("health") * self.level
         self.base_attack = self.dict.get("attack") * self.level
         self.base_defense = self.dict.get("defense") * self.level
-        self.max_skill = self.dict.get("skill") * self.level 
+        self.max_skill = self.dict.get("skill") * self.level
+
+    def update_preemptives(self, preemptives: list):
+        self.preemptives = preemptives
 
     def choose_skill(self):
         for skill in self.battle_skills:
@@ -64,7 +67,7 @@ class Monster(Character):
             if skill.cooldown > 0:
                 self.useable_skills.remove(skill)
 
-    def choose_action(self):
+    def choose_action(self, heroes, monsters):
         self.action = "Attack"
         self.used_skill = None
         self.skill += 1
@@ -84,7 +87,7 @@ class Summon(Monster):
         self.name = name
         self.level = level
 
-    def possible_actions(self):
+    def choose_action(self):
         possiblities = []
         if self.turn:
             possiblities.append(self.name+" Attack")
@@ -149,7 +152,7 @@ class Serpent(Monster):
         if self.target == None:
             self.evasion += self.level * 10
 
-    def choose_action(self):
+    def choose_action(self, heroes, monsters):
         self.action = "Attack"
         self.used_skill = None
         self.skill += 1
@@ -161,7 +164,7 @@ class Serpent(Monster):
             self.action = str(self.used_skill.name)
 
 class Cocoon(Monster):
-    def choose_action(self):
+    def choose_action(self, heroes, monsters):
         self.action = "Nothing"
         self.used_skill = None
         self.useable_skills = []

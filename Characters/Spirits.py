@@ -92,10 +92,19 @@ class Spirit:
             for hero in heroes:
                 if len(hero.statuses) > 0:
                     potential_target_list.append(hero)
-        if skill.effect == "Change_Stats" and skill.effect_specifics == "Health":
-            for hero in heroes:
-                if hero.health < hero.max_health:
-                    potential_target_list.append(hero)
+        if skill.effect == "Change_Stats":
+            if skill.effect_specifics == "Temp_Health":
+                for hero in heroes:
+                    if hero.health < hero.max_health:
+                        potential_target_list.append(hero)
+            if skill.effect_specifics == "Health":
+                for hero in heroes:
+                    if hero.health < hero.max_health:
+                        potential_target_list.append(hero)
+            if skill.effect_specifics == "Skill":
+                for hero in heroes:
+                    if hero.skill < hero.max_skill:
+                        potential_target_list.append(hero)
         if len(potential_target_list) > 1:
             target = potential_target_list[random.randint(0, len(potential_target_list)-1)]
             target_list.append(target)

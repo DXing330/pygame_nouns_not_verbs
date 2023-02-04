@@ -114,6 +114,11 @@ class Monster_Encounter:
             bdeath = Skill(**S.ALL_SKILLS.get(word))
             death_effects.append(bdeath)
         monster.update_death_skills(death_effects)
+        preemptives = []
+        for word in dictionary.get("preemptives"):
+            preemptive = Skill(**S.ALL_SKILLS.get(word))
+            preemptives.append(preemptive)
+        monster.update_preemptives(preemptives)
 
     def monster_targeting(self, user: Monster, skill: Skill):
         target_list = []
@@ -257,6 +262,9 @@ class Monster_Encounter:
         self.battlers.append(character)
 
     def hero_turn(self, hero: Character):
+        # Negative statuses take effect even if the character is stunned.
+        if not hero.delayed:
+            self.status_step(hero)
         if len(self.monsters) > 0 and hero.turn:
             # If someone delays their turn they don't get another round of passives.
             if hero.passives and not hero.delayed:
@@ -293,9 +301,10 @@ class Monster_Encounter:
             pygame.time.delay(1000)
         else:
             self.draw.draw_text(spirit.name+" recharges energy.")
-            pygame.time.delay(1000)
+            pygame.time.delay(500)
 
     def monster_turn(self, monster: Monster):
+        self.status_step(monster)
         if len(self.heroes) > 0 and monster.turn:
             self.passive_step(monster)
             if monster.used_skill != None and monster.skills:
@@ -325,14 +334,14 @@ class Monster_Encounter:
         hit = self.check_hit(attacker, defender)
         if hit:
             multiplier = (attacker.damage_dealt/100) * (defender.damage_taken/100)
-            print ("Before: "+str(self.damage.damage))
+            #print ("Before: "+str(self.damage.damage))
             if attacker.weapon != None:
                 attack_effect = Equipment_Effect_Factory(attacker.weapon, self.damage, defender)
                 attack_effect.make_effect()
             if defender.armor != None:
                 attack_effect = Equipment_Effect_Factory(defender.armor, self.damage, attacker)
                 attack_effect.make_effect()
-            print ("After: "+str(self.damage.damage))
+            #print ("After: "+str(self.damage.damage))
             self.damage.damage -= defender.defense
             # Temporary health is used before actual health, like blocking with a shield.
             if defender.temp_health > 0:
@@ -349,7 +358,10 @@ class Monster_Encounter:
             pygame.time.delay(1000)
 
     def start_step(self):
-        pass
+        # Before the rest of the battle, the monsters will use their preemptives.
+        for monster in self.monsters:
+            for preemptive in monster.preemptives:
+                self.skill_targeting(monster, preemptive, True, False)
 
     def check_on_target(self, character: Character):
         target = False
@@ -373,12 +385,6 @@ class Monster_Encounter:
             done = buff.check_turns()
             if done:
                 character.buffs.remove(buff)
-        for status in character.statuses:
-            passive = Effect_Factory(status.effect, status.effect_specifics, status.power * character.level, [character])
-            passive.make_effect()
-            done = status.check_turns()
-            if done:
-                character.statuses.remove(status)
         for skill in character.battle_passives:
             self.skill_targeting(character, skill, prandom, False)
         # Temporary health like shields from the previous round will quickly decay.
@@ -388,10 +394,19 @@ class Monster_Encounter:
         if character.target != None:
             self.check_on_target(character)
 
+    def status_step(self, character: Character):
+        for status in character.statuses:
+            passive = Effect_Factory(status.effect, status.effect_specifics, status.power * character.level, [character])
+            passive.make_effect()
+            done = status.check_turns()
+            if done:
+                character.statuses.remove(status)
+
     def end_step(self, character: Character):
         # At the end of their turn, a character gets unstunned and unsilenced.
         character.turn = True
         character.skills = True
+        character.passives = True
         # Stats slowly return to normal.
         character.accuracy = (character.accuracy+100)//2
         character.evasion = character.evasion//2
@@ -442,11 +457,12 @@ class Monster_Encounter:
         self.update_draw()
 
     def battle_phase(self):
+        self.draw_battle()
+        self.start_step()
         while self.battle:
-            #self.standby_phase() Moved to each character's turn.
             self.cleanup_phase()
             for monster in self.monsters:
-                monster.choose_action()
+                monster.choose_action(self.heroes, self.monsters)
             self.draw_battle()
             self.make_turn_order()
             for spirit in self.spirits:
@@ -462,7 +478,8 @@ class Monster_Encounter:
                         self.hero_turn(battler)
                     elif isinstance(battler, Summon) and len(self.monsters) > 0:
                         self.hero_turn(battler)
-                    elif isinstance(battler, Monster) and len(self.heroes) > 0:
+                    # Need "and len(self.monsters) > 0" or else summons will act like monsters in case that all the monsters are dead.
+                    elif isinstance(battler, Monster) and len(self.heroes) > 0 and len(self.monsters) > 0:
                         self.monster_turn(battler)
                 self.cleanup_phase()
         win = self.end_phase()
@@ -494,6 +511,9 @@ class Monster_Encounter:
                 hero.exp += random.randint(1, max(1, self.amount))
                 hero.level_up()
             win = True
+            self.draw_battle()
+            self.draw.draw_text("The heroes win.")
+            pygame.time.delay(1000)
         elif len(self.heroes) <= 0:
             win = False
         return win

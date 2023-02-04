@@ -4,6 +4,12 @@ class Skill_Dict:
         "_Test" : {
             "name" : "Test", "effect" : "None", "effect_specifics" : "None", "power" : 0, "targets" : "None", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
+        "Bind Hero" : {
+            "name" : "Throw Net", "effect" : "Add_Status", "effect_specifics" : "Entangle", "power" : 1, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
+        },
+        "Bind Monster" : {
+            "name" : "Throw Net", "effect" : "Add_Status", "effect_specifics" : "Entangle", "power" : 1, "targets" : "Monster", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
+        },
         "Bleed Hero" : {
             "name" : "Bleeding Strike", "effect" : "Add_Status", "effect_specifics" : "Bleed", "power" : 1, "targets" : "Hero", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 3, "chance" : 100
         },
@@ -89,7 +95,7 @@ class Skill_Dict:
             "name" : "Focus", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 5, "targets" : "Self", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
         "Focus+" : {
-            "name" : "Focus+", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 10, "targets" : "Self", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
+            "name" : "Focus+", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 7, "targets" : "Self", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
         "Fortify Hero" : {
             "name" : "Fortify", "effect" : "Change_Stats", "effect_specifics" : "Defense", "power" : 2, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
@@ -103,17 +109,26 @@ class Skill_Dict:
         "Heal Heroes" : {
             "name" : "Heal Heroes", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "All_Hero", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
         },
+        "Heal Monster" : {
+            "name" : "Heal Monster", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Monster", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
+        },
+        "Heal Monsters" : {
+            "name" : "Heal Monsters", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "All_Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
+        },
         "Heal Partner" : {
             "name" : "Heal Partner", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Partner", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
         "Heal Self" : {
             "name" : "Heal Self", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Self", "cost" :0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
+        "Heal Self+" : {
+            "name" : "Heal Self", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 2, "targets" : "Self", "cost" :0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
+        },
         "Howl" : {
             "name" : "Howl", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 2, "targets" : "All_Monster", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
         },
         "Howl+" : {
-            "name" : "Howl", "effect" : "Add_Buff", "effect_specifics" : "Adrenaline", "power" : 1, "targets" : "All_Monster", "cost" : "Scale", "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
+            "name" : "Howl", "effect" : "Add_Buff", "effect_specifics" : "Adrenaline", "power" : 1, "targets" : "All_Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
         },
         "Nothing" : {
             "name" : "Nothing", "effect" : "None", "effect_specifics" : "None", "power" : 0, "targets" : "Self", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
@@ -137,7 +152,7 @@ class Skill_Dict:
             "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Self", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
         "Spot Monster Weakness" : {
-            "name" : "Spot Weakness", "effect" : "Change_Stats", "effect_specifics" : "Damage_Taken", "power" : 5, "targets" : "Monster", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 1, "chance" : 100
+            "name" : "Spot Weakness", "effect" : "Change_Stats", "effect_specifics" : "Defense", "power" : -1, "targets" : "Monster", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 1, "chance" : 100
         },
         "Strike Monster" : {
             "name" : "Strike", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "Monster", "cost" : "Target", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
@@ -151,14 +166,14 @@ class Skill_Dict:
         "Summon Golem" : {
             "name" : "Summon Golem", "effect" : "Summon", "effect_specifics" : "Golem", "power" : 1, "targets" : "None", "cost" : 5, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
         },
-        "Summon Golem+" : {
-            "name" : "Summon Golem+", "effect" : "Summon", "effect_specifics" : "Golem", "power" : 8, "targets" : "None", "cost" : 10, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
+        "Summon Strong Golem" : {
+            "name" : "Summon Big Golem", "effect" : "Summon", "effect_specifics" : "Golem", "power" : 8, "targets" : "None", "cost" : 10, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
         },
         "Summon Turret" : {
             "name" : "Summon Turret", "effect" : "Summon", "effect_specifics" : "Turret", "power" : 1, "targets" : "None", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
-        "Summon Turret+" : {
-            "name" : "Summon Turret+", "effect" : "Skill", "effect_specifics" : "Double Turret", "power" : 1, "targets" : "None", "cost" : 5, "cooldown" : 0, "cooldown_counter" : 3, "chance" : 100
+        "Summon Two Turret" : {
+            "name" : "Summon Two Turret", "effect" : "Skill", "effect_specifics" : "Double Turret", "power" : 1, "targets" : "None", "cost" : 5, "cooldown" : 0, "cooldown_counter" : 3, "chance" : 100
         },
         "Target Hero" : {
             "name" : "Target", "effect" : "Target", "effect_specifics" : "None", "power" : 1, "targets" : "Hero", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100

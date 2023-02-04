@@ -28,6 +28,9 @@ class Quest:
     reward_type: str = None
     reward_amount: int = 0
 
+    def quest_info(self):
+        return ("Location: "+self.location+", Task: "+self.name+", Amount: "+str(self.specifics_amount)+", Time Limit: "+str(self.time_limit)+", Reward: "+str(self.reward_amount)+" "+self.reward_type)
+
 
 @dataclass
 class Item_Bag:

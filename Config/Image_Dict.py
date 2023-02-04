@@ -16,6 +16,8 @@ GOBLIN = pygame.transform.scale(GOBLIN, (C.PLAYER_SIZE, C.PLAYER_SIZE))
 BIG_GOBLIN = pygame.transform.scale(GOBLIN, (C.MONSTER_SIZE, C.MONSTER_SIZE))
 GOLEM = pygame.image.load(os.path.join("Assets", "golem.png"))
 GOLEM = pygame.transform.scale(GOLEM, (C.MONSTER_SIZE, C.MONSTER_SIZE))
+HUNTER = pygame.image.load(os.path.join("Assets", "hunter.png"))
+HUNTER = pygame.transform.scale(HUNTER, (C.MONSTER_SIZE, C.MONSTER_SIZE))
 IMP = pygame.image.load(os.path.join("Assets", "imp.png"))
 IMP = pygame.transform.scale(IMP, (C.PLAYER_SIZE, C.PLAYER_SIZE))
 ORC = pygame.image.load(os.path.join("Assets", "orc.png"))
@@ -44,5 +46,5 @@ VILLAGE = pygame.image.load(os.path.join("Assets", "village.png"))
 class Image_Dict:
     def __init__(self):
         self.IMAGES = {
-        "Angel" : ANGEL, "Cave" : CAVE, "Demon" : DEMON, "Forest" : FOREST, "Goblin" : GOBLIN, "Golem" : GOLEM, "Guild" : GUILD, "Hob Goblin" : BIG_GOBLIN, "Hunter" : WARRIOR, "Imp" : IMP, "Orc" : ORC, "Map" : MAP, "Serpent" : SERPENT, "Smith" : SMITH, "Summoner" : SUMMONER, "Troll" : TROLL, "Turret" : TURRET, "Vampire" : VAMPIRE, "Village" : VILLAGE, "Warrior" : WARRIOR, "Werewolf" : BEAST, "Wolf" : SMALL_BEAST
+        "Angel" : ANGEL, "Cave" : CAVE, "Demon" : DEMON, "Forest" : FOREST, "Goblin" : GOBLIN, "Golem" : GOLEM, "Guild" : GUILD, "Hob Goblin" : BIG_GOBLIN, "Hunter" : HUNTER, "Imp" : IMP, "Orc" : ORC, "Map" : MAP, "Serpent" : SERPENT, "Smith" : SMITH, "Summoner" : SUMMONER, "Troll" : TROLL, "Turret" : TURRET, "Vampire" : VAMPIRE, "Village" : VILLAGE, "Warrior" : WARRIOR, "Werewolf" : BEAST, "Wolf" : SMALL_BEAST
         }

@@ -1,6 +1,8 @@
+import random
 from Buildings.Guild_Folder.Guild_Story import *
 from Buildings.Guild_Folder.Smith import *
 from Buildings.Tavern import *
+from Buildings.Training_Grounds import Training_Area
 from Characters.Party import Party
 from Characters.Hero import Hero
 from Utility.Draw import *
@@ -39,6 +41,10 @@ class Guild:
                 self.bool = False
                 smith = Smith(self.party)
                 smith.talk()
+            elif "TRAIN" in choice:
+                self.bool = False
+                trainer = Training_Area(self.party)
+                trainer.entrance()
 
     def entrance(self):
         self.draw_background()
@@ -62,24 +68,46 @@ class Guild:
             self.options = ["QUEST", "TALK", "LEAVE"]
             if "Smith" in self.party.journal.guild_facilities:
                 self.options.append("SMITH")
+            if "Trainer" in self.party.journal.guild_facilities:
+                self.options.append("TRAIN")
             if len(self.party.quests) > 0:
                 self.options.append("FINISH QUEST")
 
+    # Want a function that will generate random daily quests.
     def random_quest(self):
-            possible_quests = []
-            for number in range(0, self.party.journal.rank):
-                quest = Q.QUEST_RANKS.get(number)
-                if quest != None:
-                    possible_quests.append(quest)
-            given_quest = possible_quests[random.randint(0, len(possible_quests)-1)]
-            if len(self.party.quests) < self.party.journal.rank:
-                self.draw_text("Here's a new request that we got "+str(given_quest)+".")
-                new_quest = Quest(**Q.ALL_QUESTS.get(given_quest))
+        if len(self.party.quests) >= self.party.journal.rank:
+            self.draw_text("Looks like you have enough quests to keep yourself busy for awhile.")
+            self.draw_text("Why don't you finish a few before trying to take anymore?", 2)
+            self.bool = False
+            pygame.time.delay(2000)
+        # Need to determine what level of quests are possible.
+        possible_quests = []
+        for number in range(0, self.party.journal.rank):
+            quest = Q.QUEST_RANKS.get(number)
+            if quest != None:
+                new_quest = Quest(**Q.ALL_QUESTS.get(quest))
+                # Randomize the quests a little for some variation.
+                new_quest.specifics_amount = max(round(random.gauss(new_quest.specifics_amount, new_quest.specifics_amount//3)), 1)
+                new_quest.time_limit = max(round(random.gauss(new_quest.time_limit, new_quest.time_limit//3)), 1)
+                new_quest.reward_amount = max(round(random.gauss(new_quest.reward_amount, new_quest.reward_amount//3)), 1)
                 new_quest.start_day = self.party.journal.days
-                self.party.quests.append(new_quest)
+                possible_quests.append(new_quest)
+        choices = []
+        for quest in possible_quests:
+            quest_text = quest.quest_info()
+            choices.append(quest_text)
+        choices.append("LEAVE")
+        while len(self.party.quests) < self.party.journal.rank and self.bool:
+            self.draw_background()
+            pick_from = Pick(choices, False)
+            choice = pick_from.pick()
+            if choice == "LEAVE":
+                self.bool = False
             else:
-                self.draw_text("Still no new quests, sorry kid.")
-            pygame.time.delay(500)
+                index = choices.index(choice)
+                self.party.quests.append(possible_quests[index])
+                choices.pop(index)
+                possible_quests.pop(index)
 
     def quest(self):
         self.draw_background()

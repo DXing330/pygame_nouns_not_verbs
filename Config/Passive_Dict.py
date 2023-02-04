@@ -15,6 +15,15 @@ class Passive_Dict:
         "Burn" : {
             "name" : "Burn", "effect" : "Change_Stats", "effect_specifics" : "All", "power" : -1, "turns" : 5
         },
+        "Entangle" : {
+            "name" : "Entangle", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : -1, "turns" : 5
+        },
+        "Envenomed" : {
+            "name" : "Envenomed", "effect" : "Add_Status", "effect_specifics" : "Poison", "power" : 1, "turns" : 5
+        },
+        "Hemorrhage" : {
+            "name" : "Hemorrhage", "effect" : "Add_Status", "effect_specifics" : "Bleed", "power" : 1, "turns" : 5
+        },
         "Poison" : {
             "name" : "Poison", "effect" : "Change_Stats", "effect_specifics" : "All", "power" : -1, "turns" : 5
         },
