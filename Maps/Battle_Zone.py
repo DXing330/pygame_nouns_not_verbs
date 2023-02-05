@@ -1,7 +1,7 @@
 import random
 import pygame
-
 from Battle.Battle_Encounter import Monster_Encounter
+from Battle.Location import Location
 pygame.init()
 
 WIN = pygame.display.set_mode((1200, 800), pygame.RESIZABLE)
@@ -9,7 +9,7 @@ WIN = pygame.display.set_mode((1200, 800), pygame.RESIZABLE)
 class Battle_Zone:
     def __init__(self, party, location):
         self.party = party
-        self.location = location
+        self.location : Location = location
         self.player = pygame.Rect(0, 0, 50, 50)
         self.counter = 0
         self.counter_limit = 0
@@ -29,8 +29,12 @@ class Battle_Zone:
         self.counter = 0
         self.counter_limit = round(random.gauss((self.width+self.height)/self.location.dungeon_size, max(self.width, self.height)/self.location.dungeon_size))
 
+    def determine_weather(self):
+        self.weather = self.location.weather[random.randint(0, len(self.location.weather)-1)]
+
     def battle_loop(self):
         danger = True
+        self.determine_weather()
         self.draw_overworld()
         self.reset_counter()
         while danger:
@@ -58,7 +62,7 @@ class Battle_Zone:
                 self.draw_overworld()
             if self.counter >= self.counter_limit:
                 self.reset_counter()
-                battle = Monster_Encounter(self.party, self.location, random.randint(1, self.location.dungeon_size), [], [])
+                battle = Monster_Encounter(self.party, self.location, random.randint(1, self.location.dungeon_size), [], [], [self.weather])
                 if self.location.boss and battle.amount == self.location.dungeon_size:
                     battle.boss = True
                 battle.start_phase()

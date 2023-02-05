@@ -16,9 +16,20 @@ class Passive:
     def check_turns(self):
         if self.turns > 0:
             self.turns -= 1
-        if self.turns == 0:
+        if round(self.turns) == 0:
             return True
         return False
+
+
+class Conditional_Passive:
+    def __init__(self, name, timing, condition, condition_specifics, effect, effect_specifics, power: int = 1):
+        self.name = name
+        self.timing = timing
+        self.condition = condition
+        self.condition_specifics = condition_specifics
+        self.effect = effect
+        self.effect_specifics = effect_specifics
+        self.power = power
 
 
 @dataclass

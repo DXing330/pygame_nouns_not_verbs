@@ -100,7 +100,7 @@ class Guild:
         while len(self.party.quests) < self.party.journal.rank and self.bool:
             self.draw_background()
             pick_from = Pick(choices, False)
-            choice = pick_from.pick()
+            choice = pick_from.wide_pick()
             if choice == "LEAVE":
                 self.bool = False
             else:

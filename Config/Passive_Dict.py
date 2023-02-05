@@ -29,5 +29,30 @@ class Passive_Dict:
         },
         "Stun" : {
             "name" : "Stun", "effect" : "Disable", "effect_specifics" : "All", "power" : 0, "turns" : 2
+        },
+        "Wet" : {
+            "name" : "Wet", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : -0.5, "turns" : 5
+        }
+        }
+        self.AURAS = {
+        "Darkness" : {
+            "name" : "Darkness", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "Heroes", "power" : -30, "turns" : -1, "chance" : 100
+        },
+        "Fog" : {
+            "name" : "Fog", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "ALL", "power" : -30, "turns" : -1, "chance" : 50
+        },
+        "Rain" : {
+            "name" : "Rain", "effect" : "Add_Status", "effect_specifics" : "Wet", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50
+        },
+        "Snow" : {
+            "name" : "Snow", "effect" : "Change_Stats", "effect_specifics" : "All", "targets" : "ALL", "power" : -5, "turns" : -1, "chance" : 50
+        }
+        }
+        self.CONDITIONALS = {
+        "Goblin Slayer" : {
+            "name" : "Goblin Slayer", "timing" : "Attack", "condition" : "Target", "condition_specifics" : "Goblin", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 1
+        },
+        "Stop Troll Heal" : {
+            "name" : "Stop Troll Heal", "timing" : "Passive", "condition" : "Status", "condition_specifics" : "Poison", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1
         }
         }

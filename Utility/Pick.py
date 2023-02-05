@@ -40,7 +40,7 @@ class Pick:
                 text = FONT.render(str(thing.name), 1, C.WHITE)
             except:
                 text = FONT.render(str(thing), 1, C.WHITE)
-            possible_widths.append((text.get_width()*(4/3)))
+            possible_widths.append((text.get_width()*(4/2)))
         self.menu_width = (max(possible_widths)+(C.PADDING*2))
         self.menu = pygame.Rect((WIN.get_width() - self.menu_width)//2, 0, self.menu_width, self.menu_length)
         pygame.draw.rect(WIN, C.BLACK, self.menu)
@@ -75,6 +75,30 @@ class Pick:
             WIN.blit(text, ((self.width - text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()
+
+    def draw_quest_list(self):
+        self.update_dimensions()
+        self.draw_wide_menu()
+        self.counter = 1
+        for thing in self.things:
+            text = FONT.render(str(self.counter)+" "+str(thing), 1, C.WHITE)
+            WIN.blit(text, ((self.width - text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+        pygame.display.update()
+
+    def draw_wide_menu(self):
+        self.menu_length = (len(self.things) + 2) * C.PADDING
+        possible_widths = []
+        for thing in self.things:
+            try:
+                text = FONT.render(str(thing.name), 1, C.WHITE)
+            except:
+                text = FONT.render(str(thing), 1, C.WHITE)
+            possible_widths.append((text.get_width()*(4/3)))
+        self.menu_width = (max(possible_widths)+(C.PADDING*2))
+        self.menu = pygame.Rect((WIN.get_width() - self.menu_width)//2, 0, self.menu_width, self.menu_length)
+        pygame.draw.rect(WIN, C.BLACK, self.menu)
+        pygame.display.flip()
 
     def pick_randomly(self):
         if len(self.things) == 0:
@@ -130,22 +154,16 @@ class Pick:
                 self.draw_string_list()
             return self.pick_from_list()
 
+    def wide_pick(self):
+        if self.random_pick:
+            return self.pick_randomly()
+        else:
+            self.draw_quest_list()
+            return self.pick_from_list()
+
     def pick_skill(self):
         if self.random_pick:
             return self.pick_randomly()
         else:
             self.draw_skill_list()
             return self.pick_from_list()
-
-    def pick_potion(self):
-        pick = True
-        while pick:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    pygame.event.clear()
-                    if event.key == pygame.K_h:
-                        choice = "Health"
-                        return choice
-                    if event.key == pygame.K_e:
-                        choice = "Energy"
-                        return choice

@@ -3,6 +3,7 @@ import copy
 from Hero import *
 from Spirits import *
 from Equipment import *
+from Spirit_Factory import *
 from Config.Constants import *
 from Utility.Pick import Pick
 C = Constants()
@@ -148,12 +149,14 @@ class Party:
         return load_heroes_list
 
     def read_ally_objects(self, filename):
+        factory = Spirit_Factory()
         load_allies_list = []
         jsonFile = open(filename, "r")
         allies_list = json.load(jsonFile)
         for summon in allies_list:
             ally = Spirit(**summon)
-            load_allies_list.append(ally)
+            new_ally = factory.make_spirit(ally)
+            load_allies_list.append(new_ally)
         return load_allies_list
 
     def read_equipment_objects(self, filename):

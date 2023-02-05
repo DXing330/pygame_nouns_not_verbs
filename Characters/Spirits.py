@@ -111,3 +111,21 @@ class Spirit:
         else:
             target_list = potential_target_list
         return target_list
+
+@dataclass
+class Angel(Spirit):
+
+    def choose_action(self, heroes):
+        return super().choose_action(heroes)
+
+    def choose_target(self, skill, heroes):
+        return super().choose_target(skill, heroes)
+
+@dataclass
+class Fairy(Spirit):
+
+    def choose_action(self, heroes):
+        return super().choose_action(heroes)
+
+    def choose_target(self, skill, heroes):
+        return super().choose_target(skill, heroes)

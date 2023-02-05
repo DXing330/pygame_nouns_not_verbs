@@ -116,7 +116,7 @@ class Skill_Dict:
             "name" : "Heal Monsters", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "All_Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
         },
         "Heal Partner" : {
-            "name" : "Heal Partner", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Partner", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
+            "name" : "Heal Partner", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 0.5, "targets" : "Partner", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
         "Heal Self" : {
             "name" : "Heal Self", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Self", "cost" :0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
@@ -129,6 +129,9 @@ class Skill_Dict:
         },
         "Howl+" : {
             "name" : "Howl", "effect" : "Add_Buff", "effect_specifics" : "Adrenaline", "power" : 1, "targets" : "All_Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100
+        },
+        "Make Rain" : {
+            "name" : "Make Rain", "effect" : "Aura", "effect_specifics" : "Rain", "power" : 0, "targets" : "None", "cost" : 5, "cooldown" : 0, "cooldown_counter" : 5, "chance" : 100
         },
         "Nothing" : {
             "name" : "Nothing", "effect" : "None", "effect_specifics" : "None", "power" : 0, "targets" : "Self", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100

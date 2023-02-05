@@ -4,14 +4,16 @@ from Battle.Location import *
 from Battle.Monster_Factory import Monster_Factory
 from Characters.Party import *
 from Characters.Monster import *
+from Skills.Auras import *
 from Utility.Pick import *
 from Utility.Draw import *
 from Utility.Sort import *
 from Skills.Skill import *
 from Config.Skill_Dict import *
 from Config.Equip_Dict import *
-S = Skill_Dict()
 E = Equip_Dict()
+P = Passive_Dict()
+S = Skill_Dict()
 
 
 class Damage:
@@ -25,12 +27,14 @@ class Monster_Encounter:
     amount: int
     monsters: list[Monster]
     battlers: list[Character]
+    auras: list
     battle: bool = True
     boss: bool = False
     draw: Draw = Draw()
     monster_factory: Monster_Factory = Monster_Factory()
 
     def start_phase(self):
+        self.update_auras()
         self.prepare_for_battle()
         self.generate_monsters()
         self.update_draw()
@@ -46,6 +50,16 @@ class Monster_Encounter:
         self.draw.draw_battle_state()
         self.draw.draw_battle_stats()
         self.draw.draw_turn_order(self.battlers)
+
+    def update_auras(self):
+        self.battle_auras: list[Aura] = []
+        for aura in self.auras:
+            if aura != "None":
+                new_aura = Aura(**P.AURAS.get(aura))
+                self.battle_auras.append(new_aura)
+
+    def add_aura(self, aura: Aura):
+        self.battle_auras.append(aura)
 
     def generate_monsters(self):
         min_monsters = 0
@@ -193,6 +207,9 @@ class Monster_Encounter:
                 summon = Summon(skill.effect_specifics, max(user.level//2, skill.power))
                 self.update_monster_for_battle(summon)
                 self.heroes.append(summon)
+        elif skill.effect == "Aura":
+            new_aura = Aura(**P.AURAS.get(skill.effect_specifics))
+            self.add_aura(new_aura)
         elif skill.effect == "Target":
             for target in targets:
                 user.target = target
@@ -217,7 +234,7 @@ class Monster_Encounter:
             # Some skills will only activate a portion of the time, ex. some status effects.
             activation = random.randint(0, 99)
             if activation < skill.chance:
-                activate = Effect_Factory(skill.effect, skill.effect_specifics, skill.power * user.level, targets)
+                activate = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.power * user.level), targets)
                 activate.make_effect()
 
     def hero_attack(self, hero):
@@ -363,6 +380,36 @@ class Monster_Encounter:
             for preemptive in monster.preemptives:
                 self.skill_targeting(monster, preemptive, True, False)
 
+    def aura_step(self):
+        for aura in self.battle_auras:
+            targets = []
+            if aura.targets == "ALL":
+                for hero in self.heroes:
+                    targets.append(hero)
+                for monster in self.monsters:
+                    targets.append(monster)
+            elif aura.targets == "Monsters":
+                for monster in self.monsters:
+                    targets.append(monster)
+            elif aura.targets == "Heroes":
+                for hero in self.heroes:
+                    targets.append(hero)
+            aura_effect = Effect_Factory(aura.effect, aura.effect_specifics, aura.power, targets)
+            aura_effect.make_effect()
+            self.draw_battle()
+            self.draw.draw_text(str(aura.aura_effect_text()))
+            pygame.time.delay(1000)
+
+    def aura_end_step(self):
+        for aura in self.battle_auras:
+            if aura.turns > 0:
+                aura.turns -= 1
+            if aura.turns == 0:
+                self.battle_auras.remove(aura)
+                self.draw_battle()
+                self.draw.draw_text(str(aura.aura_end_text()))
+                pygame.time.delay(1000)
+
     def check_on_target(self, character: Character):
         target = False
         for hero in self.heroes:
@@ -380,7 +427,7 @@ class Monster_Encounter:
             if skill.cooldown > 0:
                 skill.cooldown -= 1
         for buff in character.buffs:
-            passive = Effect_Factory(buff.effect, buff.effect_specifics, buff.power * character.level, [character])
+            passive = Effect_Factory(buff.effect, buff.effect_specifics, round(buff.power * character.level), [character])
             passive.make_effect()
             done = buff.check_turns()
             if done:
@@ -461,6 +508,7 @@ class Monster_Encounter:
         self.start_step()
         while self.battle:
             self.cleanup_phase()
+            self.aura_step()
             for monster in self.monsters:
                 monster.choose_action(self.heroes, self.monsters)
             self.draw_battle()
@@ -482,6 +530,7 @@ class Monster_Encounter:
                     elif isinstance(battler, Monster) and len(self.heroes) > 0 and len(self.monsters) > 0:
                         self.monster_turn(battler)
                 self.cleanup_phase()
+            self.aura_end_step()
         win = self.end_phase()
         if win:
             self.quest_update()

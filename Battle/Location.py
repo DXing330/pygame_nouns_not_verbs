@@ -6,6 +6,7 @@ class Location:
     name: str
     monsters: list
     treasure: list
+    weather: list
     dungeon_size: int = 1
     events: list = None
     image: any = None

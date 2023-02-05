@@ -28,11 +28,17 @@ class Character_Dict:
         self.SPIRIT_SKILLS = {
         "Angel" : {
             0 : "Heal Hero", 2 : "Shield Hero", 4 : "Cure Hero", 6 : "Heal Heroes", 8 : "Strike Monster", 10 : "Energize Hero"
+        },
+        "Fairy" : {
+            0 : "Blind Monster"
         }
         }
         self.SPIRIT_PASSIVES = {
         "Angel" : {
             4 : "Heal Partner", 6 : "Shield Partner", 8 : "Cure Partner", 10 : "Strike Monster"
+        },
+        "Fairy" : {
+            4 : "Blind Monster"
         }
         }
         self.MONSTER_STATS = {
