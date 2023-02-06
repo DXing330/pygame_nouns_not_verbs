@@ -7,6 +7,7 @@ class Character(ABC):
     name: str
     skill_list: list
     passive_skills: list
+    conditional_passives: list
     buffs: list
     statuses: list
     max_level: int = 10
@@ -75,6 +76,9 @@ class Character(ABC):
 
     def update_death_skills(self, skill_list: list):
         self.battle_death_skills = skill_list
+
+    def update_conditonal_passives(self, conditionals: list):
+        self.battle_conditional_passives = conditionals
 
     def unique_passives(self):
         pass

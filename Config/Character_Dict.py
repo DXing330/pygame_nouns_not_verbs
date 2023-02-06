@@ -43,45 +43,45 @@ class Character_Dict:
         }
         self.MONSTER_STATS = {
         "Cocoon" : {
-            "level" : 2, "variance" : 1, "health" : 10, "attack" : 0, "defense" : 3, "skill" : 0, "speed" : 5, "skills" : ["Nothing"], "passives" : [], "death_effect" : ["Create Moth"], "preemptives" : []
+            "level" : 2, "variance" : 1, "health" : 10, "attack" : 0, "defense" : 3, "skill" : 0, "speed" : 5, "skills" : ["Nothing"], "passives" : [], "death_effect" : ["Create Moth"], "preemptives" : [], "conditionals" : []
         },
         "Demon" : {
-            "level" : 10, "variance" : 2, "health" : 12, "attack" : 5, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 10, "variance" : 2, "health" : 12, "attack" : 5, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Last Stand"]
         },
         "Imp" : {
-            "level" : 2, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 2, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Goblin" : {
-            "level" : 1, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Blind Hero"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 1, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Blind Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["High Morale"]
         },
         "Golem" : {
-            "level" : 1, "variance" : 0, "health" : 10, "attack" : 3, "defense" : 3, "skill" : 1, "speed" : 10, "skills" : ["Fortify Hero"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 1, "variance" : 0, "health" : 10, "attack" : 3, "defense" : 3, "skill" : 1, "speed" : 10, "skills" : ["Fortify Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Hob Goblin" : {
-            "level" : 4, "variance" : 1, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Blind Hero", "Call Goblin"], "passives" : [], "death_effect" : [], "preemptives" : ["Call Goblin"]
+            "level" : 4, "variance" : 1, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Blind Hero", "Call Goblin"], "passives" : [], "death_effect" : [], "preemptives" : ["Call Goblin"], "conditionals" : ["High Morale"]
         },
         "Moth" : {
-            "level" : 4, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Poison Hero", "Poison Heroes"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 4, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Poison Hero", "Poison Heroes"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Orc" : {
-            "level" : 6, "variance" : 2, "health" : 10, "attack" : 4, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Double Slash"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 6, "variance" : 2, "health" : 10, "attack" : 4, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Double Slash"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Last Stand"]
         },
         "Serpent" : {
-            "level" : 3, "variance" : 1, "health" : 8, "attack" : 3, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Target Hero", "Bite Hero", "Poison Hero"], "passives" : ["Dodge"], "death_effect" : [], "preemptives" : ["Dodge"]
+            "level" : 3, "variance" : 1, "health" : 8, "attack" : 3, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Target Hero", "Bite Hero", "Poison Hero"], "passives" : ["Dodge"], "death_effect" : [], "preemptives" : ["Dodge"], "conditionals" : []
         },
         "Turret" : {
-            "level" : 1, "variance" : 0, "health" : 5, "attack" : 4, "defense" : 1, "skill" : 0, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 1, "variance" : 0, "health" : 5, "attack" : 4, "defense" : 1, "skill" : 0, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Troll" : {
-            "level" : 6, "variance" : 2, "health" : 12, "attack" : 3, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Heal Self"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 6, "variance" : 2, "health" : 12, "attack" : 3, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Heal Self"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Troll Heal"]
         },
         "Vampire" : {
-            "level" : 10, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Drain Hero", "Stun Hero", "Bleed Hero"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 10, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Drain Hero", "Stun Hero", "Bleed Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Werewolf" : {
-            "level" : 6, "variance" : 1, "health" : 8, "attack" : 5, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : ["Double Slash"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 6, "variance" : 1, "health" : 8, "attack" : 5, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : ["Double Slash"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Last Stand"]
         },
         "Wolf" : {
-            "level" : 3, "variance" : 1, "health" : 8, "attack" : 4, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Howl"], "passives" : [], "death_effect" : [], "preemptives" : []
+            "level" : 3, "variance" : 1, "health" : 8, "attack" : 4, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Howl"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         }
         }

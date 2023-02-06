@@ -25,6 +25,7 @@ class Monster(Character):
         self.statuses = []
         self.skill_list = []
         self.passive_skills = []
+        self.conditional_passives = []
         self.death_skills = []
         self.weapon = None
         self.armor = None

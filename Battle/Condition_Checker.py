@@ -8,7 +8,20 @@ class Condition_Checker:
             for status in user.statuses:
                 if status.name == conditional.condition_specifics:
                     return True
-        return False
+            return False
+        if conditional.condition == "Not_Status":
+            for status in user.statuses:
+                if status.name == conditional.condition_specifics:
+                    return False
+            return True
+        if conditional.condition == "Low_Health":
+            if (user.health/user.max_health) < int(conditional.condition_specifics):
+                return True
+            return False
+        if conditional.condition == "High_Health":
+            if (user.health/user.max_health) > int(conditional.condition_specifics):
+                return True
+            return False
 
     def check_attack_condition(self, user: Character, conditional: Conditional_Passive, defender: Character):
         if conditional.condition == "Target":

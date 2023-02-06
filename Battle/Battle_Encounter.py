@@ -131,8 +131,8 @@ class Monster_Encounter:
             battle_passives.append(bpassive)
         monster.update_passive_skills(battle_passives)
         battle_conditionals = []
-        for passive in monster.conditional_passives:
-            bconditional = Conditional_Passive(**P.CONDITIONALS.get(passive))
+        for word in dictionary.get("conditionals"):
+            bconditional = Conditional_Passive(**P.CONDITIONALS.get(word))
             battle_conditionals.append(bconditional)
         monster.update_conditonal_passives(battle_conditionals)
         death_effects = []
@@ -569,6 +569,7 @@ class Monster_Encounter:
             self.aura_end_step()
         win = self.end_phase()
         if win:
+            self.monster_loot()
             self.quest_update()
 
     def end_phase(self):
@@ -611,3 +612,6 @@ class Monster_Encounter:
                     for monster in self.monster_list:
                         if monster.name == quest.specifics:
                             quest.specifics_amount -= 1
+
+    def monster_loot(self):
+        pass

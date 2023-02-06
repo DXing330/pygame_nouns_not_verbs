@@ -149,7 +149,7 @@ class Skill_Dict:
             "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Hero", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
         "Shield Partner" : {
-            "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Partner", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
+            "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 1, "targets" : "Partner", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100
         },
         "Shield Self" : {
             "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Self", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100

@@ -178,7 +178,7 @@ class Party:
         return load_list
 
     def new_party(self):
-        starter_hero = Hero("Summoner", [], [], [], [])
+        starter_hero = Hero("Summoner", [], [], [], [], [])
         starter_hero.update_stats()
         starter_hero.update_skill_list()
         self.add_hero(starter_hero)
@@ -188,19 +188,16 @@ class Party:
         self.quests = []
 
     def load(self):
-        try:
-            heroes_list = self.read_hero_objects("_heroes")
-            self.heroes = heroes_list
-            ally_list = self.read_ally_objects("_spirits")
-            self.spirits = ally_list
-            equipment_list = self.read_equipment_objects("_equipment")
-            self.equipment = equipment_list
-            self.quests = self.read_quest_objects("_quests")
-            jsonFile = open("_items", "r")
-            item_bag = json.load(jsonFile)
-            self.items = Item_Bag(**item_bag)
-            jsonFile = open("_records", "r")
-            records = json.load(jsonFile)
-            self.journal = Records(**records)
-        except:
-            self.new_party()
+        heroes_list = self.read_hero_objects("_heroes")
+        self.heroes = heroes_list
+        ally_list = self.read_ally_objects("_spirits")
+        self.spirits = ally_list
+        equipment_list = self.read_equipment_objects("_equipment")
+        self.equipment = equipment_list
+        self.quests = self.read_quest_objects("_quests")
+        jsonFile = open("_items", "r")
+        item_bag = json.load(jsonFile)
+        self.items = Item_Bag(**item_bag)
+        jsonFile = open("_records", "r")
+        records = json.load(jsonFile)
+        self.journal = Records(**records)

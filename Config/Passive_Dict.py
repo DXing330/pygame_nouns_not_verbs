@@ -52,7 +52,13 @@ class Passive_Dict:
         "Goblin Slayer" : {
             "name" : "Goblin Slayer", "timing" : "Attack", "condition" : "Target", "condition_specifics" : "Goblin", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 1
         },
-        "Stop Troll Heal" : {
-            "name" : "Stop Troll Heal", "timing" : "Passive", "condition" : "Status", "condition_specifics" : "Poison", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1
+        "High Morale" : {
+            "name" : "High Morale", "timing" : "Passive", "condition" : "High_Health", "condition_specifics" : "80", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 2
+        },
+        "Last Stand" : {
+            "name" : "Last Stand", "timing" : "Passive", "condition" : "Low_Health", "condition_specifics" : "30", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 5
+        },
+        "Troll Heal" : {
+            "name" : "Troll Heal", "timing" : "Passive", "condition" : "Not_Status", "condition_specifics" : "Poison", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 2
         }
         }
