@@ -2,6 +2,7 @@ import copy
 from Battle.Effect_Factory import *
 from Battle.Location import *
 from Battle.Monster_Factory import Monster_Factory
+from Battle.Condition_Checker import *
 from Characters.Party import *
 from Characters.Monster import *
 from Skills.Auras import *
@@ -32,6 +33,7 @@ class Monster_Encounter:
     boss: bool = False
     draw: Draw = Draw()
     monster_factory: Monster_Factory = Monster_Factory()
+    condition_checker: Condition_Checker = Condition_Checker()
 
     def start_phase(self):
         self.update_auras()
@@ -97,6 +99,11 @@ class Monster_Encounter:
             if hero.armor != None:
                 armor = Equipment(**E.EQUIPMENT.get(hero.armor))
                 hero.armor = armor
+            battle_conditionals = []
+            for passive in hero.conditional_passives:
+                bconditional = Conditional_Passive(**P.CONDITIONALS.get(passive))
+                battle_conditionals.append(bconditional)
+            hero.update_conditonal_passives(battle_conditionals)
         self.spirits = copy.deepcopy(self.party.spirits)
         for spirit in self.spirits:
             battle_skills = []
@@ -123,6 +130,11 @@ class Monster_Encounter:
             bpassive = Skill(**S.ALL_SKILLS.get(word))
             battle_passives.append(bpassive)
         monster.update_passive_skills(battle_passives)
+        battle_conditionals = []
+        for passive in monster.conditional_passives:
+            bconditional = Conditional_Passive(**P.CONDITIONALS.get(passive))
+            battle_conditionals.append(bconditional)
+        monster.update_conditonal_passives(battle_conditionals)
         death_effects = []
         for word in dictionary.get("death_effect"):
             bdeath = Skill(**S.ALL_SKILLS.get(word))
@@ -345,7 +357,22 @@ class Monster_Encounter:
                 return False
         return True
 
+    def attack_conditionals(self, attacker: Character, defender: Character):
+        for conditional in attacker.battle_conditional_passives:
+            if conditional.timing == "Attack":
+                condition = self.condition_checker.check_attack_condition(attacker, conditional, defender)
+                if condition:
+                    effect = Effect_Factory(conditional.effect, conditional.effect_specifics, round(conditional.power * attacker.level), [attacker])
+                    effect.make_effect()
+        for conditional in defender.battle_conditional_passives:
+            if conditional.timing == "Defend":
+                condition = self.condition_checker.check_defend_condition(defender, conditional, attacker)
+                if condition:
+                    effect = Effect_Factory(conditional.effect, conditional.effect_specifics, round(conditional.power * defender.level), [defender])
+                    effect.make_effect()
+
     def attack_step(self, attacker: Character, defender: Character):
+        self.attack_conditionals(attacker, defender)
         self.draw_battle()
         self.damage = Damage(attacker.attack)
         hit = self.check_hit(attacker, defender)
@@ -432,6 +459,15 @@ class Monster_Encounter:
             done = buff.check_turns()
             if done:
                 character.buffs.remove(buff)
+        for conditional in character.battle_conditional_passives:
+            # Check on passive conditionals.
+            if conditional.timing == "Passive":
+                # First check if the condition is met.
+                condition = self.condition_checker.check_passive_condition(character, conditional)
+                # If it is them it takes effect.
+                if condition:
+                    effect = Effect_Factory(conditional.effect, conditional.effect_specifics, round(conditional.power * character.level), [character])
+                    effect.make_effect()
         for skill in character.battle_passives:
             self.skill_targeting(character, skill, prandom, False)
         # Temporary health like shields from the previous round will quickly decay.
