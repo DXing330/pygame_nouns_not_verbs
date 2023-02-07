@@ -120,6 +120,7 @@ class Guild:
         elif self.party.journal.rank == 1 and self.party.journal.rank_exp == 1 and self.party.items.coins >= 50:
             self.party.items.coins -= 50
             self.party.journal.rank += 1
+            self.party.locations.append("Dark Forest")
             self.party.journal.rank_exp = 0
             self.draw_text("Wow, you actually did it.")
             self.draw_text("Good job. Now we'll be dry when the rain comes.", 2)
@@ -145,6 +146,7 @@ class Guild:
             self.party.journal.guild_facilities.append("Smith")
             self.party.journal.rank_exp = 0
             self.party.journal.rank += 1
+            self.party.locations.append("Wolf Den")
             pygame.time.delay(2000)
         elif self.party.journal.rank == 3:
             strong = False
@@ -160,6 +162,7 @@ class Guild:
                 self.draw_text("Maybe try to find some more allies before you go.", 4)
                 pygame.time.delay(1000)
                 self.party.journal.rank += 1
+                self.party.locations.append("Evil Forest")
             elif not strong:
                 self.draw_text("Lot more requests to work on.")
                 pygame.time.delay(1000)

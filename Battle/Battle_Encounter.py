@@ -3,6 +3,7 @@ from Battle.Effect_Factory import *
 from Battle.Location import *
 from Battle.Monster_Factory import Monster_Factory
 from Battle.Condition_Checker import *
+from Battle.Monster_Drops import *
 from Characters.Party import *
 from Characters.Monster import *
 from Skills.Auras import *
@@ -101,7 +102,7 @@ class Monster_Encounter:
                 hero.armor = armor
             battle_conditionals = []
             for passive in hero.conditional_passives:
-                bconditional = Conditional_Passive(**P.CONDITIONALS.get(passive))
+                bconditional = Conditional_Effect(**P.CONDITIONALS.get(passive))
                 battle_conditionals.append(bconditional)
             hero.update_conditonal_passives(battle_conditionals)
         self.spirits = copy.deepcopy(self.party.spirits)
@@ -132,7 +133,7 @@ class Monster_Encounter:
         monster.update_passive_skills(battle_passives)
         battle_conditionals = []
         for word in dictionary.get("conditionals"):
-            bconditional = Conditional_Passive(**P.CONDITIONALS.get(word))
+            bconditional = Conditional_Effect(**P.CONDITIONALS.get(word))
             battle_conditionals.append(bconditional)
         monster.update_conditonal_passives(battle_conditionals)
         death_effects = []
@@ -209,6 +210,18 @@ class Monster_Encounter:
             self.draw.draw_text(user.name+" failed to "+skill.name)
             pygame.time.delay(500)
 
+    def skill_condition_checker(self, user, skill: Skill, targets: list):
+        if skill.condition == "Always":
+            activate = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.power * user.level), targets)
+            activate.make_effect()
+        else:
+            condition = Conditional_Effect(skill.name, "Skill", skill.condition, skill.condition_specifics, skill.effect, skill.effect_specifics, skill.power)
+            for target in targets:
+                fulfill = self.condition_checker.check_target_condition(user, condition, target)
+                if fulfill:
+                    activation = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.power * user.level), [target])
+                    activation.make_effect()
+
     def skill_activation(self, user, skill: Skill, targets: list, pick_randomly = True):
         if skill.effect == "Summon":
             if skill.power < 0:
@@ -246,8 +259,7 @@ class Monster_Encounter:
             # Some skills will only activate a portion of the time, ex. some status effects.
             activation = random.randint(0, 99)
             if activation < skill.chance:
-                activate = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.power * user.level), targets)
-                activate.make_effect()
+                self.skill_condition_checker(user, skill, targets)
 
     def hero_attack(self, hero):
         self.draw_battle()
@@ -360,13 +372,13 @@ class Monster_Encounter:
     def attack_conditionals(self, attacker: Character, defender: Character):
         for conditional in attacker.battle_conditional_passives:
             if conditional.timing == "Attack":
-                condition = self.condition_checker.check_attack_condition(attacker, conditional, defender)
+                condition = self.condition_checker.check_target_condition(attacker, conditional, defender)
                 if condition:
                     effect = Effect_Factory(conditional.effect, conditional.effect_specifics, round(conditional.power * attacker.level), [attacker])
                     effect.make_effect()
         for conditional in defender.battle_conditional_passives:
             if conditional.timing == "Defend":
-                condition = self.condition_checker.check_defend_condition(defender, conditional, attacker)
+                condition = self.condition_checker.check_target_condition(defender, conditional, attacker)
                 if condition:
                     effect = Effect_Factory(conditional.effect, conditional.effect_specifics, round(conditional.power * defender.level), [defender])
                     effect.make_effect()
@@ -503,7 +515,6 @@ class Monster_Encounter:
     def spirit_passives(self, spirit: Spirit):
         # Spirits will use all their passive skills every turn.
         for skill in spirit.battle_passives:
-            self.draw_battle()
             self.skill_targeting(spirit, skill, True, False)
 
     def speed_rng(self):
@@ -569,7 +580,8 @@ class Monster_Encounter:
             self.aura_end_step()
         win = self.end_phase()
         if win:
-            self.monster_loot()
+            drops = Monster_Drops(self.party, self.monster_list)
+            drops.monster_loot()
             self.quest_update()
 
     def end_phase(self):
@@ -612,6 +624,3 @@ class Monster_Encounter:
                     for monster in self.monster_list:
                         if monster.name == quest.specifics:
                             quest.specifics_amount -= 1
-
-    def monster_loot(self):
-        pass

@@ -12,3 +12,5 @@ class Skill:
     cooldown: int = 0
     cooldown_counter: int = 0
     chance: int = 100
+    condition: str = "Always"
+    condition_specifics: str = "Always"

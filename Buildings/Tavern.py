@@ -7,8 +7,8 @@ from Utility.Pick import *
 class Candidate_Dict:
     def __init__(self):
         self.candidates = {
-        "Warrior" : Hero("Warrior", [], [], [], [], 10, 4),
-        "Hunter" : Hero("Hunter", [],[],[],[],10,6)
+        "Warrior" : Hero("Warrior", [], [], [], [], [], 10, 4),
+        "Hunter" : Hero("Hunter", [],[],[],[],[],10,6)
         }
 
 class Tavern:

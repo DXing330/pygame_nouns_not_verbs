@@ -15,6 +15,9 @@ class Passive_Dict:
         "Burn" : {
             "name" : "Burn", "effect" : "Change_Stats", "effect_specifics" : "All", "power" : -1, "turns" : 5
         },
+        "Chill" : {
+            "name" : "Chill", "effect" : "Change_Stats", "effect_specifics" : "Physical", "power" : -1, "turns" : 5
+        },
         "Entangle" : {
             "name" : "Entangle", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : -1, "turns" : 5
         },
@@ -45,10 +48,13 @@ class Passive_Dict:
             "name" : "Rain", "effect" : "Add_Status", "effect_specifics" : "Wet", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50
         },
         "Snow" : {
-            "name" : "Snow", "effect" : "Change_Stats", "effect_specifics" : "All", "targets" : "ALL", "power" : -5, "turns" : -1, "chance" : 50
+            "name" : "Snow", "effect" : "Add_Status", "effect_specifics" : "Chill", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50
         }
         }
         self.CONDITIONALS = {
+        "Drain Blood" : {
+            "name" : "Drain Blood", "timing" : "Attack", "condition" : "Status", "condition_specifics" : "Bleed", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 2
+        },
         "Goblin Slayer" : {
             "name" : "Goblin Slayer", "timing" : "Attack", "condition" : "Target", "condition_specifics" : "Goblin", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 1
         },

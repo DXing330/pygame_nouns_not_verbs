@@ -39,6 +39,12 @@ class Item_Bag:
     health_potions: int = 0
     energy_potions: int = 0
     mana_crystals: int = 0
+    sharp_material: int = 0
+    hard_material: int = 0
+    poison_extract: int = 0
+    poison_essense: int = 0
+    monster_extract: int = 0
+    monster_essence: int = 0
 
 
 @dataclass
@@ -61,6 +67,7 @@ class Party:
     items: Item_Bag = Item_Bag(10, 1, 1)
     journal: Records = Records()
     quests: list[Quest] = None
+    locations: list[str] = None
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
 
@@ -89,6 +96,15 @@ class Party:
                 equipment.power += random.randint(0, 1)
         if check == None:
             self.equipment.append(equip)
+
+    def add_location(self, location_name):
+        # Avoid duplicate equipment.
+        check = None
+        for location in self.locations:
+            if location == location_name:
+                check = location_name
+        if check == None:
+            self.locations.append(location_name)
 
     def party_update(self):
         self.party_update_stats()
@@ -131,10 +147,18 @@ class Party:
         outfile.flush
         outfile.close
 
+    def write_str_list(self, list, filename):
+        jsonP = json.dumps([thing for thing in list])
+        outfile = open(filename, "w")
+        outfile.write(jsonP)
+        outfile.flush
+        outfile.close
+
     def save(self):
         self.write_object_list(self.heroes, "_heroes")
         self.write_object_list(self.spirits, "_spirits")
         self.write_object_list(self.equipment, "_equipment")
+        self.write_str_list(self.locations, "_locations")
         self.write_object_list(self.quests, "_quests")
         self.write_object(self.items, "_items")
         self.write_object(self.journal, "_records")
@@ -177,6 +201,14 @@ class Party:
             load_list.append(quest)
         return load_list
 
+    def read_str_list(self, filename):
+        load_list = []
+        jsonFile = open(filename, "r")
+        list = json.load(jsonFile)
+        for thing in list:
+            load_list.append(thing)
+        return load_list
+
     def new_party(self):
         starter_hero = Hero("Summoner", [], [], [], [], [])
         starter_hero.update_stats()
@@ -195,6 +227,7 @@ class Party:
         equipment_list = self.read_equipment_objects("_equipment")
         self.equipment = equipment_list
         self.quests = self.read_quest_objects("_quests")
+        self.locations = self.read_str_list("_locations")
         jsonFile = open("_items", "r")
         item_bag = json.load(jsonFile)
         self.items = Item_Bag(**item_bag)

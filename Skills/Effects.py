@@ -21,7 +21,7 @@ class Passive:
         return False
 
 
-class Conditional_Passive:
+class Conditional_Effect:
     def __init__(self, name, timing, condition, condition_specifics, effect, effect_specifics, power: int = 1):
         self.name = name
         self.timing = timing
@@ -72,6 +72,9 @@ class Change_Stats(Effect):
             self.target.damage_dealt += self.power
         elif "Damage_Taken" in self.effect_specifics:
             self.target.damage_taken += self.power
+        elif "Physical" in self.effect_specifics:
+            self.target.attack += self.power
+            self.target.defense += self.power//2
         elif "All" in self.effect_specifics:
             self.target.health += self.power//2
             self.target.attack += self.power//4

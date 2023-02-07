@@ -12,7 +12,10 @@ class Character_Dict:
         },
         "Mage" : {
             "health" : 10, "attack" : 1, "defense" : 1, "skill" : 2, "speed" : 10
-        }
+        },
+        "Knight" : {
+            "health" : 12, "attack" : 3, "defense" : 3, "skill" : 1, "speed" : 7
+        },
         }
         self.HERO_SKILLS = {
         "Summoner" : {
@@ -69,6 +72,9 @@ class Character_Dict:
         "Serpent" : {
             "level" : 3, "variance" : 1, "health" : 8, "attack" : 3, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Target Hero", "Bite Hero", "Poison Hero"], "passives" : ["Dodge"], "death_effect" : [], "preemptives" : ["Dodge"], "conditionals" : []
         },
+        "Slime" : {
+            "level" : 1, "variance" : 1, "health" : 10, "attack" : 1, "defense" : 0, "skill" : 0, "speed" : 10, "skills" : ["Nothing"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+        },
         "Turret" : {
             "level" : 1, "variance" : 0, "health" : 5, "attack" : 4, "defense" : 1, "skill" : 0, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
@@ -76,12 +82,18 @@ class Character_Dict:
             "level" : 6, "variance" : 2, "health" : 12, "attack" : 3, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Heal Self"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Troll Heal"]
         },
         "Vampire" : {
-            "level" : 10, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Drain Hero", "Stun Hero", "Bleed Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 10, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Drain Hero", "Stun Hero", "Bleed Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Drain Blood"]
         },
         "Werewolf" : {
-            "level" : 6, "variance" : 1, "health" : 8, "attack" : 5, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : ["Double Slash"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Last Stand"]
+            "level" : 8, "variance" : 2, "health" : 8, "attack" : 5, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : ["Double Slash", "Call Wolf"], "passives" : [], "death_effect" : [], "preemptives" : ["Call Wolf", "Call Wolf"], "conditionals" : ["Last Stand"]
         },
         "Wolf" : {
-            "level" : 3, "variance" : 1, "health" : 8, "attack" : 4, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Howl"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 4, "variance" : 1, "health" : 8, "attack" : 4, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Howl"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         }
+        }
+        self.MONSTER_DROPS = {
+        "Demon" : {10: "Sharp_Material", 11: "Monster_Extract"},
+        "Troll" : {6: "Hard_Material", 7: "Monster_Extract"},
+        "Vampire" : {10: "Monster_Extract", 11: "Monster_Extract"},
+        "Werewolf" : {8: "Sharp_Material"}
         }
