@@ -39,16 +39,16 @@ class Passive_Dict:
         }
         self.AURAS = {
         "Darkness" : {
-            "name" : "Darkness", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "Heroes", "power" : -30, "turns" : -1, "chance" : 100
+            "name" : "Darkness", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "Heroes", "power" : -30, "turns" : -1, "chance" : 100, "type" : "None"
         },
         "Fog" : {
-            "name" : "Fog", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "ALL", "power" : -30, "turns" : -1, "chance" : 50
+            "name" : "Fog", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "ALL", "power" : -30, "turns" : -1, "chance" : 50, "type" : "None"
         },
         "Rain" : {
-            "name" : "Rain", "effect" : "Add_Status", "effect_specifics" : "Wet", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50
+            "name" : "Rain", "effect" : "Add_Status", "effect_specifics" : "Wet", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50, "type" : "Weather"
         },
         "Snow" : {
-            "name" : "Snow", "effect" : "Add_Status", "effect_specifics" : "Chill", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50
+            "name" : "Snow", "effect" : "Add_Status", "effect_specifics" : "Chill", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50, "type" : "Weather"
         }
         }
         self.CONDITIONALS = {

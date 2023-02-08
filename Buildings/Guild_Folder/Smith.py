@@ -93,29 +93,22 @@ class Smith:
         elif choice == "Armor":
             equip = hero.armor
         self.draw.draw_background("Smith")
-        if "+++" in equip:
+        if "++" in equip:
             self.draw.draw_text("I can't upgrade this any further.")
-        elif "++" in str(equip) and self.party.items.mana_crystals >= 100:
+        elif "+" in str(equip) and self.party.items.mana_crystals >= 100:
             if choice == "Weapon":
                 hero.weapon += "+"
             elif choice == "Armor":
                 hero.armor += "+"
             self.draw.draw_text("It's as strong as I can make it now.")
             self.party.items.mana_crystals -= 100
-        elif "+" in str(equip) and self.party.items.mana_crystals >= 10:
+        elif "+" not in str(equip) and self.party.items.mana_crystals >= 100:
             if choice == "Weapon":
                 hero.weapon += "+"
             elif choice == "Armor":
                 hero.armor += "+"
             self.draw.draw_text("It's one of my best works.")
             self.party.items.mana_crystals -= 10
-        elif "+" not in str(equip) and self.party.items.mana_crystals >= 1:
-            if choice == "Weapon":
-                hero.weapon += "+"
-            elif choice == "Armor":
-                hero.armor += "+"
-            self.draw.draw_text("It's a little bit stronger now.")
-            self.party.items.mana_crystals -= 1
         else:
             self.draw.draw_text("I can't upgrade this.")
             self.draw.draw_text("Maybe if you had more mana crystals I could do something.", 2)

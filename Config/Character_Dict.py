@@ -11,11 +11,14 @@ class Character_Dict:
             "health" : 10, "attack" : 2, "defense" : 1, "skill" : 2, "speed" : 10
         },
         "Mage" : {
-            "health" : 10, "attack" : 1, "defense" : 1, "skill" : 2, "speed" : 10
+            "health" : 9, "attack" : 1, "defense" : 1, "skill" : 3, "speed" : 10
         },
         "Knight" : {
             "health" : 12, "attack" : 3, "defense" : 3, "skill" : 1, "speed" : 7
         },
+        "Rogue" : {
+            "health" : 10, "attack" : 1, "defense" : 1, "skill" : 2, "speed" : 11
+        }
         }
         self.HERO_SKILLS = {
         "Summoner" : {
@@ -49,7 +52,7 @@ class Character_Dict:
             "level" : 2, "variance" : 1, "health" : 10, "attack" : 0, "defense" : 3, "skill" : 0, "speed" : 5, "skills" : ["Nothing"], "passives" : [], "death_effect" : ["Create Moth"], "preemptives" : [], "conditionals" : []
         },
         "Demon" : {
-            "level" : 10, "variance" : 2, "health" : 12, "attack" : 5, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Last Stand"]
+            "level" : 10, "variance" : 2, "health" : 12, "attack" : 5, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : ["Fireball Heroes"], "preemptives" : [], "conditionals" : ["Last Stand"]
         },
         "Imp" : {
             "level" : 2, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []

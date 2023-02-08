@@ -5,8 +5,10 @@ from Spirits import *
 from Equipment import *
 from Spirit_Factory import *
 from Config.Constants import *
+from Config.Equip_Dict import *
 from Utility.Pick import Pick
 C = Constants()
+E = Equip_Dict()
 
 @dataclass
 class Quest:
@@ -63,7 +65,7 @@ class Records:
 class Party:
     heroes: list[Hero] = None
     spirits: list[Spirit] = None
-    equipment: list[Equipment] = None
+    equipment: list[str] = None
     items: Item_Bag = Item_Bag(10, 1, 1)
     journal: Records = Records()
     quests: list[Quest] = None
@@ -87,18 +89,28 @@ class Party:
     def add_spirit(self, spirit):
         self.spirits.append(spirit)
 
-    def add_equipment(self, equip: Equipment):
-        # Avoid duplicate equipment.
-        check = None
-        for equipment in self.equipment:
-            if equip.name == equipment.name:
-                check = equip.name
-                equipment.power += random.randint(0, 1)
-        if check == None:
-            self.equipment.append(equip)
+    def add_equipment(self, equip):
+        self.equipment.append(equip)
+
+    def remove_heroes_weapon(self, hero: Hero):
+        if hero.weapon != None:
+            self.add_equipment(hero.weapon)
+            hero.weapon = None
+
+    def remove_heroes_armor(self, hero: Hero):
+        if hero.armor != None:
+            self.add_equipment(hero.armor)
+            hero.armor = None
+
+    def equip_to_hero(self, hero: Hero, equip):
+        real_equip = Equipment(**E.EQUIPMENT.get(equip))
+        if real_equip.type == "Armor":
+            hero.armor = equip
+        elif real_equip.type == "Weapon":
+            hero.weapon = equip
 
     def add_location(self, location_name):
-        # Avoid duplicate equipment.
+        # Avoid duplicate locations.
         check = None
         for location in self.locations:
             if location == location_name:
@@ -157,7 +169,7 @@ class Party:
     def save(self):
         self.write_object_list(self.heroes, "_heroes")
         self.write_object_list(self.spirits, "_spirits")
-        self.write_object_list(self.equipment, "_equipment")
+        self.write_str_list(self.equipment, "_equipment")
         self.write_str_list(self.locations, "_locations")
         self.write_object_list(self.quests, "_quests")
         self.write_object(self.items, "_items")
@@ -182,15 +194,6 @@ class Party:
             new_ally = factory.make_spirit(ally)
             load_allies_list.append(new_ally)
         return load_allies_list
-
-    def read_equipment_objects(self, filename):
-        load_equip_list = []
-        jsonFile = open(filename, "r")
-        equip_list = json.load(jsonFile)
-        for equip in equip_list:
-            equipment = Equipment(**equip)
-            load_equip_list.append(equipment)
-        return load_equip_list
 
     def read_quest_objects(self, filename):
         load_list = []
@@ -224,7 +227,7 @@ class Party:
         self.heroes = heroes_list
         ally_list = self.read_ally_objects("_spirits")
         self.spirits = ally_list
-        equipment_list = self.read_equipment_objects("_equipment")
+        equipment_list = self.read_str_list("_equipment")
         self.equipment = equipment_list
         self.quests = self.read_quest_objects("_quests")
         self.locations = self.read_str_list("_locations")

@@ -1,5 +1,5 @@
 import random
-from Buildings.Guild_Folder.Guild_Story import *
+from Buildings.Guild_Folder.Alchemist import *
 from Buildings.Guild_Folder.Smith import *
 from Buildings.Tavern import *
 from Buildings.Training_Grounds import Training_Area
@@ -37,6 +37,10 @@ class Guild:
                 self.quest()
             elif "FINISH" in choice:
                 self.finish_quests()
+            elif "POTIONS" in choice:
+                self.bool = False
+                alchemist = Alchemist(self.party)
+                alchemist.talk()
             elif "SMITH" in choice:
                 self.bool = False
                 smith = Smith(self.party)
@@ -66,6 +70,8 @@ class Guild:
                 self.bool = False
         elif self.party.journal.guild_progress >= 0:
             self.options = ["QUEST", "TALK", "LEAVE"]
+            if "Potions" in self.party.journal.guild_facilities:
+                self.options.append("POTIONS")
             if "Smith" in self.party.journal.guild_facilities:
                 self.options.append("SMITH")
             if "Trainer" in self.party.journal.guild_facilities:
@@ -124,7 +130,11 @@ class Guild:
             self.party.journal.rank_exp = 0
             self.draw_text("Wow, you actually did it.")
             self.draw_text("Good job. Now we'll be dry when the rain comes.", 2)
-            pygame.time.delay(500)
+            pygame.time.delay(1000)
+            self.draw_text("Also if you have money to spare, why not support our local potion brewer?", 3)
+            self.draw_text("He doesn't make the strongest stuff, but it'll be helpful for a newbie.", 4)
+            pygame.time.delay(1000)
+            self.party.journal.guild_facilities.append("Potions")
         elif self.party.journal.rank == 2 and self.party.journal.rank_exp == 0 and self.party.items.mana_crystals > 0:
             self.draw_text("You again? Still nothing.")
             pygame.time.delay(500)

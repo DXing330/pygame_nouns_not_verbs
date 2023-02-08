@@ -82,7 +82,16 @@ class Spirit:
                 # If the chosen skill has no target, then try to use another skill.
                 if len(targets) < 1:
                     skill, targets = self.choose_action(heroes)
-            self.skill -= 1
+            try:
+                self.skill -= skill.cost
+            except:
+                if len(targets) > 1:
+                    self.skill -= len(targets)
+                elif len(targets) == 1:
+                    for target in targets:
+                        self.skill -= target.level
+                else:
+                    self.skill -= 1
             return skill, targets
 
     def choose_target(self, skill, heroes):

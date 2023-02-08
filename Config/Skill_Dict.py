@@ -44,7 +44,7 @@ class Skill_Dict:
             "name" : "Create Moth", "effect" : "Summon", "effect_specifics" : "Moth", "power" : -1, "targets" : "None", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Cure Hero" : {
-            "name" : "Cleanse", "effect" : "Cure_Status", "effect_specifics" : "All", "power" : 1, "targets" : "Hero", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Cleanse", "effect" : "Cure_Status", "effect_specifics" : "All", "power" : 1, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Cure Partner" : {
             "name" : "Cleanse", "effect" : "Cure_Status", "effect_specifics" : "All", "power" : 1, "targets" : "Partner", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
@@ -80,7 +80,10 @@ class Skill_Dict:
             "name" : "Drain", "effect" : "Skill", "effect_specifics" : "Drain Hero", "power" : 1, "targets" : "None", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Energize Hero" : {
-            "name" : "Energize", "effect" : "Change_Stats", "effect_specifics" : "Skill", "power" : 1, "targets" : "Hero", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Energize", "effect" : "Change_Stats", "effect_specifics" : "Skill", "power" : 1, "targets" : "Hero", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+        },
+        "Energize Hero+" : {
+            "name" : "Energize", "effect" : "Change_Stats", "effect_specifics" : "Skill", "power" : 1, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Finish Monster" : {
             "name" : "Execute", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -3, "targets" : "Monster", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 3, "chance" : 100, "condition" : "Low_Health", "condition_specifics" : "20"
@@ -110,13 +113,13 @@ class Skill_Dict:
             "name" : "Freeze", "effect" : "Disable", "effect_specifics" : "All", "power" : 2, "targets" : "Monster", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Status", "condition_specifics" : "Wet"
         },
         "Heal Hero" : {
-            "name" : "Heal Hero", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Hero", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Heal Hero", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Heal Hero+" : {
             "name" : "Heal Hero+", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 2, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Heal Heroes" : {
-            "name" : "Heal Heroes", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "All_Hero", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Heal Heroes", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "All_Hero", "cost" : 4, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Heal Monster" : {
             "name" : "Heal Monster", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "targets" : "Monster", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
@@ -161,7 +164,7 @@ class Skill_Dict:
             "name" : "Reveal", "effect" : "Change_Stats", "effect_specifics" : "Dodge", "power" : -2, "targets" : "All_Monster", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Shield Hero" : {
-            "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Hero", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 2, "targets" : "Hero", "cost" : 2, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Shield Partner" : {
             "name" : "Shield", "effect" : "Change_Stats", "effect_specifics" : "Temp_Health", "power" : 1, "targets" : "Partner", "cost" : 0, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
@@ -173,7 +176,7 @@ class Skill_Dict:
             "name" : "Spot Weakness", "effect" : "Change_Stats", "effect_specifics" : "Defense", "power" : -1, "targets" : "Monster", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 1, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Strike Monster" : {
-            "name" : "Strike", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "Monster", "cost" : "Target", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Strike", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "Monster", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Stun Hero" : {
             "name" : "Stun", "effect" : "Disable", "effect_specifics" : "All", "power" : 1, "targets" : "Hero", "cost" : "Target", "cooldown" : 0, "cooldown_counter" : 3, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"

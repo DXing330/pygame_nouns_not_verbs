@@ -117,15 +117,6 @@ class Troll(Monster):
                 if skill.name == "Heal Self":
                     self.useable_skills.remove(skill)
 
-    # The troll heals unless he is poisoned.
-    def unique_passives(self):
-        poisoned = False
-        for status in self.statuses:
-            if status.name == "Poison":
-                poisoned = True
-        if not poisoned:
-            self.health += self.level
-
 
 class Serpent(Monster):
     def choose_skill(self):
@@ -147,11 +138,6 @@ class Serpent(Monster):
                 for skill in self.battle_skills:
                     if "Poison" in skill.name:
                         self.useable_skills.append(skill)
-    
-    # The serpent is sneaky until it latches onto someone.
-    def unique_passives(self):
-        if self.target == None:
-            self.evasion += self.level * 10
 
     def choose_action(self, heroes, monsters):
         self.action = "Attack"
@@ -163,6 +149,7 @@ class Serpent(Monster):
         if len(self.useable_skills) > 0:
             self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]
             self.action = str(self.used_skill.name)
+
 
 class Cocoon(Monster):
     def choose_action(self, heroes, monsters):

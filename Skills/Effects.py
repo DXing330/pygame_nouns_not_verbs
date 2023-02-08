@@ -57,7 +57,7 @@ class Change_Stats(Effect):
         elif "Defense" in self.effect_specifics:
             self.target.defense += self.power
         elif "Skill" in self.effect_specifics:
-            self.target.skill += self.power//10
+            self.target.skill += max(self.power//10, 1)
         elif "Accuracy" in self.effect_specifics:
             self.target.accuracy += self.power
         elif "Evasion" in self.effect_specifics:

@@ -54,15 +54,29 @@ class Monster_Encounter:
         self.draw.draw_battle_stats()
         self.draw.draw_turn_order(self.battlers)
 
+    def clear_weather(self):
+        # There can only be one weather effect at a time.
+        for aura in self.battle_auras:
+            if aura.type == "Weather":
+                self.battle_auras.remove(aura)
+
     def update_auras(self):
         self.battle_auras: list[Aura] = []
         for aura in self.auras:
             if aura != "None":
                 new_aura = Aura(**P.AURAS.get(aura))
-                self.battle_auras.append(new_aura)
+                self.add_aura(new_aura)
 
     def add_aura(self, aura: Aura):
-        self.battle_auras.append(aura)
+        # Don't add multiple of the same aura.
+        check = None
+        for current_aura in self.battle_auras:
+            if current_aura.name == aura.name:
+                check = current_aura.name
+        if check == None:
+            if aura.type == "Weather":
+                self.clear_weather()
+            self.battle_auras.append(aura)
 
     def generate_monsters(self):
         min_monsters = 0
@@ -284,11 +298,11 @@ class Monster_Encounter:
             pick_from = Pick(choices, False)
             potion = pick_from.pick()
             self.draw_battle()
-            if potion == "Health" and self.party.items.health_potions > 0:
+            if potion == "Health":
                 self.party.items.health_potions -= 1
-                hero.health += hero.max_health//2
+                hero.health += hero.max_health//3
                 self.draw.draw_text(hero.name+" drinks a health potion.")
-            elif potion == "Energy" and self.party.items.energy_potions > 0:
+            elif potion == "Energy":
                 self.party.items.energy_potions -= 1
                 hero.skill += hero.max_skill//2
                 self.draw.draw_text(hero.name+" drinks an energy potion.")
@@ -345,6 +359,8 @@ class Monster_Encounter:
             pygame.time.delay(500)
 
     def monster_turn(self, monster: Monster):
+        # Some monsters have a special effect so they're immune to stuns so they take their unique passive step first.
+        monster.unique_passives()
         self.status_step(monster)
         if len(self.heroes) > 0 and monster.turn:
             self.passive_step(monster)
@@ -461,7 +477,6 @@ class Monster_Encounter:
             character.target = None
 
     def passive_step(self, character: Character, prandom = True):
-        character.unique_passives()
         for skill in character.battle_skills:
             if skill.cooldown > 0:
                 skill.cooldown -= 1
@@ -618,7 +633,7 @@ class Monster_Encounter:
     
     def quest_update(self):
         for quest in self.party.quests:
-            if self.location.name == quest.location and not quest.completed:
+            if (((self.location.name == quest.location) or (quest.location == "Any")) and not quest.completed):
                 # For kill quests, keep track of how many monster's are killed.
                 if quest.requirement == "Kill":
                     for monster in self.monster_list:
