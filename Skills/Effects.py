@@ -37,7 +37,9 @@ class Effect(ABC):
     effect: str
     effect_specifics: str
     power: int
-    target: any
+
+    def add_target(self, target):
+        self.target = target
 
     @abstractmethod
     def apply_effect(self):

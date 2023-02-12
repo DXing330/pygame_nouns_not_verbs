@@ -27,10 +27,17 @@ class Battle_Zone:
 
     def reset_counter(self):
         self.counter = 0
-        self.counter_limit = round(random.gauss((self.width+self.height)/self.location.dungeon_size, max(self.width, self.height)/self.location.dungeon_size))
+        self.counter_limit = max(round(random.gauss((self.width+self.height)/self.location.dungeon_size, max(self.width, self.height)/self.location.dungeon_size)), max(self.width, self.height))
 
     def determine_weather(self):
         self.weather = self.location.weather[random.randint(0, len(self.location.weather)-1)]
+
+    def check_on_party(self):
+        defeated = True
+        for hero in self.party.battle_party:
+            if hero.health > 0:
+                defeated = False
+        return defeated
 
     def battle_loop(self):
         danger = True
@@ -67,3 +74,4 @@ class Battle_Zone:
                     battle.boss = True
                 battle.start_phase()
                 self.draw_overworld()
+                danger = not self.check_on_party()

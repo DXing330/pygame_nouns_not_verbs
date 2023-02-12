@@ -1,6 +1,7 @@
 import json
 import copy
 from Hero import *
+from NPC import *
 from Spirits import *
 from Equipment import *
 from Spirit_Factory import *
@@ -70,6 +71,7 @@ class Party:
     journal: Records = Records()
     quests: list[Quest] = None
     locations: list[str] = None
+    npcs: list[NPC] = None
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
 
@@ -77,7 +79,8 @@ class Party:
         for quest in self.quests:
             # If the heroes take too long then they fail.
             if self.journal.days > quest.start_day + quest.time_limit:
-                quest.failed = True
+                if quest.time_limit > 0:
+                    quest.failed = True
             if quest.specifics_amount <= 0 and not quest.failed:
                 quest.completed = True
 
@@ -195,6 +198,15 @@ class Party:
             load_allies_list.append(new_ally)
         return load_allies_list
 
+    """def read_npc_objects(self, filename):
+        load_list = []
+        jsonFile = open(filename, "r")
+        npc_list = json.load(jsonFile)
+        for npc in npc_list:
+            new_npc = NPC(**npc)
+            load_list.append(new_npc)
+        return load_list"""
+
     def read_quest_objects(self, filename):
         load_list = []
         jsonFile = open(filename, "r")
@@ -221,6 +233,7 @@ class Party:
         starter_spirit.update_skill_list()
         self.add_spirit(starter_spirit)
         self.quests = []
+        self.locations = ["None", "Starter Forest"]
 
     def load(self):
         heroes_list = self.read_hero_objects("_heroes")

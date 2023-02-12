@@ -142,3 +142,8 @@ class Draw:
                         user_text = user_text[:-1]
                     else:
                         user_text += event.unicode
+
+    def draw_corner_text(self, text):
+        string = FONT.render(text, 1, C.WHITE)
+        WIN.blit(string, (self.width - string.get_width() - C.PADDING, C.PADDING))
+        pygame.display.update()

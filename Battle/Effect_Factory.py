@@ -10,34 +10,27 @@ class Effect_Factory:
     targets: list
 
     def make_effect(self):
+        if "Change_Stats" in self.effect:
+                effect = Change_Stats(self.effect, self.effect_specifics, self.power)
+        elif "Add_Buff" in self.effect:
+            effect = Add_Buff(self.effect, self.effect_specifics, self.power)
+        elif "Add_Status" in self.effect:
+            effect = Add_Status(self.effect, self.effect_specifics, self.power)
+        elif "Cure_Status" in self.effect:
+            effect = Cure_Status(self.effect, self.effect_specifics, self.power)
+        elif "Disable" in self.effect:
+            effect = Disable(self.effect, self.effect_specifics, self.power)
+        elif "Increase_Damage" in self.effect:
+            effect = Increase_Damage(self.effect, self.effect_specifics, self.power)
+        elif "Decrease_Damage" in self.effect:
+            effect = Decrease_Damage(self.effect, self.effect_specifics, self.power)
+        elif "Critical_Hit" in self.effect:
+            effect = Critical_Hit(self.effect, self.effect_specifics, self.power)
+        elif "Dodge" in self.effect:
+            effect = Dodge(self.effect, self.effect_specifics, self.power)
         for target in self.targets:
-            if self.effect == "Change_Stats":
-                effect = Change_Stats(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
-            if self.effect == "Add_Buff":
-                effect = Add_Buff(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
-            if self.effect == "Add_Status":
-                effect = Add_Status(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
-            if self.effect == "Cure_Status":
-                effect = Cure_Status(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
-            if self.effect == "Disable":
-                effect = Disable(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
-            if self.effect == "Increase_Damage":
-                effect = Increase_Damage(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
-            if self.effect == "Decrease_Damage":
-                effect = Decrease_Damage(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
-            if self.effect == "Critical_Hit":
-                effect = Critical_Hit(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
-            if self.effect == "Dodge":
-                effect = Dodge(self.effect, self.effect_specifics, self.power, target)
-                effect.apply_effect()
+            effect.add_target(target)
+            effect.apply_effect()
 
 
 @dataclass

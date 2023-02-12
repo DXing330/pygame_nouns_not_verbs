@@ -202,7 +202,7 @@ class Monster_Encounter:
             target_list = self.spirits
         if cost:
             self.skill_apply_cost_cooldown_use(user, skill, target_list, pick_randomly)
-        else:
+        elif not cost:
             self.skill_activation(user, skill, target_list, pick_randomly)
 
     def skill_apply_cost_cooldown_use(self, user, skill: Skill, targets: list, pick_randomly = True):
@@ -317,10 +317,11 @@ class Monster_Encounter:
         self.battlers.append(character)
 
     def hero_turn(self, hero: Character):
+        # Heroes unique passive will come from whatever accessory they chose to wear?
         # Negative statuses take effect even if the character is stunned.
         if not hero.delayed:
             self.status_step(hero)
-        if len(self.monsters) > 0 and hero.turn:
+        if len(self.monsters) > 0 and hero.turn and hero.health > 0:
             # If someone delays their turn they don't get another round of passives.
             if hero.passives and not hero.delayed:
                 self.passive_step(hero, False)
@@ -362,7 +363,7 @@ class Monster_Encounter:
         # Some monsters have a special effect so they're immune to stuns so they take their unique passive step first.
         monster.unique_passives()
         self.status_step(monster)
-        if len(self.heroes) > 0 and monster.turn:
+        if len(self.heroes) > 0 and monster.turn and monster.health > 0:
             self.passive_step(monster)
             if monster.used_skill != None and monster.skills:
                 self.skill_targeting(monster, monster.used_skill)
@@ -405,15 +406,14 @@ class Monster_Encounter:
         self.damage = Damage(attacker.attack)
         hit = self.check_hit(attacker, defender)
         if hit:
-            multiplier = (attacker.damage_dealt/100) * (defender.damage_taken/100)
-            #print ("Before: "+str(self.damage.damage))
+            print ("Before: "+str(self.damage.damage))
             if attacker.weapon != None:
                 attack_effect = Equipment_Effect_Factory(attacker.weapon, self.damage, defender)
                 attack_effect.make_effect()
             if defender.armor != None:
                 attack_effect = Equipment_Effect_Factory(defender.armor, self.damage, attacker)
                 attack_effect.make_effect()
-            #print ("After: "+str(self.damage.damage))
+            print ("After: "+str(self.damage.damage))
             self.damage.damage -= defender.defense
             # Temporary health is used before actual health, like blocking with a shield.
             if defender.temp_health > 0:
@@ -422,6 +422,7 @@ class Monster_Encounter:
                 self.damage.damage = 0
                 if defender.temp_health <= 0:
                     self.damage.damage = - defender.temp_health
+            multiplier = (attacker.damage_dealt/100) * (defender.damage_taken/100)
             defender.health -= max(round(self.damage.damage * multiplier), 1)
             self.draw.draw_text(attacker.name+" attacks "+defender.name)
             pygame.time.delay(1000)
@@ -613,10 +614,6 @@ class Monster_Encounter:
                 hero.skill = 0
         # If the heroes win then they get rewards.
         if len(self.heroes) > 0:
-            if self.boss:
-                self.party.items.mana_crystals += 1
-                self.party.items.coins += self.amount
-            self.party.items.coins += random.randint(1, max(1, self.amount))
             for spirit in self.party.spirits:
                 spirit.exp += random.randint(1, max(1, self.amount))
                 spirit.level_up()
@@ -626,9 +623,12 @@ class Monster_Encounter:
             win = True
             self.draw_battle()
             self.draw.draw_text("The heroes win.")
-            pygame.time.delay(1000)
+            pygame.time.delay(750)
         elif len(self.heroes) <= 0:
             win = False
+            for hero in self.party.heroes:
+                hero.exp -= hero.level
+                self.party.items.coins -= min(self.party.items.coins, hero.level)
         return win
     
     def quest_update(self):

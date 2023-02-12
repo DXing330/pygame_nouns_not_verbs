@@ -75,7 +75,7 @@ class Monster(Character):
         self.useable_skills = []
         # Basic monster always has a chance to basic attack.
         number = random.randint(0, 1)
-        if self.skills and number > 0:
+        if self.skills and number > 0 and self.skill > 0:
             self.choose_skill()
         if len(self.useable_skills) > 0:
             self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]

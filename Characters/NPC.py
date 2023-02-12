@@ -18,7 +18,7 @@ class NPC:
     role: str
     role_specifics: str
     locations: list
-    flags: list[NPC_Flag] = 0
+    status: str = "Alive"
     attitude: int = 0
 
     def remove_flags(self):
@@ -30,5 +30,5 @@ class NPC:
         pass
 
 
-potion_seller = NPC("Bob", "Store", "Potions", ["Guild"], [], 0)
+potion_seller = NPC("Bob", "Store", "Potions", ["Guild"], "Alive", 0)
 join_party = NPC_Flag("Quest", "None", "Help", "Job", "Join_Party", "Mage")

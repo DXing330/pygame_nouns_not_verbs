@@ -13,6 +13,7 @@ class Hero(Character):
     exp: int = 0
     weapon: str = None
     armor: str =  None
+    accessory: str = None
     real_name: str = None
 
     def update_stats(self):

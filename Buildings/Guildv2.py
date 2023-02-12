@@ -88,8 +88,9 @@ class Guild:
             pygame.time.delay(2000)
         # Need to determine what level of quests are possible.
         possible_quests = []
-        for number in range(0, self.party.journal.rank):
-            quest = Q.QUEST_RANKS.get(number)
+        while len(possible_quests) < self.party.journal.rank:
+            num = random.randint(1, self.party.journal.rank)
+            quest = Q.QUEST_RANKS.get(num)
             if quest != None:
                 new_quest = Quest(**Q.ALL_QUESTS.get(quest))
                 # Randomize the quests a little for some variation.
