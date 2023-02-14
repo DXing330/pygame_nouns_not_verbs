@@ -96,6 +96,18 @@ class Add_Buff(Effect):
 
 
 @dataclass
+class Remove_Buff(Effect):
+
+    def apply_effect(self):
+        if self.effect_specifics == "All":
+            if len(self.target.buffs) > 0:
+                self.target.buffs.pop(-1)
+        for buff in self.target.buffs:
+            if buff.name == self.effect_specifics:
+                self.target.buffs.remove(buff)
+
+
+@dataclass
 class Add_Status(Effect):
 
     def apply_effect(self):

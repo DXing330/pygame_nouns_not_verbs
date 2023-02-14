@@ -23,7 +23,7 @@ class Draw:
         WIN.blit(string, ((self.width - string.get_width())//2, C.PADDING * height))
         pygame.display.update()
 
-    def draw_background(self, background):
+    def draw_background(self, background = None):
         self.width = WIN.get_width()
         self.height = WIN.get_height()
         if background == None:
@@ -105,6 +105,20 @@ class Draw:
             WIN.blit(stat_text, (self.width - stat_text.get_width() - C.PADDING, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()
+
+    def draw_full_hero_stats(self, heroes):
+        WIN.fill((0, 0, 0))
+        self.counter = 1
+        for hero in heroes:
+            stat_text = FONT.render(hero.full_stats_text(), 1, C.WHITE)
+            WIN.blit(stat_text, ((self.width - stat_text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+        pygame.display.update()
+        view = True
+        while view:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    view = False
 
     def draw_battle_stats(self):
         self.draw_hero_stats()

@@ -24,14 +24,14 @@ class Labyrinth(Battle_Zone):
     def update_dimensions(self):
         self.height = WIN.get_height()
         self.width = WIN.get_width()
-        self.player = pygame.Rect(0, 0, self.width//20, self.width//20)
+        self.player = pygame.Rect(self.width//2, self.height//2, self.width//20, self.width//20)
 
     def generate_labyrinth(self):
         self.floors = [[0 for number in range(self.floor_size)] for number in range(self.total_floors)]
         self.floors_status = [[False for number in range(self.floor_size)] for number in range(self.total_floors)]
         self.generate_next_floor_passage()
-        self.generate_previous_floor_passage()
         self.generate_loop_passages()
+        self.generate_previous_floor_passage()
         self.decide_possible_passages()
 
     def pick_unused_passage(self, floor):
@@ -119,6 +119,15 @@ class Labyrinth(Battle_Zone):
 
     def finished_lab(self):
         self.party.items.coins += self.total_floors * (self.floor_size//2)
+        for quest in self.party.quests:
+            if quest.requirement == "Clear" and quest.location == self.location.name:
+                quest.completed = True
+            if quest.requirement == "Save" and quest.location == self.location.name:
+                for hero in self.party.battle_party:
+                    if hero.name == quest.specifics:
+                        quest.completed = True
+                        self.party.battle_party.remove(hero)
+
     def lab_loop(self):
         self.lab = True
         print (self.floors)
@@ -128,6 +137,9 @@ class Labyrinth(Battle_Zone):
         while self.lab:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_x:
+                        self.party.menu()
+                        self.draw_passages()
                     if event.key == pygame.K_SPACE:
                         pygame.event.clear()
                         passage = None

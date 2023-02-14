@@ -15,5 +15,5 @@ class Constants:
         self.MONSTER_SIZE = 60
 
 
-        self.PARTY_LIMIT = 3
+        self.PARTY_LIMIT = 5
         self.LEVEL_LIMIT = 10

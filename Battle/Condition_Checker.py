@@ -24,6 +24,16 @@ class Condition_Checker:
             return False
 
     def check_target_condition(self, user, conditional: Conditional_Effect, target):
+        if conditional.condition == "Buff":
+            for buff in target.buffs:
+                if buff.name == conditional.condition_specifics:
+                    return True
+            return False
+        if conditional.condition == "User Buff":
+            for buff in user.buffs:
+                if buff.name == conditional.condition_specifics:
+                    return True
+            return False
         if conditional.condition == "Status":
             for status in target.statuses:
                 if status.name == conditional.condition_specifics:

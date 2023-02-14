@@ -16,6 +16,7 @@ class Spirit:
     exp: int = 0
     skill: int = 0
     max_level: int = 10
+    active: bool = True
     target = None
 
     def update_skills(self, skill_list: list):

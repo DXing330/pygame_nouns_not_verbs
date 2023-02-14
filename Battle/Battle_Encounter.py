@@ -207,6 +207,7 @@ class Monster_Encounter:
 
     def skill_apply_cost_cooldown_use(self, user, skill: Skill, targets: list, pick_randomly = True):
         cost = skill.cost
+        print ("CD: "+str(skill.cooldown))
         if skill.cooldown <= 0 and user.skill > 0:
             skill.cooldown += skill.cooldown_counter
             if skill.cost == "Target":
@@ -220,6 +221,9 @@ class Monster_Encounter:
             user.skill -= cost
             self.skill_activation(user, skill, targets, pick_randomly)
         else:
+            print ("Failed")
+            print (user.skill)
+            print ("COST: "+str(cost))
             self.draw_battle()
             self.draw.draw_text(user.name+" failed to "+skill.name)
             pygame.time.delay(500)
@@ -252,6 +256,9 @@ class Monster_Encounter:
         elif skill.effect == "Target":
             for target in targets:
                 user.target = target
+        elif skill.effect == "Set_Target":
+            for target in targets:
+                target.target = user
         elif skill.effect == "Command":
             for target in targets:
                 self.draw_battle()
@@ -264,11 +271,15 @@ class Monster_Encounter:
         elif skill.effect == "Skill":
             for word in S.COMPOUND_SKILLS.get(skill.effect_specifics):
                 new_skill = Skill(**S.ALL_SKILLS.get(word))
-                self.skill_targeting(user, new_skill, pick_randomly, cost=False)
+                self.skill_activation(user, new_skill, targets, pick_randomly)
         elif skill.effect == "Attack":
+            if skill.effect_specifics == "Basic":
+                status = None
+            else:
+                status = skill.effect_specifics
             for target in targets:
                 for number in range(0, skill.power):
-                    self.attack_step(user, target)
+                    self.attack_step(user, target, status)
         else:
             # Some skills will only activate a portion of the time, ex. some status effects.
             activation = random.randint(0, 99)
@@ -342,22 +353,23 @@ class Monster_Encounter:
         self.end_step(hero)
 
     def spirit_turn(self, spirit: Spirit):
-        self.draw_battle()
-        skill, targets = spirit.choose_action(self.heroes)
-        # If the spirit has already picked targets then activate the skill.
-        if skill != None and len(targets) > 0:
-            self.skill_activation(spirit, skill, targets)
-            self.draw.draw_text(spirit.name+" uses "+skill.name)
-            pygame.time.delay(1000)
-        # If the spirit hasn't already picked targets then pick them normally.
-        elif skill != None and len(targets) <= 0:
-            self.skill_targeting(spirit, skill, True, False)
+        if spirit.active and len(self.heroes) > 0 and len(self.monsters) > 0:
             self.draw_battle()
-            self.draw.draw_text(spirit.name+" uses "+skill.name)
-            pygame.time.delay(1000)
-        else:
-            self.draw.draw_text(spirit.name+" recharges energy.")
-            pygame.time.delay(500)
+            skill, targets = spirit.choose_action(self.heroes)
+            # If the spirit has already picked targets then activate the skill.
+            if skill != None and len(targets) > 0:
+                self.skill_activation(spirit, skill, targets)
+                self.draw.draw_text(spirit.name+" uses "+skill.name)
+                pygame.time.delay(1000)
+            # If the spirit hasn't already picked targets then pick them normally.
+            elif skill != None and len(targets) <= 0:
+                self.skill_targeting(spirit, skill, True, False)
+                self.draw_battle()
+                self.draw.draw_text(spirit.name+" uses "+skill.name)
+                pygame.time.delay(1000)
+            else:
+                self.draw.draw_text(spirit.name+" recharges energy.")
+                pygame.time.delay(500)
 
     def monster_turn(self, monster: Monster):
         # Some monsters have a special effect so they're immune to stuns so they take their unique passive step first.
@@ -371,7 +383,10 @@ class Monster_Encounter:
                 self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
                 pygame.time.delay(1000)
             else:
-                target = self.heroes[random.randint(0, len(self.heroes) - 1)]
+                if monster.target != None:
+                    target = monster.target
+                else:
+                    target = self.heroes[random.randint(0, len(self.heroes) - 1)]
                 self.attack_step(monster, target)
         elif len(self.heroes) > 0 and not monster.turn:
             self.draw.draw_text(monster.name+" is stunned.")
@@ -400,20 +415,20 @@ class Monster_Encounter:
                     effect = Effect_Factory(conditional.effect, conditional.effect_specifics, round(conditional.power * defender.level), [defender])
                     effect.make_effect()
 
-    def attack_step(self, attacker: Character, defender: Character):
+    def attack_step(self, attacker: Character, defender: Character, attack_status = None):
         self.attack_conditionals(attacker, defender)
         self.draw_battle()
         self.damage = Damage(attacker.attack)
         hit = self.check_hit(attacker, defender)
         if hit:
-            print ("Before: "+str(self.damage.damage))
+            #print ("Before: "+str(self.damage.damage))
             if attacker.weapon != None:
                 attack_effect = Equipment_Effect_Factory(attacker.weapon, self.damage, defender)
                 attack_effect.make_effect()
             if defender.armor != None:
                 attack_effect = Equipment_Effect_Factory(defender.armor, self.damage, attacker)
                 attack_effect.make_effect()
-            print ("After: "+str(self.damage.damage))
+            #print ("After: "+str(self.damage.damage))
             self.damage.damage -= defender.defense
             # Temporary health is used before actual health, like blocking with a shield.
             if defender.temp_health > 0:
@@ -424,6 +439,10 @@ class Monster_Encounter:
                     self.damage.damage = - defender.temp_health
             multiplier = (attacker.damage_dealt/100) * (defender.damage_taken/100)
             defender.health -= max(round(self.damage.damage * multiplier), 1)
+            if attack_status != None:
+                status_effect = Effect_Factory("Add_Status", attack_status, 1, [defender])
+                status_effect.make_effect()
+                print (defender.statuses)
             self.draw.draw_text(attacker.name+" attacks "+defender.name)
             pygame.time.delay(1000)
         else:
@@ -577,7 +596,7 @@ class Monster_Encounter:
             self.draw_battle()
             self.make_turn_order()
             for spirit in self.spirits:
-                if len(self.heroes) > 0 and len(self.monsters) > 0:
+                if len(self.heroes) > 0 and len(self.monsters) > 0 and spirit.active:
                     self.draw_battle()
                     self.spirit_passives(spirit)
                     self.spirit_turn(spirit)
@@ -612,14 +631,21 @@ class Monster_Encounter:
             if check == None:
                 hero.health = 0
                 hero.skill = 0
+            if hero.health <= 0:
+                self.party.battle_party.remove(hero)
         # If the heroes win then they get rewards.
         if len(self.heroes) > 0:
             for spirit in self.party.spirits:
                 spirit.exp += random.randint(1, max(1, self.amount))
                 spirit.level_up()
             for hero in self.party.heroes:
-                hero.exp += random.randint(1, max(1, self.amount))
-                hero.level_up()
+                battled = False
+                for battler in self.party.battle_party:
+                    if battler.name == hero.name:
+                        battled = True
+                if battled:
+                    hero.exp += random.randint(1, max(1, self.amount))
+                    hero.level_up()
             win = True
             self.draw_battle()
             self.draw.draw_text("The heroes win.")

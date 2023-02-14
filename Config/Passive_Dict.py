@@ -4,6 +4,12 @@ class Passive_Dict:
         "Adrenaline" : {
             "name" : "Adrenaline", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : 1, "turns" : 5
         },
+        "Curse" : {
+            "name" : "Curse", "effect" : "Change_Stats", "effect_specifics" : "All_Base", "power" : -1, "turns" : 5
+        },
+        "Invisible" : {
+            "name" : "Invisible", "effect" : "Change_Stats", "effect_specifics" : "Evasion", "power" : 10, "turns" : 5
+        },
         "Regenerate" : {
             "name" : "Regenerate", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 1, "turns" : 5
         }
@@ -17,6 +23,9 @@ class Passive_Dict:
         },
         "Chill" : {
             "name" : "Chill", "effect" : "Change_Stats", "effect_specifics" : "Physical", "power" : -1, "turns" : 5
+        },
+        "Curse" : {
+            "name" : "Curse", "effect" : "Change_Stats", "effect_specifics" : "All_Base", "power" : -1, "turns" : 5
         },
         "Entangle" : {
             "name" : "Entangle", "effect" : "Change_Stats", "effect_specifics" : "Attack", "power" : -1, "turns" : 5
@@ -42,10 +51,10 @@ class Passive_Dict:
             "name" : "Darkness", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "Heroes", "power" : -30, "turns" : -1, "chance" : 100, "type" : "None"
         },
         "Fog" : {
-            "name" : "Fog", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "ALL", "power" : -30, "turns" : -1, "chance" : 50, "type" : "None"
+            "name" : "Fog", "effect" : "Change_Stats", "effect_specifics" : "Accuracy", "targets" : "ALL", "power" : -20, "turns" : -1, "chance" : 50, "type" : "None"
         },
         "Rain" : {
-            "name" : "Rain", "effect" : "Add_Status", "effect_specifics" : "Wet", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50, "type" : "Weather"
+            "name" : "Rain", "effect" : "Add_Status", "effect_specifics" : "Wet", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 100, "type" : "Weather"
         },
         "Snow" : {
             "name" : "Snow", "effect" : "Add_Status", "effect_specifics" : "Chill", "targets" : "ALL", "power" : 1, "turns" : -1, "chance" : 50, "type" : "Weather"

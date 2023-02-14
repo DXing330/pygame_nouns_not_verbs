@@ -169,9 +169,36 @@ class Cocoon(Monster):
         self.level += 1
 
 
-class Explosive(Monster):
+class Assasin(Monster):
     def choose_skill(self):
-        if self.counter < 3:
-            self.counter += 1
-        else:
-            self.used_skill = "Explode"
+        invisible = False
+        for buff in self.buffs:
+            if buff.name == "Invisible":
+                invisible = True
+        # The assasin will always try to go invisible to use its other skills.
+        if not invisible:
+            for skill in self.battle_skills:
+                if "Invisible" in skill.name:
+                    self.useable_skills.append[skill]
+        if invisible:
+            # The assasin will go for the kill after buffing.
+            if self.damage_dealt > 100:
+                for skill in self.battle_skills:
+                    if skill.effect == "Attack":
+                        self.useable_skills.append(skill)
+            # Otherwise the assasin will buff themselves.
+            elif self.damage_dealt <= 100:
+                for skill in self.battle_skills:
+                    if skill.effect_specifics == "Damage_Dealt":
+                        self.useable_skills.append(skill)
+
+    def choose_action(self, heroes, monsters):
+        self.action = "Attack"
+        self.used_skill = None
+        self.skill += 1
+        self.useable_skills = []
+        if self.skills and self.skill > 0:
+            self.choose_skill()
+        if len(self.useable_skills) > 0:
+            self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]
+            self.action = str(self.used_skill.name)

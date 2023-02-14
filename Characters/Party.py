@@ -7,6 +7,7 @@ from Equipment import *
 from Spirit_Factory import *
 from Config.Constants import *
 from Config.Equip_Dict import *
+from Utility.Draw import Draw
 from Utility.Pick import Pick
 C = Constants()
 E = Equip_Dict()
@@ -147,6 +148,41 @@ class Party:
                 hero = pick_from.pick()
                 self.battle_party.append(hero)
                 possible_picks.remove(hero)
+
+    def menu(self):
+        draw = Draw()
+        draw.draw_background()
+        choices = ["STATS", "ITEM", "SPIRIT"]
+        pick_from = Pick(choices, False)
+        choice = pick_from.pick()
+        if choice == "STATS":
+            draw.draw_full_hero_stats(self.battle_party)
+        if choice == "SPIRIT":
+            draw.draw_background()
+            pick_spirit = Pick(self.spirits, False)
+            spirit: Spirit = pick_spirit.pick()
+            if spirit.active:
+                spirit.active = False
+            elif not spirit.active:
+                spirit.active = True
+        if choice == "ITEM":
+            draw.draw_background()
+            choices = []
+            if self.items.health_potions > 0:
+                choices.append("Health")
+            if self.items.energy_potions > 0:
+                choices.append("Energy")
+            if len(choices) > 0:
+                pick_from = Pick(choices, False)
+                potion = pick_from.pick()
+            pick_from = Pick(self.battle_party, False)
+            hero: Hero = pick_from.pick()
+            if potion == "Health":
+                self.items.health_potions -= 1
+                hero.health += hero.max_health//3
+            elif potion == "Energy":
+                self.items.energy_potions -= 1
+                hero.skill += hero.max_skill//2
 
     def write_object(self, object, filename):
         jsonP = json.dumps(object.__dict__)

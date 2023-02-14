@@ -37,6 +37,10 @@ class Hero(Character):
         text = str(self.name+"~ HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" SKL: "+str(round(self.skill)))
         return text
 
+    def full_stats_text(self):
+        text = str(self.name+"~ MAX HP: "+str(self.max_health)+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" MAX SKL: "+str(self.max_skill)+" SKL: "+str(round(self.skill)))
+        return text
+
     def update_skill_list(self):
         dict = CD.HERO_SKILLS.get(self.name)
         if len(self.skill_list) <= 0:

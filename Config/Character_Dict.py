@@ -24,11 +24,14 @@ class Character_Dict:
         "Summoner" : {
             0 : "Command Spirit", 2 : "Summon Turret", 4 : "Summon Turret+", 6 : "Summon Golem", 8 : "Summon Golem+"
         },
+        "Hunter" : {
+            0 : "Poison Monster Attack", 2 : "Blind Monster", 4 : "Spot Monster Weakness", 6 : "Bind Monster", 8 : "Stun Monster"
+        },
+        "Knight" : {
+            0 : "Shield Self", 2 : "Fortify Self", 4 : "Taunt Monster", 6 : "Shield Heroes", 8 : "Taunt Monsters"
+        },
         "Warrior" : {
             0 : "Double Attack", 2 : "Shield Self", 4 : "Focus", 6 : "Wide Slash", 8 : "Triple Slash"
-        },
-        "Hunter" : {
-            0 : "Poison Monster", 2 : "Blind Monster", 4 : "Spot Monster Weakness", 6 : "Bind Monster", 8 : "Stun Monster"
         }
         }
         self.SPIRIT_SKILLS = {
@@ -48,11 +51,20 @@ class Character_Dict:
         }
         }
         self.MONSTER_STATS = {
+        "_Dummy" : {
+            "level" : 1, "variance" : 1, "health" : 0, "attack" : 0, "defense" : 0, "skill" : 0, "speed" : 0, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+        },
+        "Assasin" : {
+            "level" : 9, "variance" : 1, "health" : 7, "attack" : 4, "defense" : 1, "skill" : 3, "speed" : 11, "skills" : ["Assasinate Hero", "Identify Hero Weakness", "Invisible Self"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+        },
         "Cocoon" : {
             "level" : 2, "variance" : 1, "health" : 10, "attack" : 0, "defense" : 3, "skill" : 0, "speed" : 5, "skills" : ["Nothing"], "passives" : [], "death_effect" : ["Create Moth"], "preemptives" : [], "conditionals" : []
         },
         "Demon" : {
             "level" : 10, "variance" : 2, "health" : 12, "attack" : 5, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : ["Fireball Heroes"], "preemptives" : [], "conditionals" : ["Last Stand"]
+        },
+        "Elemental" : {
+            "level" : 8, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Imp" : {
             "level" : 2, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []

@@ -4,3 +4,13 @@ class NPC_Dict:
         self.EQUIPMENT_STORE = {}
         self.POTION_STORE = {0: "Health", 1: "Energy"}
         self.POTION_PRICES = {"Health": 50, "Energy": 50}
+        self.NPC_STATS = {
+        "Maid" : {
+            "level" : 2, "health" : 10, "attack" : 1, "defense" : 1, "skill" : 0, "speed" : 10
+        }
+        }
+        self.NPC_SKILLS = {
+        "Maid" : {
+            "Skills" : ["Cower"], "Passives" : [], "Conditionals" : []
+        }
+        }

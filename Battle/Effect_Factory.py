@@ -16,6 +16,8 @@ class Effect_Factory:
             effect = Add_Buff(self.effect, self.effect_specifics, self.power)
         elif "Add_Status" in self.effect:
             effect = Add_Status(self.effect, self.effect_specifics, self.power)
+        elif "Remove_Buff" in self.effect:
+            effect = Remove_Buff(self.effect, self.effect_specifics, self.power)
         elif "Cure_Status" in self.effect:
             effect = Cure_Status(self.effect, self.effect_specifics, self.power)
         elif "Disable" in self.effect:
