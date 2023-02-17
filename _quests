@@ -1,1 +1,1 @@
-[]
+[{"name": "Rescue Maid", "giver": "Guild", "location": "Dark Forest", "requirement": "Save", "specifics": "Maid", "specifics_amount": 1, "start_day": 175, "time_limit": -1, "completed": false, "failed": true, "reward_type": "Coins", "reward_amount": 4}]

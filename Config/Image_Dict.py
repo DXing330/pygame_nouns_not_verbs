@@ -46,5 +46,5 @@ VILLAGE = pygame.image.load(os.path.join("Assets", "village.png"))
 class Image_Dict:
     def __init__(self):
         self.IMAGES = {
-        "Angel" : ANGEL, "Cave" : CAVE, "Demon" : DEMON, "Forest" : FOREST, "Goblin" : GOBLIN, "Golem" : GOLEM, "Guild" : GUILD, "Hob Goblin" : BIG_GOBLIN, "Hunter" : HUNTER, "Imp" : IMP, "Orc" : ORC, "Map" : MAP, "Serpent" : SERPENT, "Smith" : SMITH, "Summoner" : SUMMONER, "Troll" : TROLL, "Turret" : TURRET, "Vampire" : VAMPIRE, "Village" : VILLAGE, "Warrior" : WARRIOR, "Werewolf" : BEAST, "Wolf" : SMALL_BEAST
+        "Angel" : ANGEL, "Cave" : CAVE, "Demon" : DEMON, "Forest" : FOREST, "Goblin" : GOBLIN, "Golem" : GOLEM, "Guild" : GUILD, "Hob Goblin" : BIG_GOBLIN, "Hunter" : HUNTER, "Imp" : IMP, "Orc" : ORC, "Maid" : SUMMONER, "Map" : MAP, "Serpent" : SERPENT, "Smith" : SMITH, "Summoner" : SUMMONER, "Troll" : TROLL, "Turret" : TURRET, "Vampire" : VAMPIRE, "Village" : VILLAGE, "Warrior" : WARRIOR, "Werewolf" : BEAST, "Wolf" : SMALL_BEAST
         }

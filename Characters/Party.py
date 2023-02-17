@@ -4,6 +4,7 @@ from Hero import *
 from NPC import *
 from Spirits import *
 from Equipment import *
+from Encoder_Decoders import *
 from Spirit_Factory import *
 from Config.Constants import *
 from Config.Equip_Dict import *
@@ -137,62 +138,103 @@ class Party:
         for hero in self.heroes:
             hero.update_stats()
 
-    def pick_battle_party(self):
-        if len(self.heroes) <= C.PARTY_LIMIT:
-            self.battle_party = copy.deepcopy(self.heroes)
-        else:
-            possible_picks = copy.copy(self.heroes)
-            self.battle_party = []
-            pick_from = Pick(possible_picks, False)
-            while len(self.battle_party) < C.PARTY_LIMIT:
-                hero = pick_from.pick()
-                self.battle_party.append(hero)
-                possible_picks.remove(hero)
+    def use_potion(self):
+        self.draw.draw_background()
+        choices = []
+        if self.items.health_potions > 0:
+            choices.append("Health")
+        if self.items.energy_potions > 0:
+            choices.append("Energy")
+        if len(choices) > 0:
+            choices.append("None")
+            pick_from = Pick(choices, False)
+            potion = pick_from.pick()
+        pick_from = Pick(self.battle_party, False)
+        hero: Hero = pick_from.pick()
+        if potion == "Health":
+            self.items.health_potions -= 1
+            hero.health += hero.max_health//3
+        elif potion == "Energy":
+            self.items.energy_potions -= 1
+            hero.skill += hero.max_skill//2
+        elif potion == "None":
+            pass
 
-    def menu(self):
-        draw = Draw()
-        draw.draw_background()
-        choices = ["STATS", "ITEM", "SPIRIT"]
+    def initialize_battle_party(self):
+        self.battle_party = []
+        for hero in self.heroes:
+            if hero.name == "Summoner":
+                copy_hero = copy.deepcopy(hero)
+                self.battle_party.append(copy_hero)
+
+    def manage_battle_party(self):
+        self.initialize_battle_party()
+        self.draw.draw_background()
+        hero_names = []
+        for hero in self.heroes:
+            if hero.name != "Summoner":
+                hero_names.append(hero.name)
+        hero_names.append("STOP")
+        pick = True
+        while pick and len(self.battle_party) <= C.PARTY_LIMIT:
+            pick_from = Pick(hero_names, False)
+            choice = pick_from.pick()
+            if choice == "STOP":
+                pick = False
+            else:
+                hero_names.remove(choice)
+                for hero in self.heroes:
+                    if hero.name == choice:
+                        copy_hero = copy.deepcopy(hero)
+                        self.battle_party.append(copy_hero)
+
+    def menu(self, key: int = 0):
+        self.draw = Draw()
+        self.draw.draw_background()
+        choices = ["STATS", "SPIRIT", "SPIRIT STATS"]
+        if key == 0:
+            choices.append("PARTY")
+            choices.append("SAVE")
+        elif key == 1:
+            choices.append("ITEM")
         pick_from = Pick(choices, False)
         choice = pick_from.pick()
         if choice == "STATS":
-            draw.draw_full_hero_stats(self.battle_party)
+            self.draw.draw_background()
+            if key == 0:
+                self.draw.draw_full_hero_stats(self.heroes)
+            if key == 1:
+                self.draw.draw_hero_stats_skills(self.battle_party)
         if choice == "SPIRIT":
-            draw.draw_background()
+            self.draw.draw_background()
             pick_spirit = Pick(self.spirits, False)
             spirit: Spirit = pick_spirit.pick()
             if spirit.active:
                 spirit.active = False
             elif not spirit.active:
                 spirit.active = True
+        if choice == "SPIRIT STATS":
+            self.draw.draw_background()
+            self.draw.draw_spirit_stats(self.spirits)
+        if choice == "PARTY":
+            self.manage_battle_party()
+        if choice == "SAVE":
+            self.save()
+            self.draw.draw_background()
+            self.draw.draw_text("PROGRESS SAVED")
+            pygame.time.delay(500)
         if choice == "ITEM":
-            draw.draw_background()
-            choices = []
-            if self.items.health_potions > 0:
-                choices.append("Health")
-            if self.items.energy_potions > 0:
-                choices.append("Energy")
-            if len(choices) > 0:
-                pick_from = Pick(choices, False)
-                potion = pick_from.pick()
-            pick_from = Pick(self.battle_party, False)
-            hero: Hero = pick_from.pick()
-            if potion == "Health":
-                self.items.health_potions -= 1
-                hero.health += hero.max_health//3
-            elif potion == "Energy":
-                self.items.energy_potions -= 1
-                hero.skill += hero.max_skill//2
+            self.use_potion()
 
     def write_object(self, object, filename):
-        jsonP = json.dumps(object.__dict__)
+        jsonP = json.dumps(object.__dict__, cls=Skill_Encoder)
         outfile = open(filename, "w")
         outfile.write(jsonP)
         outfile.flush
         outfile.close
 
     def write_object_list(self, list, filename):
-        jsonP = json.dumps([object.__dict__ for object in list])
+        jsonP = json.dumps([object.__dict__ for object in list], cls=Skill_Encoder)
         outfile = open(filename, "w")
         outfile.write(jsonP)
         outfile.flush

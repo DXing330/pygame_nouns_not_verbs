@@ -19,6 +19,15 @@ class Spirit:
     active: bool = True
     target = None
 
+    def stats_text(self):
+        return (self.name+": "+" LVL: "+str(self.level)+" ACTIVE: "+str(self.active))
+    
+    def skills_text(self):
+        return ("Skills: "+str(self.skill_list))
+    
+    def passives_text(self):
+        return ("Passives: "+str(self.passive_skills))
+
     def update_skills(self, skill_list: list):
         self.battle_skills = skill_list
     

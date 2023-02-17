@@ -27,7 +27,7 @@ class Quest_Dict:
             "name" : "Test", "giver" : None, "location" : None, "requirement" : None, "specifics" : None,  "specifics_amount" : 0, "start_day" : 0, "time_limit" : 0, "completed" : False, "failed" : False, "reward_type" : None, "reward_amount" : 0
         },
         "Save" : {
-            "name" : "Rescue Maid", "giver" : "Guild", "location" : "Evil Forest", "requirement" : "Save", "specifics" : "Maid",  "specifics_amount" : 0, "start_day" : 0, "time_limit" : -1, "completed" : False, "failed" : False, "reward_type" : None, "reward_amount" : 0
+            "name" : "Rescue Maid", "giver" : "Guild", "location" : "Evil Forest", "requirement" : "Save", "specifics" : "Maid",  "specifics_amount" : 1, "start_day" : 0, "time_limit" : -1, "completed" : False, "failed" : False, "reward_type" : None, "reward_amount" : 0
         },
         "Test" : {
             "name" : "Clear Evil Forest", "giver" : "Guild", "location" : "Evil Forest", "requirement" : "Clear", "specifics" : None,  "specifics_amount" : 0, "start_day" : 0, "time_limit" : -1, "completed" : False, "failed" : False, "reward_type" : None, "reward_amount" : 0

@@ -21,15 +21,15 @@ class Passive:
         return False
 
 
+@dataclass
 class Conditional_Effect:
-    def __init__(self, name, timing, condition, condition_specifics, effect, effect_specifics, power: int = 1):
-        self.name = name
-        self.timing = timing
-        self.condition = condition
-        self.condition_specifics = condition_specifics
-        self.effect = effect
-        self.effect_specifics = effect_specifics
-        self.power = power
+    name: str
+    timing: str
+    condition: str
+    condition_specifics: str
+    effect: str
+    effect_specifics: str
+    power: int = 1
 
 
 @dataclass

@@ -26,9 +26,9 @@ class Battle_NPC(Character):
         self.attack = self.base_attack
         self.defense = self.base_defense
         self.speed = self.base_speed
-        self.update_skills()
+        self.npc_skills()
 
-    def update_skills(self):
+    def npc_skills(self):
         dict = CD.NPC_SKILLS.get(self.name)
         self.skill_list = dict.get("Skills")
         self.passive_skills = dict.get("Passives")

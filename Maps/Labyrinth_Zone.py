@@ -1,5 +1,6 @@
 from Battle.Location import Location
 from Battle_Zone import *
+from Characters.Battle_NPC import Battle_NPC
 from Characters.Party import *
 from Utility.Draw import Draw
 
@@ -20,6 +21,10 @@ class Labyrinth(Battle_Zone):
         self.player = pygame.Rect(0, 0, self.width//20, self.width//20)
         # Keep track of what floor you're on.
         self.floor = 0
+        self.rescue_npc = None
+        self.rescue_npc_floor = -1
+        self.rescue_npc_rect = pygame.Rect(0, 0, 0, 0)
+        self.reached_rescue_npc = False
 
     def update_dimensions(self):
         self.height = WIN.get_height()
@@ -33,6 +38,7 @@ class Labyrinth(Battle_Zone):
         self.generate_loop_passages()
         self.generate_previous_floor_passage()
         self.decide_possible_passages()
+        self.check_for_rescue_missions()
 
     def pick_unused_passage(self, floor):
         possible_passages = []
@@ -98,6 +104,7 @@ class Labyrinth(Battle_Zone):
                 elif self.floors[self.floor][self.possible_passages.index(passage)] < self.floor:
                     color = (200, 100, 100)
             pygame.draw.rect(WIN, color, passage)
+        self.draw_rescue_npc_location()
         pygame.draw.rect(WIN, (0, 255, 0), self.player)
         pygame.display.update()
 
@@ -117,16 +124,49 @@ class Labyrinth(Battle_Zone):
             pygame.event.clear()
             self.draw_passages()
 
+    def check_for_rescue_missions(self):
+        possible_rescuees = []
+        for quest in self.party.quests:
+            if quest.requirement == "Save" and quest.location == self.location.name and not quest.completed and not quest.failed:
+                possible_rescuees.append(quest.specifics)
+        if len(possible_rescuees) > 0:
+            rescue_npc = possible_rescuees[random.randint(0, len(possible_rescuees)-1)]
+            self.rescue_npc = Battle_NPC(rescue_npc, [], [], [], [], [])
+            self.rescue_npc.update_stats()
+        if self.rescue_npc != None:
+            self.rescue_npc_floor = random.randint(0, self.total_floors-1)
+            self.rescue_npc_x = random.randint(0, self.width - self.width//20)
+            self.rescue_npc_y = random.randint(0, self.height - self.width//20)
+
+    def draw_rescue_npc_location(self):
+        if self.floor == self.rescue_npc_floor:
+            self.rescue_npc_rect = pygame.Rect(self.rescue_npc_x, self.rescue_npc_y, self.width//20, self.width//20)
+            pygame.draw.rect(WIN, (0, 250, 0), self.rescue_npc_rect)
+
+    def reach_rescuee(self):
+        self.party.battle_party.append(self.rescue_npc)
+        self.rescue_npc = None
+        self.rescue_npc_floor = -1
+        self.rescue_npc_rect = pygame.Rect(self.width, self.height, self.width//20, self.width//20)
+        self.reached_rescue_npc = True
+        draw = Draw()
+        draw.draw_background()
+        draw.draw_text("Please save me!")
+        pygame.time.delay(1000)
+
     def finished_lab(self):
         self.party.items.coins += self.total_floors * (self.floor_size//2)
         for quest in self.party.quests:
             if quest.requirement == "Clear" and quest.location == self.location.name:
                 quest.completed = True
-            if quest.requirement == "Save" and quest.location == self.location.name:
+            if quest.requirement == "Save" and quest.location == self.location.name and self.reached_rescue_npc:
                 for hero in self.party.battle_party:
                     if hero.name == quest.specifics:
                         quest.completed = True
                         self.party.battle_party.remove(hero)
+                # If the reached them but they didn't survive then you fail.
+                if not quest.completed:
+                    quest.failed = True
 
     def lab_loop(self):
         self.lab = True
@@ -138,7 +178,7 @@ class Labyrinth(Battle_Zone):
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_x:
-                        self.party.menu()
+                        self.party.menu(1)
                         self.draw_passages()
                     if event.key == pygame.K_SPACE:
                         pygame.event.clear()
@@ -173,6 +213,9 @@ class Labyrinth(Battle_Zone):
             if keys[pygame.K_DOWN] and (self.player.y) < (self.height - self.player.height):
                 self.player.y += self.movement
                 self.counter += self.movement
+                self.draw_passages()
+            if self.player.colliderect(self.rescue_npc_rect):
+                self.reach_rescuee()
                 self.draw_passages()
             if self.counter >= self.counter_limit:
                 self.reset_counter()

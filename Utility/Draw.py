@@ -93,16 +93,54 @@ class Draw:
     def draw_monster_stats(self):
         self.counter = 1
         for monster in self.monsters:
-            stat_text = SFONT.render(monster.stats_text(), 1, C.WHITE)
-            WIN.blit(stat_text, (C.PADDING, C.PADDING * self.counter))
+            stats_text = SFONT.render(monster.stats_text(), 1, C.WHITE)
+            WIN.blit(stats_text, (C.PADDING, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()
+
+    def draw_spirit_stats(self, spirits):
+        self.counter = 1
+        for spirit in spirits:
+            stats_text = FONT.render(spirit.stats_text(), 1, C.WHITE)
+            WIN.blit(stats_text, ((self.width - stats_text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+            skills_text = FONT.render(spirit.skills_text(), 1, C.WHITE)
+            WIN.blit(skills_text, ((self.width - skills_text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+            passives_text = FONT.render(spirit.passives_text(), 1, C.WHITE)
+            WIN.blit(passives_text, ((self.width - passives_text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+        pygame.display.update()
+        view = True
+        while view:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    view = False
+
+    def draw_hero_stats_skills(self, heroes):
+        self.counter = 1
+        for hero in heroes:
+            stats_text = FONT.render(hero.stats_text(), 1, C.WHITE)
+            WIN.blit(stats_text, ((self.width - stats_text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+            skills_text = FONT.render(hero.skills_text(), 1, C.WHITE)
+            WIN.blit(skills_text, ((self.width - skills_text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+            passives_text = FONT.render(hero.passives_text(), 1, C.WHITE)
+            WIN.blit(passives_text, ((self.width - passives_text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
+        pygame.display.update()
+        view = True
+        while view:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    view = False
 
     def draw_hero_stats(self):
         self.counter = 1
         for hero in self.heroes:
-            stat_text = SFONT.render(hero.stats_text(), 1, C.WHITE)
-            WIN.blit(stat_text, (self.width - stat_text.get_width() - C.PADDING, C.PADDING * self.counter))
+            stats_text = SFONT.render(hero.stats_text(), 1, C.WHITE)
+            WIN.blit(stats_text, (self.width - stats_text.get_width() - C.PADDING, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()
 
@@ -110,8 +148,8 @@ class Draw:
         WIN.fill((0, 0, 0))
         self.counter = 1
         for hero in heroes:
-            stat_text = FONT.render(hero.full_stats_text(), 1, C.WHITE)
-            WIN.blit(stat_text, ((self.width - stat_text.get_width())//2, C.PADDING * self.counter))
+            stats_text = FONT.render(hero.full_stats_text(), 1, C.WHITE)
+            WIN.blit(stats_text, ((self.width - stats_text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
         pygame.display.update()
         view = True

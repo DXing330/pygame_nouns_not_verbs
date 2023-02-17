@@ -61,6 +61,9 @@ class Passive_Dict:
         }
         }
         self.CONDITIONALS = {
+        "_Test" : {
+            "name" : "_Test", "timing" : "None", "condition" : "None", "condition_specifics" : "None", "effect" : "None", "effect_specifics" : "None", "power" : 0
+        },
         "Drain Blood" : {
             "name" : "Drain Blood", "timing" : "Attack", "condition" : "Status", "condition_specifics" : "Bleed", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 2
         },

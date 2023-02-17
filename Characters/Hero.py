@@ -40,6 +40,12 @@ class Hero(Character):
     def full_stats_text(self):
         text = str(self.name+"~ MAX HP: "+str(self.max_health)+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" MAX SKL: "+str(self.max_skill)+" SKL: "+str(round(self.skill)))
         return text
+    
+    def skills_text(self):
+        return ("Skills: "+str(self.skill_list))
+    
+    def passives_text(self):
+        return ("Passives: "+str(self.passive_skills))
 
     def update_skill_list(self):
         dict = CD.HERO_SKILLS.get(self.name)

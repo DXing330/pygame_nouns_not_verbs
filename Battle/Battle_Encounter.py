@@ -429,6 +429,7 @@ class Monster_Encounter:
                 attack_effect = Equipment_Effect_Factory(defender.armor, self.damage, attacker)
                 attack_effect.make_effect()
             #print ("After: "+str(self.damage.damage))
+            self.damage.damage = self.damage.damage * (attacker.damage_dealt/100)
             self.damage.damage -= defender.defense
             # Temporary health is used before actual health, like blocking with a shield.
             if defender.temp_health > 0:
@@ -437,8 +438,8 @@ class Monster_Encounter:
                 self.damage.damage = 0
                 if defender.temp_health <= 0:
                     self.damage.damage = - defender.temp_health
-            multiplier = (attacker.damage_dealt/100) * (defender.damage_taken/100)
-            defender.health -= max(round(self.damage.damage * multiplier), 1)
+            self.damage.damage = self.damage.damage * (defender.damage_taken/100)
+            defender.health -= max(round(self.damage.damage), 1)
             if attack_status != None:
                 status_effect = Effect_Factory("Add_Status", attack_status, 1, [defender])
                 status_effect.make_effect()
@@ -520,6 +521,8 @@ class Monster_Encounter:
         # Temporary health like shields from the previous round will quickly decay.
         if character.temp_health > 0:
             character.temp_health =  character.temp_health//3
+        elif character.temp_health < 0:
+            character.temp_health = 0
         # Check if the target still exists.
         if character.target != None:
             self.check_on_target(character)
