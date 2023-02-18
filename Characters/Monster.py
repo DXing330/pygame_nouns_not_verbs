@@ -92,7 +92,7 @@ class Summon(Monster):
         possiblities = []
         if self.turn:
             possiblities.append(self.name+" Attack")
-        if self.skills and len(self.battle_skills) > 0:
+        if self.skills and len(self.skill_list) > 0:
             possiblities.append(self.name+" Skill")
         return possiblities
         
@@ -101,11 +101,11 @@ class Summon(Monster):
 class Troll(Monster):
     def choose_skill(self):
         if self.health < self.max_health//2:
-            for skill in self.battle_skills:
+            for skill in self.skill_list:
                 if skill.name == "Heal Self":
                     self.useable_skills.append(skill)
         else:
-            for skill in self.battle_skills:
+            for skill in self.skill_list:
                 try:
                     if skill.cost <= self.skill:
                         self.useable_skills.append(skill)
@@ -123,19 +123,19 @@ class Serpent(Monster):
         # First the snake picks a target.
         if self.target == None:
             self.counter = 0
-            for skill in self.battle_skills:
+            for skill in self.skill_list:
                 if "Target" in skill.name:
                     self.useable_skills.append(skill)
         else:
             # Then it bites the target.
             if self.counter == 0:
                 self.counter += 1
-                for skill in self.battle_skills:
+                for skill in self.skill_list:
                     if "Bite" in skill.name:
                         self.useable_skills.append(skill)
             # Then it poisons the target.
             elif self.counter > 0:
-                for skill in self.battle_skills:
+                for skill in self.skill_list:
                     if "Poison" in skill.name:
                         self.useable_skills.append(skill)
 
@@ -177,18 +177,18 @@ class Assasin(Monster):
                 invisible = True
         # The assasin will always try to go invisible to use its other skills.
         if not invisible:
-            for skill in self.battle_skills:
+            for skill in self.skill_list:
                 if "Invisible" in skill.name:
                     self.useable_skills.append[skill]
         if invisible:
             # The assasin will go for the kill after buffing.
             if self.damage_dealt > 100:
-                for skill in self.battle_skills:
+                for skill in self.skill_list:
                     if skill.effect == "Attack":
                         self.useable_skills.append(skill)
             # Otherwise the assasin will buff themselves.
             elif self.damage_dealt <= 100:
-                for skill in self.battle_skills:
+                for skill in self.skill_list:
                     if skill.effect_specifics == "Damage_Dealt":
                         self.useable_skills.append(skill)
 

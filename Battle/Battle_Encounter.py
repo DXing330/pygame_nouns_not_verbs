@@ -246,6 +246,8 @@ class Monster_Encounter:
             for word in S.COMPOUND_SKILLS.get(skill.effect_specifics):
                 new_skill = Skill(**S.ALL_SKILLS.get(word))
                 self.skill_activation(user, new_skill, targets, pick_randomly)
+        elif skill.effect == "Capture":
+            pass
         elif skill.effect == "Attack":
             if skill.effect_specifics == "Basic":
                 status = None
@@ -354,7 +356,8 @@ class Monster_Encounter:
             if monster.used_skill != None and monster.skills:
                 self.skill_targeting(monster, monster.used_skill)
                 self.draw_battle()
-                self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
+                if monster.used_skill.effect != "Attack":
+                    self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
                 pygame.time.delay(1000)
             else:
                 if monster.target != None:
@@ -592,8 +595,6 @@ class Monster_Encounter:
             self.aura_end_step()
         win = self.end_phase()
         if win:
-            drops = Monster_Drops(self.party, self.monster_list)
-            drops.monster_loot()
             self.quest_update()
 
     def end_phase(self):

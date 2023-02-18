@@ -107,8 +107,4 @@ class Character_Dict:
         }
         }
         self.MONSTER_DROPS = {
-        "Demon" : {10: "Sharp_Material", 11: "Monster_Extract"},
-        "Troll" : {6: "Hard_Material", 7: "Monster_Extract"},
-        "Vampire" : {10: "Monster_Extract", 11: "Monster_Extract"},
-        "Werewolf" : {8: "Sharp_Material"}
         }

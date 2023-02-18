@@ -1,9 +1,11 @@
 import json
 import copy
+from Monster import *
 from Hero import *
 from NPC import *
 from Spirits import *
 from Equipment import *
+from Monster_Materials import *
 from Encoder_Decoders import *
 from Spirit_Factory import *
 from Config.Constants import *
@@ -64,10 +66,11 @@ class Party:
     spirits: list[Spirit] = None
     equipment: list[str] = None
     items: Item_Bag = Item_Bag(10, 1, 1)
+    materials: Material_Chest = Material_Chest()
     journal: Records = Records()
     quests: list[Quest] = None
     locations: list[str] = None
-    npcs: list[NPC] = None
+    summonables: list[Hero] = None
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
 
@@ -248,7 +251,9 @@ class Party:
         self.write_str_list(self.locations, "_locations")
         self.write_object_list(self.quests, "_quests")
         self.write_object(self.items, "_items")
+        self.write_object(self.materials, "_materials")
         self.write_object(self.journal, "_records")
+        self.write_object_list(self.summonables, "_summonables")
 
     def read_hero_objects(self, filename):
         load_heroes_list = []
@@ -315,6 +320,7 @@ class Party:
         self.spirits = ally_list
         equipment_list = self.read_str_list("_equipment")
         self.equipment = equipment_list
+        self.summonables = self.read_hero_objects("_summonables")
         self.quests = self.read_quest_objects("_quests")
         self.locations = self.read_str_list("_locations")
         jsonFile = open("_items", "r")
@@ -323,3 +329,6 @@ class Party:
         jsonFile = open("_records", "r")
         records = json.load(jsonFile)
         self.journal = Records(**records)
+        jsonFile = open("_materials", "r")
+        materials = json.load(jsonFile)
+        self.materials = Material_Chest(**materials)

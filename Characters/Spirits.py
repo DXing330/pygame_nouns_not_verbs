@@ -26,10 +26,16 @@ class Spirit:
         return (self.name+": "+" LVL: "+str(self.level)+" ACTIVE: "+str(self.active))
     
     def skills_text(self):
-        return ("Skills: "+str(self.skill_list))
+        skill_list = []
+        for skill in self.skill_list:
+            skill_list.append(skill.name)
+        return ("Skills: "+str(skill_list))
     
     def passives_text(self):
-        return ("Passives: "+str(self.passive_skills))
+        skill_list = []
+        for skill in self.passive_skills:
+            skill_list.append(skill.name)
+        return ("Passives: "+str(skill_list))
 
     def update_skill_list(self):
         dict = CD.SPIRIT_SKILLS.get(self.name)

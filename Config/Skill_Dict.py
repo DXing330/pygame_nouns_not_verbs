@@ -40,6 +40,9 @@ class Skill_Dict:
         "Call Wolf" : {
             "name" : "Call Wolf", "effect" : "Summon", "effect_specifics" : "Wolf", "power" : -1, "targets" : "None", "cost" : 3, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
+        "Capture Monster" : {
+            "name" : "Capture", "effect" : "Capture", "effect_specifics" : "None", "power" : 1, "targets" : "Monster", "cost" : 10, "cooldown" : 0, "cooldown_counter" : 10, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+        },
         "Cauterize Hero" : {
             "name" : "Cauterize", "effect" : "Cure_Status", "effect_specifics" : "Bleed", "power" : 1, "targets" : "Hero", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
@@ -214,11 +217,11 @@ class Skill_Dict:
         "Strike Monster" : {
             "name" : "Strike", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "Monster", "cost" : 1, "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
-        "Stun Hero" : {
-            "name" : "Stun", "effect" : "Disable", "effect_specifics" : "All", "power" : 1, "targets" : "Hero", "cost" : "Target", "cooldown" : 0, "cooldown_counter" : 3, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+        "Stun Hero Attack" : {
+            "name" : "Stun", "effect" : "Attack", "effect_specifics" : "Stun", "power" : 1, "targets" : "Hero", "cost" : "Target", "cooldown" : 0, "cooldown_counter" : 4, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Stun Monster Attack" : {
-            "name" : "Stun", "effect" : "Attack", "effect_specifics" : "Stun", "power" : 1, "targets" : "Monster", "cost" : "Target", "cooldown" : 0, "cooldown_counter" : 3, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Stun", "effect" : "Attack", "effect_specifics" : "Stun", "power" : 1, "targets" : "Monster", "cost" : "Target", "cooldown" : 0, "cooldown_counter" : 4, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Summon Golem" : {
             "name" : "Summon Golem", "effect" : "Summon", "effect_specifics" : "Golem", "power" : 1, "targets" : "None", "cost" : 5, "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"

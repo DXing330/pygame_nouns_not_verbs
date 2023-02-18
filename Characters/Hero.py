@@ -31,6 +31,8 @@ class Hero(Character):
             self.evasion = 0
             self.damage_dealt = 100
             self.damage_taken = 100
+            for number in range(self.level):
+                self.update_stats(False)
         elif not original:
             self.max_health += dict.get("health")
             self.base_attack += dict.get("attack")
@@ -51,10 +53,16 @@ class Hero(Character):
         return text
     
     def skills_text(self):
-        return ("Skills: "+str(self.skill_list))
+        skill_list = []
+        for skill in self.skill_list:
+            skill_list.append(skill.name)
+        return ("Skills: "+str(skill_list))
     
     def passives_text(self):
-        return ("Passives: "+str(self.passive_skills))
+        skill_list = []
+        for skill in self.passive_skills:
+            skill_list.append(skill.name)
+        return ("Passives: "+str(skill_list))
 
     def update_skill_list(self, original = True):
         dict = CD.HERO_SKILLS.get(self.name)
@@ -64,7 +72,7 @@ class Hero(Character):
                 if new_skill != None:
                     real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
                     self.learn_skill(real_skill)
-        else:
+        elif not original:
             new_skill = dict.get(self.level)
             if new_skill != None:
                 real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
