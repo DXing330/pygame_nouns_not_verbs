@@ -44,12 +44,6 @@ class Item_Bag:
     health_potions: int = 0
     energy_potions: int = 0
     mana_crystals: int = 0
-    sharp_material: int = 0
-    hard_material: int = 0
-    poison_extract: int = 0
-    poison_essense: int = 0
-    monster_extract: int = 0
-    monster_essence: int = 0
 
 
 @dataclass
@@ -136,7 +130,7 @@ class Party:
     
     def party_update_stats(self):
         for hero in self.heroes:
-            hero.update_stats()
+            hero.update_stats(False)
 
     def use_potion(self):
         self.draw.draw_background()
@@ -259,7 +253,7 @@ class Party:
     def read_hero_objects(self, filename):
         load_heroes_list = []
         jsonFile = open(filename, "r")
-        heroes_list = json.load(jsonFile)
+        heroes_list = json.load(jsonFile, cls=Skill_Decoder)
         for character in heroes_list:
             hero = Hero(**character)
             load_heroes_list.append(hero)
@@ -269,7 +263,7 @@ class Party:
         factory = Spirit_Factory()
         load_allies_list = []
         jsonFile = open(filename, "r")
-        allies_list = json.load(jsonFile)
+        allies_list = json.load(jsonFile, cls=Skill_Decoder)
         for summon in allies_list:
             ally = Spirit(**summon)
             new_ally = factory.make_spirit(ally)
@@ -312,6 +306,7 @@ class Party:
         self.add_spirit(starter_spirit)
         self.quests = []
         self.locations = ["None", "Starter Forest"]
+        self.journal.guild_facilities = []
 
     def load(self):
         heroes_list = self.read_hero_objects("_heroes")

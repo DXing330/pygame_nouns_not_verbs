@@ -2,30 +2,30 @@ class Character_Dict:
     def __init__(self):
         self.HERO_STATS = {
         "Summoner" : {
-            "health" : 10, "attack" : 2, "defense" : 1, "skill" : 2, "speed" : 10
+            "health" : 8, "attack" : 2, "defense" : 1, "skill" : 2, "speed" : 10, "bhealth" : 20, "battack" : 11, "bdefense" : 7, "bskill" : 11
         },
         "Warrior" : {
-            "health" : 10, "attack" : 3, "defense" : 2, "skill" : 1, "speed" : 10
+            "health" : 9, "attack" : 2, "defense" : 2, "skill" : 1, "speed" : 10, "bhealth" : 20, "battack" : 17, "bdefense" : 9, "bskill" : 7
         },
         "Hunter" : {
-            "health" : 10, "attack" : 2, "defense" : 1, "skill" : 2, "speed" : 10
+            "health" : 8, "attack" : 2, "defense" : 1, "skill" : 2, "speed" : 10, "bhealth" : 20, "battack" : 14, "bdefense" : 8, "bskill" : 9
         },
         "Mage" : {
-            "health" : 9, "attack" : 1, "defense" : 1, "skill" : 3, "speed" : 10
+            "health" : 7, "attack" : 1, "defense" : 1, "skill" : 3, "speed" : 10, "bhealth" : 18, "battack" : 10, "bdefense" : 6, "bskill" : 14
         },
         "Knight" : {
-            "health" : 12, "attack" : 3, "defense" : 3, "skill" : 1, "speed" : 7
+            "health" : 9, "attack" : 2, "defense" : 2, "skill" : 1, "speed" : 10, "bhealth" : 20, "battack" : 18, "bdefense" : 18, "bskill" : 2
         },
         "Rogue" : {
-            "health" : 10, "attack" : 1, "defense" : 1, "skill" : 2, "speed" : 11
+            "health" : 8, "attack" : 1, "defense" : 1, "skill" : 3, "speed" : 11, "bhealth" : 20, "battack" : 10, "bdefense" : 8, "bskill" : 11
         }
         }
         self.HERO_SKILLS = {
         "Summoner" : {
-            0 : "Command Spirit", 2 : "Summon Turret", 4 : "Summon Turret+", 6 : "Summon Golem", 8 : "Summon Golem+"
+            0 : "Command Spirit", 2 : "Summon Turret", 4 : "Summon Two Turret", 6 : "Summon Golem", 8 : "Summon Strong Golem"
         },
         "Hunter" : {
-            0 : "Poison Monster Attack", 2 : "Blind Monster", 4 : "Spot Monster Weakness", 6 : "Bind Monster", 8 : "Stun Monster"
+            0 : "Poison Monster Attack", 2 : "Blind Monster", 4 : "Spot Monster Weakness", 6 : "Bind Monster", 8 : "Stun Monster Attack"
         },
         "Knight" : {
             0 : "Shield Self", 2 : "Fortify Self", 4 : "Taunt Monster", 6 : "Shield Heroes", 8 : "Taunt Monsters"
@@ -36,7 +36,7 @@ class Character_Dict:
         }
         self.SPIRIT_SKILLS = {
         "Angel" : {
-            0 : "Heal Hero", 2 : "Shield Hero", 4 : "Cure Hero", 6 : "Heal Heroes", 8 : "Strike Monster", 10 : "Energize Hero"
+            0 : "Shield Hero", 2 : "Heal Hero", 4 : "Cure Hero", 6 : "Heal Heroes", 8 : "Strike Monster", 10 : "Energize Hero"
         },
         "Fairy" : {
             0 : "Blind Monster"
@@ -44,7 +44,7 @@ class Character_Dict:
         }
         self.SPIRIT_PASSIVES = {
         "Angel" : {
-            4 : "Heal Partner", 6 : "Shield Partner", 8 : "Cure Partner", 10 : "Strike Monster"
+            4 : "Shield Partner", 6 : "Heal Partner", 8 : "Cure Partner", 10 : "Strike Monster"
         },
         "Fairy" : {
             4 : "Blind Monster"
@@ -67,7 +67,7 @@ class Character_Dict:
             "level" : 8, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Imp" : {
-            "level" : 2, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 1, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Goblin" : {
             "level" : 1, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Blind Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["High Morale"]

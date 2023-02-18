@@ -16,7 +16,7 @@ class Monster(Character):
         text = str(self.name+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense)))
         return text
 
-    def update_stats(self, flow:int = 0):
+    def update_stats(self, flow: int = 0):
         self.dict = CD.MONSTER_STATS.get(self.name)
         self.turn = True
         self.skills = True
@@ -29,7 +29,7 @@ class Monster(Character):
         self.death_skills = []
         self.weapon = None
         self.armor = None
-        while self.level == 0:
+        while self.level <= 0:
             self.level = round(random.gauss(self.dict.get("level"), self.dict.get("variance")))
         self.max_health = self.dict.get("health") * self.level + random.randint(0, flow//90)
         self.base_attack = self.dict.get("attack") * self.level
@@ -57,7 +57,7 @@ class Monster(Character):
         self.preemptives = preemptives
 
     def choose_skill(self):
-        for skill in self.battle_skills:
+        for skill in self.skill_list:
             try:
                 if skill.cost <= self.skill:
                     self.useable_skills.append(skill)

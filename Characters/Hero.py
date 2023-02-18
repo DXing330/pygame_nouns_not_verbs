@@ -4,29 +4,38 @@ from dataclasses import dataclass
 from Character import Character
 from Config.Constants import *
 from Config.Character_Dict import *
+from Config.Skill_Dict import *
+from Skills.Skill import Skill
 C = Constants()
 CD = Character_Dict()
+S = Skill_Dict()
 
 
 @dataclass
 class Hero(Character):
     exp: int = 0
-    weapon: str = None
-    armor: str =  None
-    accessory: str = None
+    weapon = None
+    armor =  None
+    accessory = None
     real_name: str = None
 
-    def update_stats(self):
+    def update_stats(self, original = True):
         dict = CD.HERO_STATS.get(self.name)
-        self.max_health = dict.get("health") * self.level
-        self.base_attack = dict.get("attack") * self.level
-        self.base_defense = dict.get("defense") * self.level
-        self.base_speed = dict.get("speed")
-        self.max_skill = dict.get("skill") * self.level
-        self.accuracy = 100
-        self.evasion = 0
-        self.damage_dealt = 100
-        self.damage_taken = 100
+        if original:
+            self.max_health = dict.get("bhealth")
+            self.base_attack = dict.get("battack")
+            self.base_defense = dict.get("bdefense")
+            self.base_speed = dict.get("speed")
+            self.max_skill = dict.get("bskill")
+            self.accuracy = 100
+            self.evasion = 0
+            self.damage_dealt = 100
+            self.damage_taken = 100
+        elif not original:
+            self.max_health += dict.get("health")
+            self.base_attack += dict.get("attack")
+            self.base_defense += dict.get("defense")
+            self.max_skill += dict.get("skill")
         self.health = self.max_health
         self.skill = self.max_skill
         self.attack = self.base_attack
@@ -47,23 +56,25 @@ class Hero(Character):
     def passives_text(self):
         return ("Passives: "+str(self.passive_skills))
 
-    def update_skill_list(self):
+    def update_skill_list(self, original = True):
         dict = CD.HERO_SKILLS.get(self.name)
-        if len(self.skill_list) <= 0:
+        if original:
             for number in range(0, self.level):
                 new_skill = dict.get(number)
                 if new_skill != None:
-                    self.learn_skill(new_skill)
+                    real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
+                    self.learn_skill(real_skill)
         else:
             new_skill = dict.get(self.level)
             if new_skill != None:
-                self.learn_skill(new_skill)
+                real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
+                self.learn_skill(real_skill)
 
-    def learn_skill(self, skill: str):
+    def learn_skill(self, skill):
         if skill not in self.skill_list:
             self.skill_list.append(skill)
 
-    def learn_passive(self, skill: str):
+    def learn_passive(self, skill):
         if skill not in self.passive_skills:
             self.passive_skills.append(skill)
 
@@ -71,8 +82,8 @@ class Hero(Character):
         if self.exp > self.level ** 2 and self.level < self.max_level:
             self.exp = 0
             self.level += 1
-            self.update_stats()
-            self.update_skill_list()
+            self.update_stats(False)
+            self.update_skill_list(False)
 
     def choose_action(self):
         possiblities = []

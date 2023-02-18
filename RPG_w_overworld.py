@@ -36,7 +36,6 @@ class RPG_GAME:
         elif choice == "Continue":
             try:
                 self.party.load()
-                self.party.party_update()
             except:
                 self.start_game()
         elif choice == "Quit":
@@ -60,7 +59,7 @@ class RPG_GAME:
         self.quit_rect = pygame.Rect(0, self.height - self.width//6, self.width//6, self.width//6)
         self.guild_rect = pygame.Rect(self.width - self.width//6, 0, self.width//6, self.width//6)
         self.battle_rect = pygame.Rect(self.width - self.width//6, self.height - self.width//6, self.width//6, self.width//6)
-        pygame.draw.rect(WIN, (0, 150, 100), self.save_rect)
+        #pygame.draw.rect(WIN, (0, 150, 100), self.save_rect)
         pygame.draw.rect(WIN, (0, 0, 100), self.guild_rect)
         pygame.draw.rect(WIN, (220, 200, 200), self.quit_rect)
         pygame.draw.rect(WIN, (220, 0, 0), self.battle_rect)
@@ -81,11 +80,6 @@ class RPG_GAME:
                         self.party.menu()
                         self.draw_overworld()
                     if event.key == pygame.K_SPACE:
-                        if self.save_rect.contains(self.player):
-                            self.party.save()
-                            self.draw.draw_text("Saved")
-                            pygame.time.delay(500)
-                            self.draw_overworld()
                         if self.quit_rect.contains(self.player):
                             self.game = False
                         if self.battle_rect.contains(self.player):

@@ -2,8 +2,11 @@ from dataclasses import dataclass
 import random
 from Config.Constants import *
 from Config.Character_Dict import *
+from Config.Skill_Dict import *
+from Skills.Skill import Skill
 C = Constants()
 CD = Character_Dict()
+S = Skill_Dict()
 
 
 @dataclass
@@ -28,23 +31,19 @@ class Spirit:
     def passives_text(self):
         return ("Passives: "+str(self.passive_skills))
 
-    def update_skills(self, skill_list: list):
-        self.battle_skills = skill_list
-    
-    def update_passives(self, passive_list: list):
-        self.battle_passives = passive_list
-
     def update_skill_list(self):
         dict = CD.SPIRIT_SKILLS.get(self.name)
         if len(self.skill_list) <= 0:
             for number in range(0, self.level):
                 new_skill = dict.get(number)
                 if new_skill != None:
-                    self.learn_skill(new_skill)
+                    real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
+                    self.learn_skill(real_skill)
         else:
             new_skill = dict.get(self.level)
             if new_skill != None:
-                self.learn_skill(new_skill)
+                real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
+                self.learn_skill(real_skill)
 
     def update_passive_list(self):
         dict = CD.SPIRIT_PASSIVES.get(self.name)
@@ -52,11 +51,13 @@ class Spirit:
             for number in range(0, self.level):
                 new_skill = dict.get(number)
                 if new_skill != None:
-                    self.learn_passive(new_skill)
+                    real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
+                    self.learn_passive(real_skill)
         else:
             new_skill = dict.get(self.level)
             if new_skill != None:
-                self.learn_passive(new_skill)
+                real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
+                self.learn_passive(real_skill)
 
     def learn_skill(self, skill: str):
         if skill not in self.skill_list:
@@ -85,7 +86,7 @@ class Spirit:
             self.skill += random.randint(1, self.level)
             return None, targets
         else:
-            skill = self.battle_skills[random.randint(0, len(self.battle_skills) - 1)]
+            skill = self.skill_list[random.randint(0, len(self.skill_list) - 1)]
             # If it's a single target skill, make sure it has a good target.
             if skill.targets == "Hero":
                 targets = self.choose_target(skill, heroes)
@@ -114,8 +115,7 @@ class Spirit:
         if skill.effect == "Change_Stats":
             if skill.effect_specifics == "Temp_Health":
                 for hero in heroes:
-                    if hero.health < hero.max_health:
-                        potential_target_list.append(hero)
+                    potential_target_list.append(hero)
             if skill.effect_specifics == "Health":
                 for hero in heroes:
                     if hero.health < hero.max_health:

@@ -36,19 +36,15 @@ class Character(ABC):
     temp_health: int = 0
     target = None
     
-    @abstractmethod
     def update_stats(self):
         pass
 
-    @abstractmethod
     def update_skills(self):
         pass
 
-    @abstractmethod
     def stats_text(self):
         pass
 
-    @abstractmethod
     def choose_action(self):
         pass
 
@@ -67,18 +63,6 @@ class Character(ABC):
 
     def add_buff(self, effect):
         self.buffs.append(effect)
-
-    def update_skills(self, skill_list: list):
-        self.battle_skills = skill_list
-
-    def update_passive_skills(self, skill_list: list):
-        self.battle_passives = skill_list
-
-    def update_death_skills(self, skill_list: list):
-        self.battle_death_skills = skill_list
-
-    def update_conditonal_passives(self, conditionals: list):
-        self.battle_conditional_passives = conditionals
 
     def unique_passives(self):
         pass

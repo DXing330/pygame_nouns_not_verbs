@@ -51,9 +51,6 @@ class Guild:
                 self.bool = False
                 trainer = Training_Area(self.party)
                 trainer.entrance()
-            elif "MANAGE" in choice:
-                self.party.pick_battle_party()
-                self.inside()
 
     def entrance(self):
         self.draw_background()
@@ -83,8 +80,6 @@ class Guild:
                 self.options.append("TRAIN")
             if len(self.party.quests) > 0:
                 self.options.append("FINISH QUEST")
-            if len(self.party.heroes) > C.PARTY_LIMIT:
-                self.options.append("MANAGE PARTY")
 
     # Want a function that will generate random daily quests.
     def random_quest(self):

@@ -10,6 +10,8 @@ class Monster_Factory:
             new_monster = Serpent(name, level)
         elif name == "Cocoon":
             new_monster = Cocoon(name, level)
+        elif name == "Assasin":
+            new_monster = Assasin(name, level)
         else:
             new_monster = Monster(name, level)
         return new_monster
