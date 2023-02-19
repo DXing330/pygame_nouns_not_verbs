@@ -3,7 +3,7 @@ from Battle.Effect_Factory import *
 from Battle.Location import *
 from Battle.Monster_Factory import Monster_Factory
 from Battle.Condition_Checker import *
-from Battle.Monster_Drops import *
+from Battle.Capture_Monster import *
 from Characters.Party import *
 from Characters.Monster import *
 from Skills.Auras import *
@@ -105,6 +105,8 @@ class Monster_Encounter:
                 armor = Equipment(**E.EQUIPMENT.get(hero.armor))
                 hero.armor = armor
         self.spirits = copy.deepcopy(self.party.spirits)
+        # Keep track of what monsters have been summoned.
+        self.summoned_mons = []
 
     def update_monster_for_battle(self, monster: Monster):
         monster.update_stats()
@@ -215,8 +217,8 @@ class Monster_Encounter:
                     activation.make_effect()
 
     def skill_activation(self, user, skill: Skill, targets: list, pick_randomly = True):
-        if skill.effect == "Summon":
-            if skill.power < 0:
+        if "Summon" in skill.effect:
+            if "Monster" in skill.effect:
                 summon = self.monster_factory.make_monster(skill.effect_specifics, max(user.level-1, 1))
                 self.update_monster_for_battle(summon)
                 self.monsters.append(summon)
@@ -246,8 +248,6 @@ class Monster_Encounter:
             for word in S.COMPOUND_SKILLS.get(skill.effect_specifics):
                 new_skill = Skill(**S.ALL_SKILLS.get(word))
                 self.skill_activation(user, new_skill, targets, pick_randomly)
-        elif skill.effect == "Capture":
-            pass
         elif skill.effect == "Attack":
             if skill.effect_specifics == "Basic":
                 status = None
@@ -273,6 +273,43 @@ class Monster_Encounter:
         pick_from = Pick(hero.skill_list, False)
         skill = pick_from.pick_skill()
         self.skill_targeting(hero, skill, False)
+
+    def summoner_skills(self, hero: Hero, action: str):
+        self.draw_battle()
+        if "Summon" in action:
+            hero.summon_limit -= 1
+            if len(self.party.summonables) > 0:
+                pick_from = Pick(self.party.summonables, False)
+                new_summon = pick_from.pick()
+                loyal_check = random.randint(0, max(new_summon.loyalty,new_summon.level)+1)
+                self.draw_battle()
+                if loyal_check > new_summon.loyalty:
+                    monster = self.monster_factory.make_monster(new_summon.name, new_summon.level)
+                    self.update_monster_for_battle(monster)
+                    self.monsters.append(monster)
+                    self.draw.draw_text(new_summon.name+" joins the monsters' side.")
+                else:
+                    self.heroes.append(new_summon)
+                    self.summoned_mons.append(new_summon)
+                    self.draw.draw_text(hero.name+" summons a "+new_summon.name+".")
+            else:
+                self.draw.draw_text("Nothing to summon.")
+        elif "Capture" in action:
+            if len(self.monsters) == 1:
+                if hero.skill > self.monsters[0].level:
+                    hero.skill -= self.monsters[0].level
+                    catch = Capture_Monster(self.party, hero, self.monsters[0])
+                    captured = catch.determine_capture()
+                    if captured:
+                        self.monsters[0].health = 0
+                        self.draw.draw_text("You've captured a "+self.monsters[0].name+".")
+                    else:
+                        self.draw.draw_text("You failed to catch the "+self.monsters[0].name+".")
+                else:
+                    self.draw.draw_text("You don't have enough skill to attempt to capture that "+self.monsters[0].name+".")
+            else:
+                self.draw.draw_text("You can't catch more than one enemy at a time.")
+        pygame.time.delay(1000)
 
     def use_item(self, hero: Character):
         self.draw_battle()
@@ -323,6 +360,8 @@ class Monster_Encounter:
                 self.delay_turn(hero)
             elif "Item" in action:
                 self.use_item(hero)
+            else:
+                self.summoner_skills(hero, action)
         elif len(self.monsters) > 0 and not hero.turn:
             self.draw.draw_text(hero.name+" is stunned.")
             pygame.time.delay(1000)
@@ -358,7 +397,7 @@ class Monster_Encounter:
                 self.draw_battle()
                 if monster.used_skill.effect != "Attack":
                     self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
-                pygame.time.delay(1000)
+                    pygame.time.delay(1000)
             else:
                 if monster.target != None:
                     target = monster.target
@@ -627,6 +666,10 @@ class Monster_Encounter:
                 if battled:
                     hero.exp += reward_exp
                     hero.level_up()
+            for new_summon in self.summoned_mons:
+                for summon in self.party.summonables:
+                    if summon.name == new_summon.name:
+                        summon.loyalty += 1
             win = True
             self.draw_battle()
             self.draw.draw_text("The heroes win.")

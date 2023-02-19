@@ -29,12 +29,13 @@ class Labyrinth(Battle_Zone):
     def update_dimensions(self):
         self.height = WIN.get_height()
         self.width = WIN.get_width()
-        self.player = pygame.Rect(self.width//2, self.height//2, self.width//20, self.width//20)
+        self.player = pygame.Rect(self.width//2, self.height//2, self.width//30, self.width//30)
 
     def generate_labyrinth(self):
         self.floors = [[0 for number in range(self.floor_size)] for number in range(self.total_floors)]
         self.floors_status = [[False for number in range(self.floor_size)] for number in range(self.total_floors)]
         self.generate_next_floor_passage()
+        self.generate_treasure_room()
         self.generate_loop_passages()
         self.generate_previous_floor_passage()
         self.decide_possible_passages()
@@ -71,15 +72,34 @@ class Labyrinth(Battle_Zone):
                 passage = self.pick_unused_passage(floor)
                 self.floors[floor][passage] = floor
 
+    def generate_treasure_room(self):
+        floor = random.randint(0, self.total_floors-1)
+        chosen = self.pick_unused_passage(floor)
+        self.floors[floor][chosen] = "T"
+
+    def found_treasure(self):
+        self.determine_treasure()
+        draw = Draw()
+        draw.draw_background()
+        draw.draw_text("You find some treasure!")
+        pygame.time.delay(1000)
+
+    def determine_treasure(self):
+        treasure = random.randint(0, 1)
+        if treasure == 1:
+            self.party.items.mana_crystals += random.randint(0, self.floor_size//2)
+        elif treasure == 0:
+            self.party.items.coins += self.total_floors * self.floor_size
+
     def decide_possible_passages(self):
         self.possible_passages = []
         self.update_dimensions()
-        self.passage_0 = pygame.Rect((self.width - self.width//8)//2, 0, self.width//8, self.width//8)
-        self.passage_1 = pygame.Rect(0, self.height - self.width//8, self.width//8, self.width//8)
-        self.passage_2 = pygame.Rect(self.width - self.width//8, self.height - self.width//8, self.width//8, self.width//8)
-        self.passage_3 = pygame.Rect((self.width - self.width//8)//2, self.height - self.width//8, self.width//8, self.width//8)
-        self.passage_4 = pygame.Rect(0, 0, self.width//8, self.width//8)
-        self.passage_5 = pygame.Rect(self.width - self.width//8, 0, self.width//8, self.width//8)
+        self.passage_0 = pygame.Rect((self.width - self.width//12)//2, 0, self.width//12, self.width//12)
+        self.passage_1 = pygame.Rect(0, self.height - self.width//12, self.width//12, self.width//12)
+        self.passage_2 = pygame.Rect(self.width - self.width//12, self.height - self.width//12, self.width//12, self.width//12)
+        self.passage_3 = pygame.Rect((self.width - self.width//12)//2, self.height - self.width//12, self.width//12, self.width//12)
+        self.passage_4 = pygame.Rect(0, 0, self.width//12, self.width//12)
+        self.passage_5 = pygame.Rect(self.width - self.width//12, 0, self.width//12, self.width//12)
         self.possible_passages.append(self.passage_0)
         self.possible_passages.append(self.passage_1)
         if self.floor_size >= 3:
@@ -98,11 +118,11 @@ class Labyrinth(Battle_Zone):
             # Keep track of which passages have already been used.
             if self.floors_status[self.floor][self.possible_passages.index(passage)]:
                 if self.floors[self.floor][self.possible_passages.index(passage)] == self.floor:
-                    color = (100, 100, 200)
+                    color = (100, 100, 130)
                 elif self.floors[self.floor][self.possible_passages.index(passage)] > self.floor:
-                    color = (100, 200, 100)
+                    color = (100, 130, 100)
                 elif self.floors[self.floor][self.possible_passages.index(passage)] < self.floor:
-                    color = (200, 100, 100)
+                    color = (130, 100, 100)
             pygame.draw.rect(WIN, color, passage)
         self.draw_rescue_npc_location()
         pygame.draw.rect(WIN, (0, 255, 0), self.player)
@@ -117,6 +137,9 @@ class Labyrinth(Battle_Zone):
         if self.floors[self.floor][passage] == -1:
             self.lab = False
             self.finished_lab()
+        if self.floors[self.floor][passage] == "T":
+            self.floors[self.floor][passage] = self.floor
+            self.found_treasure()
         if self.lab:
             self.floor = self.floors[self.floor][passage]
             self.player.x = (self.width)//2

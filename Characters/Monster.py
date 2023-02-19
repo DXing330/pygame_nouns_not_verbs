@@ -6,18 +6,20 @@ from Config.Character_Dict import *
 CD = Character_Dict()
 
 class Monster(Character):
-    def __init__(self, name, level = 0):
+    def __init__(self, name, level = 0, catch_rate = 1):
         self.name = name
         self.level = level
+        self.catch_rate = catch_rate
         self.action = "Attack"
         self.counter = 0
+        self.loyalty = 0
 
     def stats_text(self):
         text = str(self.name+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense)))
         return text
 
     def update_stats(self, flow: int = 0):
-        self.dict = CD.MONSTER_STATS.get(self.name)
+        sdict = CD.MONSTER_STATS.get(self.name)
         self.turn = True
         self.skills = True
         self.used_skill = None
@@ -30,12 +32,16 @@ class Monster(Character):
         self.weapon = None
         self.armor = None
         while self.level <= 0:
-            self.level = round(random.gauss(self.dict.get("level"), self.dict.get("variance")))
-        self.max_health = self.dict.get("health") * self.level + random.randint(0, flow//90)
-        self.base_attack = self.dict.get("attack") * self.level
-        self.base_defense = self.dict.get("defense") * self.level
-        self.base_speed = self.dict.get("speed")
-        self.max_skill = self.dict.get("skill") * self.level
+            self.level = round(random.gauss(sdict.get("level"), sdict.get("variance")))
+        self.update_base_stats()
+
+    def update_base_stats(self):
+        sdict = CD.MONSTER_STATS.get(self.name)
+        self.max_health = sdict.get("health") * self.level
+        self.base_attack = sdict.get("attack") * self.level
+        self.base_defense = sdict.get("defense") * self.level
+        self.max_skill = sdict.get("skill") * self.level
+        self.max_skill = sdict.get("skill") * self.level
         self.accuracy = 100
         self.evasion = 0
         self.damage_dealt = 100
@@ -46,12 +52,6 @@ class Monster(Character):
         self.defense = self.base_defense
         self.speed = self.base_speed
         self.target = None
-
-    def update_base_stats(self):
-        self.max_health = self.dict.get("health") * self.level
-        self.base_attack = self.dict.get("attack") * self.level
-        self.base_defense = self.dict.get("defense") * self.level
-        self.max_skill = self.dict.get("skill") * self.level
 
     def update_preemptives(self, preemptives: list):
         self.preemptives = preemptives

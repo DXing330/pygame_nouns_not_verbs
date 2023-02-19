@@ -16,8 +16,8 @@ class Hero(Character):
     exp: int = 0
     weapon = None
     armor =  None
-    accessory = None
-    real_name: str = None
+    loyalty: int = 0
+    summon_limit: int = 1
 
     def update_stats(self, original = True):
         dict = CD.HERO_STATS.get(self.name)
@@ -49,7 +49,7 @@ class Hero(Character):
         return text
 
     def full_stats_text(self):
-        text = str(self.name+"~ MAX HP: "+str(self.max_health)+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" MAX SKL: "+str(self.max_skill)+" SKL: "+str(round(self.skill)))
+        text = str(self.name+"~ MAX HP: "+str(self.max_health)+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" MAX SKL: "+str(self.max_skill)+" SKL: "+str(round(self.skill))+" LOYALTY: "+str(round(self.loyalty)))
         return text
     
     def skills_text(self):
@@ -63,6 +63,12 @@ class Hero(Character):
         for skill in self.passive_skills:
             skill_list.append(skill.name)
         return ("Passives: "+str(skill_list))
+    
+    def conditionals_text(self):
+        skill_list = []
+        for skill in self.conditional_passives:
+            skill_list.append(skill.name)
+        return ("Conditionals: "+str(skill_list))
 
     def update_skill_list(self, original = True):
         dict = CD.HERO_SKILLS.get(self.name)
@@ -101,5 +107,9 @@ class Hero(Character):
             possiblities.append(self.name+" Skill")
         if self.skills and not self.delayed:
             possiblities.append("Delay Action")
+        if "Summoner" in self.name and self.skills:
+            possiblities.append("Capture")
+        if "Summoner" in self.name and self.skills and self.summon_limit > 0:
+            possiblities.append("Summon")
         possiblities.append("Use Item")
         return possiblities

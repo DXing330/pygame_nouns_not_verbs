@@ -106,5 +106,3 @@ class Character_Dict:
             "level" : 4, "variance" : 1, "health" : 8, "attack" : 4, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Howl"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         }
         }
-        self.MONSTER_DROPS = {
-        }

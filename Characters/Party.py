@@ -146,23 +146,28 @@ class Party:
             choices.append("None")
             pick_from = Pick(choices, False)
             potion = pick_from.pick()
-        pick_from = Pick(self.battle_party, False)
-        hero: Hero = pick_from.pick()
-        if potion == "Health":
-            self.items.health_potions -= 1
-            hero.health += hero.max_health//3
-        elif potion == "Energy":
-            self.items.energy_potions -= 1
-            hero.skill += hero.max_skill//2
-        elif potion == "None":
-            pass
+        if potion != "None":
+            pick_from = Pick(self.battle_party, False)
+            hero: Hero = pick_from.pick()
+            if potion == "Health":
+                self.items.health_potions -= 1
+                hero.health += hero.max_health//3
+            elif potion == "Energy":
+                self.items.energy_potions -= 1
+                hero.skill += hero.max_skill//2
 
-    def initialize_battle_party(self):
+    def initialize_battle_party(self, counter = 0):
         self.battle_party = []
-        for hero in self.heroes:
-            if hero.name == "Summoner":
-                copy_hero = copy.deepcopy(hero)
-                self.battle_party.append(copy_hero)
+        if counter == 0:
+            for hero in self.heroes:
+                if hero.name == "Summoner":
+                    copy_hero = copy.deepcopy(hero)
+                    self.battle_party.append(copy_hero)
+        if counter == 1:
+            for hero in self.heroes:
+                if len(self.battle_party) < C.PARTY_LIMIT:
+                    copy_hero = copy.deepcopy(hero)
+                    self.battle_party.append(copy_hero)
 
     def manage_battle_party(self):
         self.initialize_battle_party()
@@ -188,10 +193,11 @@ class Party:
     def menu(self, key: int = 0):
         self.draw = Draw()
         self.draw.draw_background()
-        choices = ["STATS", "SPIRIT", "SPIRIT STATS"]
+        choices = ["STATS", "SPIRIT", "SPIRIT STATS", "CAPTURED"]
         if key == 0:
-            choices.append("PARTY")
+            choices.append("MANAGE PARTY")
             choices.append("SAVE")
+            choices.append("REST")
         elif key == 1:
             choices.append("ITEM")
         pick_from = Pick(choices, False)
@@ -222,6 +228,13 @@ class Party:
             pygame.time.delay(500)
         if choice == "ITEM":
             self.use_potion()
+        if choice == "CAPTURED":
+            self.draw.draw_background()
+            pick_from = Pick(self.summonables, False)
+            cap_mon = pick_from.pick()
+            self.draw.draw_background()
+            self.draw.draw_full_hero_stats_skills(cap_mon)
+        return choice
 
     def write_object(self, object, filename):
         jsonP = json.dumps(object.__dict__, cls=Skill_Encoder)

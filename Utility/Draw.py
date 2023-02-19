@@ -44,21 +44,26 @@ class Draw:
         self.monsters = monsters
 
     def draw_heroes(self):
-        self.counter = 1
+        height = C.PADDING
+        counter = 1
         for hero in self.heroes:
             sprite = I.IMAGES.get(hero.name)
-            WIN.blit(sprite, (self.width - sprite.get_width() - C.PADDING * self.counter, self.height - C.PADDING - sprite.get_height() * self.counter))
-            self.counter += 1
+            sprite = pygame.transform.flip(sprite, True, False)
+            WIN.blit(sprite, (self.width - sprite.get_width() - C.PADDING * counter, self.height - height - sprite.get_height()))
+            height += C.PADDING + sprite.get_height()
+            counter += 1
         pygame.display.update()
 
     def draw_monsters(self):
-        self.counter = 1
+        height = C.PADDING
+        counter = 1
         for monster in self.monsters:
             sprite = I.IMAGES.get(monster.name)
             text = FONT.render(monster.action, 1, C.WHITE)
-            WIN.blit(sprite, (sprite.get_width() + C.PADDING * self.counter, self.height - (C.PADDING * self.counter) - (sprite.get_height() * self.counter)))
-            WIN.blit(text, (sprite.get_width() - text.get_width()//4 + C.PADDING * self.counter, self.height - (C.PADDING * self.counter) - (sprite.get_height() * self.counter) - text.get_height()))
-            self.counter += 1
+            WIN.blit(sprite, (sprite.get_width() + C.PADDING * counter, self.height - height - (sprite.get_height())))
+            WIN.blit(text, (sprite.get_width() - text.get_width()//4 + C.PADDING * counter, self.height - height - (sprite.get_height()) - text.get_height()))
+            height += C.PADDING + sprite.get_height()
+            counter += 1
         pygame.display.update()
 
     def draw_monsters_without_actions(self):
@@ -73,6 +78,7 @@ class Draw:
         self.counter = 1
         for spirit in self.spirits:
             sprite = I.IMAGES.get(spirit.name)
+            sprite = pygame.transform.flip(sprite, True, False)
             WIN.blit(sprite, (self.width - C.PADDING - sprite.get_width() * self.counter, (self.height//2) - C.PADDING - sprite.get_height() * self.counter))
             self.counter += 1
         pygame.display.update()
@@ -129,6 +135,9 @@ class Draw:
             passives_text = FONT.render(hero.passives_text(), 1, C.WHITE)
             WIN.blit(passives_text, ((self.width - passives_text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
+            conditionals_text = FONT.render(hero.conditionals_text(), 1, C.WHITE)
+            WIN.blit(conditionals_text, ((self.width - conditionals_text.get_width())//2, C.PADDING * self.counter))
+            self.counter += 1
         pygame.display.update()
         view = True
         while view:
@@ -151,6 +160,22 @@ class Draw:
             stats_text = FONT.render(hero.full_stats_text(), 1, C.WHITE)
             WIN.blit(stats_text, ((self.width - stats_text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
+        pygame.display.update()
+        view = True
+        while view:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    view = False
+
+    def draw_full_hero_stats_skills(self, hero):
+        stats_text = FONT.render(hero.full_stats_text(), 1, C.WHITE)
+        WIN.blit(stats_text, ((self.width - stats_text.get_width())//2, C.PADDING * 1))
+        skills_text = FONT.render(hero.skills_text(), 1, C.WHITE)
+        WIN.blit(skills_text, ((self.width - skills_text.get_width())//2, C.PADDING * 2))
+        passives_text = FONT.render(hero.passives_text(), 1, C.WHITE)
+        WIN.blit(passives_text, ((self.width - passives_text.get_width())//2, C.PADDING * 3))
+        conditionals_text = FONT.render(hero.conditionals_text(), 1, C.WHITE)
+        WIN.blit(conditionals_text, ((self.width - conditionals_text.get_width())//2, C.PADDING * 4))
         pygame.display.update()
         view = True
         while view:
