@@ -32,8 +32,9 @@ class Guild:
             if choice == "LEAVE":
                 self.bool = False
             elif choice == "TALK":
-                tavern = Tavern(self.party)
-                tavern.recruit_stage()
+                # Want to recruit other party members through quests.
+                '''tavern = Tavern(self.party)
+                tavern.recruit_stage()'''
                 self.bool = False
             elif choice == "QUEST":
                 self.quest()

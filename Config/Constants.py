@@ -11,8 +11,9 @@ class Constants:
         self.GREEN = (0,255,0)
         self.RED = (255,0,0)
         self.BLACK = (0,0,0)
-        self.PLAYER_SIZE = 50
+        self.PLAYER_SIZE = 40
         self.MONSTER_SIZE = 60
+        self.BIG_MONSTER = 80
 
 
         self.PARTY_LIMIT = 5

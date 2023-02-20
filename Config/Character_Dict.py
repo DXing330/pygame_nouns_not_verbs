@@ -1,23 +1,72 @@
 class Character_Dict:
     def __init__(self):
+        self.BASE_STATS = {
+        "Blob" : {
+            "health" : 20, "attack" : 5, "defense" : 5, "skill" : 5, "speed" : 9
+        },
+        "Fodder" : {
+            "health" : 10, "attack" : 5, "defense" : 1, "skill" : 2, "speed" : 9
+        },
+        "Glass_Cannon" : {
+            "health" : 15, "attack" : 15, "defense" : 5, "skill" : 10, "speed" : 10
+        },
+        "Mob" : {
+            "health" : 15, "attack" : 10, "defense" : 5, "skill" : 5, "speed" : 9
+        },
+        "Regular" : {
+            "health" : 20, "attack" : 10, "defense" : 10, "skill" : 10, "speed" : 10
+        },
+        "Tank" : {
+            "health" : 20, "attack" : 10, "defense" : 20, "skill" : 5, "speed" : 9
+        }
+        }
+        self.GROWTH_STATS = {
+        "Hero_1" : {
+            "health" : 8, "attack" : 2, "defense" : 1, "skill" : 2
+        },
+        "Hero_2" : {
+            "health" : 9, "attack" : 2, "defense" : 2, "skill" : 1
+        },
+        "Hero_3" : {
+            "health" : 7, "attack" : 1, "defense" : 1, "skill" : 3
+        },
+        "Blob" : {
+            "health" : 9, "attack" : 1, "defense" : 0, "skill" : 0
+        },
+        "Fodder" : {
+            "health" : 2, "attack" : 1, "defense" : 0, "skill" : 1
+        },
+        "Glass_Cannon" : {
+            "health" : 6, "attack" : 4, "defense" : 1, "skill" : 2
+        },
+        "Mob" : {
+            "health" : 5, "attack" : 2, "defense" : 1, "skill" : 1
+        },
+        "Regular" : {
+            "health" : 8, "attack" : 3, "defense" : 2, "skill" : 1
+        },
+        "Tank" : {
+            "health" : 9, "attack" : 1, "defense" : 3, "skill" : 1
+        }
+        }
         self.HERO_STATS = {
         "Summoner" : {
-            "health" : 8, "attack" : 2, "defense" : 1, "skill" : 2, "speed" : 10, "bhealth" : 20, "battack" : 11, "bdefense" : 7, "bskill" : 11
+            "growth" : "Hero_1", "speed" : 10, "bhealth" : 20, "battack" : 11, "bdefense" : 7, "bskill" : 11
         },
         "Warrior" : {
-            "health" : 9, "attack" : 2, "defense" : 2, "skill" : 1, "speed" : 10, "bhealth" : 20, "battack" : 17, "bdefense" : 9, "bskill" : 7
+            "growth" : "Hero_2", "speed" : 10, "bhealth" : 20, "battack" : 17, "bdefense" : 9, "bskill" : 7
         },
         "Hunter" : {
-            "health" : 8, "attack" : 2, "defense" : 1, "skill" : 2, "speed" : 10, "bhealth" : 20, "battack" : 14, "bdefense" : 8, "bskill" : 9
+            "growth" : "Hero_1", "speed" : 10, "bhealth" : 20, "battack" : 14, "bdefense" : 8, "bskill" : 9
         },
         "Mage" : {
-            "health" : 7, "attack" : 1, "defense" : 1, "skill" : 3, "speed" : 10, "bhealth" : 18, "battack" : 10, "bdefense" : 6, "bskill" : 14
+            "growth" : "Hero_3", "speed" : 10, "bhealth" : 18, "battack" : 8, "bdefense" : 6, "bskill" : 14
         },
         "Knight" : {
-            "health" : 9, "attack" : 2, "defense" : 2, "skill" : 1, "speed" : 10, "bhealth" : 20, "battack" : 18, "bdefense" : 18, "bskill" : 2
+            "growth" : "Hero_2", "speed" : 10, "bhealth" : 20, "battack" : 16, "bdefense" : 16, "bskill" : 4
         },
         "Rogue" : {
-            "health" : 8, "attack" : 1, "defense" : 1, "skill" : 3, "speed" : 11, "bhealth" : 20, "battack" : 10, "bdefense" : 8, "bskill" : 11
+            "growth" : "Hero_3", "speed" : 11, "bhealth" : 20, "battack" : 10, "bdefense" : 8, "bskill" : 11
         }
         }
         self.HERO_SKILLS = {
@@ -52,57 +101,95 @@ class Character_Dict:
         }
         self.MONSTER_STATS = {
         "_Dummy" : {
-            "level" : 1, "variance" : 1, "health" : 0, "attack" : 0, "defense" : 0, "skill" : 0, "speed" : 0, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 1, "variance" : 1, "base" : "Mob", "growth" : "Mob", "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Assasin" : {
-            "level" : 9, "variance" : 1, "health" : 7, "attack" : 4, "defense" : 1, "skill" : 3, "speed" : 11, "skills" : ["Assasinate Hero", "Identify Hero Weakness", "Invisible Self"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 9, "variance" : 1, "base" : "Glass_Cannon", "growth" : "Glass_Cannon", "skills" : ["Assasinate Hero", "Identify Hero Weakness", "Invisible Self"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+        },
+        "Big Rat" : {
+            "level" : 2, "variance" : 1, "base" : "Mob", "growth" : "Mob", "skills" : ["Bleed Hero"], "passives" : [], "death_effect" : ["Create Rat", "Create Rat"], "preemptives" : [], "conditionals" : []
+        },
+        "Big Slime" : {
+            "level" : 6, "variance" : 1, "base" : "Blob", "growth" : "Blob", "skills" : ["Slime Split", "Poison Hero Attack"], "passives" : [], "death_effect" : ["Poison Heroes"], "preemptives" : [], "conditionals" : ["Poison Heal", "Poison Cure", "Bleed Heal", "Bleed Cure"]
         },
         "Cocoon" : {
-            "level" : 2, "variance" : 1, "health" : 10, "attack" : 0, "defense" : 3, "skill" : 0, "speed" : 5, "skills" : ["Nothing"], "passives" : [], "death_effect" : ["Create Moth"], "preemptives" : [], "conditionals" : []
+            "level" : 2, "variance" : 1, "base" : "Tank", "growth" : "Tank", "skills" : ["Nothing"], "passives" : [], "death_effect" : ["Create Moth"], "preemptives" : [], "conditionals" : []
         },
         "Demon" : {
-            "level" : 10, "variance" : 2, "health" : 12, "attack" : 5, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : ["Fireball Heroes"], "preemptives" : [], "conditionals" : ["Last Stand"]
+            "level" : 10, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : ["Fireball Heroes"], "preemptives" : [], "conditionals" : ["Last Stand"]
         },
         "Elemental" : {
-            "level" : 8, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 8, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Imp" : {
-            "level" : 1, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Flame Send"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 1, "variance" : 1, "base" : "Mob", "growth" : "Mob", "skills" : ["Flame Send"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+        },
+        "Giant Rat" : {
+            "level" : 3, "variance" : 1, "base" : "Regular", "growth" : "Regular", "skills" : ["Bleed Hero"], "passives" : [], "death_effect" : ["Create Big Rat", "Create Big Rat"], "preemptives" : [], "conditionals" : []
         },
         "Goblin" : {
-            "level" : 1, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Blind Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["High Morale"]
+            "level" : 1, "variance" : 1, "base" : "Mob", "growth" : "Mob", "skills" : ["Blind Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["High Morale"]
         },
         "Golem" : {
-            "level" : 1, "variance" : 0, "health" : 10, "attack" : 3, "defense" : 3, "skill" : 1, "speed" : 10, "skills" : ["Fortify Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 1, "variance" : 0, "base" : "Regular", "growth" : "Regular", "skills" : ["Fortify Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Hob Goblin" : {
-            "level" : 4, "variance" : 1, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Blind Hero", "Call Goblin"], "passives" : [], "death_effect" : [], "preemptives" : ["Call Goblin"], "conditionals" : ["High Morale"]
+            "level" : 4, "variance" : 1, "base" : "Regular", "growth" : "Regular", "skills" : ["Blind Hero", "Call Goblin"], "passives" : [], "death_effect" : [], "preemptives" : ["Call Goblin"], "conditionals" : ["High Morale"]
         },
         "Moth" : {
-            "level" : 4, "variance" : 1, "health" : 8, "attack" : 2, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Poison Hero", "Poison Heroes"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 4, "variance" : 1, "base" : "Regular", "growth" : "Regular", "skills" : ["Poison Hero", "Poison Heroes"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Orc" : {
-            "level" : 6, "variance" : 2, "health" : 10, "attack" : 4, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Double Slash"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Last Stand"]
+            "level" : 6, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : ["Wide Swing", "Double Slash"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Last Stand"]
+        },
+        "Rat" : {
+            "level" : 1, "variance" : 1, "base" : "Fodder", "growth" : "Fodder", "skills" : ["Bleed Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Serpent" : {
-            "level" : 3, "variance" : 1, "health" : 8, "attack" : 3, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Target Hero", "Bite Hero", "Poison Hero"], "passives" : ["Dodge"], "death_effect" : [], "preemptives" : ["Dodge"], "conditionals" : []
+            "level" : 3, "variance" : 1, "base" : "Mob", "growth" : "Mob", "skills" : ["Target Hero", "Bite Hero", "Poison Hero"], "passives" : ["Dodge"], "death_effect" : [], "preemptives" : ["Dodge"], "conditionals" : []
         },
         "Slime" : {
-            "level" : 1, "variance" : 1, "health" : 10, "attack" : 1, "defense" : 0, "skill" : 0, "speed" : 10, "skills" : ["Nothing"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 3, "variance" : 1, "base" : "Blob", "growth" : "Blob", "skills" : ["Slime Split", "Poison Hero Attack"], "passives" : [], "death_effect" : ["Poison Heroes"], "preemptives" : [], "conditionals" : ["Poison Heal", "Poison Cure", "Bleed Heal", "Bleed Cure"]
         },
         "Turret" : {
-            "level" : 1, "variance" : 0, "health" : 5, "attack" : 4, "defense" : 1, "skill" : 0, "speed" : 10, "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 1, "variance" : 0, "base" : "Glass_Cannon", "growth" : "Glass_Cannon", "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Troll" : {
-            "level" : 6, "variance" : 2, "health" : 12, "attack" : 3, "defense" : 2, "skill" : 1, "speed" : 10, "skills" : ["Wide Swing", "Heal Self"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Troll Heal"]
+            "level" : 6, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : ["Wide Swing", "Heal Self"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Troll Heal"]
         },
         "Vampire" : {
-            "level" : 10, "variance" : 2, "health" : 10, "attack" : 3, "defense" : 1, "skill" : 2, "speed" : 10, "skills" : ["Drain Hero", "Stun Hero", "Bleed Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Drain Blood"]
+            "level" : 10, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : ["Drain Hero", "Stun Hero", "Bleed Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["Drain Blood"]
         },
         "Werewolf" : {
-            "level" : 8, "variance" : 2, "health" : 8, "attack" : 5, "defense" : 2, "skill" : 2, "speed" : 10, "skills" : ["Double Slash", "Call Wolf"], "passives" : [], "death_effect" : [], "preemptives" : ["Call Wolf", "Call Wolf"], "conditionals" : ["Last Stand"]
+            "level" : 8, "variance" : 2, "base" : "Glass_Cannon", "growth" : "Glass_Cannon", "skills" : ["Double Slash", "Call Wolf"], "passives" : ["Keen Smell"], "death_effect" : [], "preemptives" : ["Call Wolf", "Call Wolf"], "conditionals" : ["Last Stand"]
         },
         "Wolf" : {
-            "level" : 4, "variance" : 1, "health" : 8, "attack" : 4, "defense" : 1, "skill" : 1, "speed" : 10, "skills" : ["Howl"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
+            "level" : 4, "variance" : 1, "base" : "Glass_Cannon", "growth" : "Glass_Cannon", "skills" : ["Howl"], "passives" : ["Keen Smell"], "death_effect" : [], "preemptives" : [], "conditionals" : []
         }
+        }
+        self.MONSTER_GROUPS = {
+        "SF1" : ["Goblin"],
+        "SF2" : ["Imp"],
+        "SF3" : ["Goblin", "Goblin"],
+        "SF4" : ["Goblin", "Imp"],
+        "SF5" : ["Goblin", "Goblin", "Goblin"],
+        "SF6" : ["Imp", "Imp"],
+        "DF1" : ["Serpent", "Serpent"],
+        "DF2" : ["Imp", "Serpent"],
+        "DF3" : ["Goblin", "Goblin", "Goblin"],
+        "DF4" : ["Imp", "Imp", "Serpent"],
+        "DF5" : ["Imp", "Imp", "Serpent", "Serpent"],
+        "DF6" : ["Goblin", "Goblin", "Goblin", "Goblin"],
+        "WD1" : ["Wolf", "Wolf"],
+        "WD2" : ["Wolf", "Wolf", "Wolf"],
+        "WD3" : ["Wolf", "Wolf", "Wolf", "Wolf"],
+        "WD4" : ["Serpent", "Serpent"],
+        "WD5" : ["Wolf", "Wolf", "Serpent", "Serpent"],
+        "WD6" : ["Serpent", "Serpent", "Serpent", "Serpent"],
+        "EF1" : ["Orc", "Orc"],
+        "EF2" : ["Orc", "Orc", "Orc"],
+        "EF3" : ["Orc", "Orc", "Orc", "Orc"],
+        "EF4" : ["Troll", "Troll"],
+        "EF5" : ["Troll", "Troll", "Orc", "Orc"],
+        "EF6" : ["Troll", "Troll", "Troll"]
         }

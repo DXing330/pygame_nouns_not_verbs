@@ -31,6 +31,13 @@ class Conditional_Effect:
     effect_specifics: str
     power: int = 1
 
+    def view_stats_part_one(self):
+        return ("~ "+self.name+", effect: "+self.effect+", effect_specifics: "+self.effect_specifics+", power: "+str(self.power))
+    
+    def view_stats_part_two(self):
+        text =  ("condition: "+str(self.condition)+", condition_specifics: "+str(self.condition_specifics)+", timing: "+str(self.timing))
+        return text
+
 
 @dataclass
 class Effect(ABC):
@@ -53,6 +60,11 @@ class Change_Stats(Effect):
         if "Temp_Health" in self.effect_specifics:
             self.target.temp_health += self.power
         elif "Health" in self.effect_specifics:
+            if self.power < 0 and self.target.temp_health > 0:
+                self.target.temp_health += self.power
+                self.power = 0
+                if self.target.temp_health < 0:
+                    self.power = self.target.temp_health
             self.target.health += self.power
         elif "Attack" in self.effect_specifics:
             self.target.attack += self.power
@@ -65,6 +77,11 @@ class Change_Stats(Effect):
         elif "Evasion" in self.effect_specifics:
             self.target.evasion += self.power
         elif "Max_Health" in self.effect_specifics:
+            if self.power < 0 and self.target.temp_health > 0:
+                self.target.temp_health += self.power
+                self.power = 0
+                if self.target.temp_health < 0:
+                    self.power = self.target.temp_health
             self.target.max_health += self.power
         elif "Base_Attack" in self.effect_specifics:
             self.target.base_attack += self.power
@@ -99,6 +116,8 @@ class Add_Buff(Effect):
 class Remove_Buff(Effect):
 
     def apply_effect(self):
+        if self.effect_specifics == "Full":
+            self.target.statuses = []
         if self.effect_specifics == "All":
             if len(self.target.buffs) > 0:
                 self.target.buffs.pop(-1)
@@ -119,6 +138,8 @@ class Add_Status(Effect):
 class Cure_Status(Effect):
 
     def apply_effect(self):
+        if self.effect_specifics == "Full":
+            self.target.statuses = []
         if self.effect_specifics == "All":
             if len(self.target.statuses) > 0:
                 self.target.statuses.pop(-1)

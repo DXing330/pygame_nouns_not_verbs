@@ -183,6 +183,28 @@ class Draw:
                 if event.type == pygame.KEYDOWN:
                     view = False
 
+    def draw_full_skill_details(self, skill_list):
+        WIN.fill((0, 0, 0))
+        self.counter = 1
+        for skill in skill_list:
+            skill_text = FONT.render(repr(skill), 1, C.WHITE)
+            if skill_text.get_width() < self.width:
+                WIN.blit(skill_text, ((self.width - skill_text.get_width())//2, C.PADDING * self.counter))
+                self.counter += 1
+            else:
+                skill_text = FONT.render(skill.view_stats_part_one(), 1, C.WHITE)
+                WIN.blit(skill_text, ((self.width - skill_text.get_width())//2, C.PADDING * self.counter))
+                self.counter += 1
+                skill_text = FONT.render(skill.view_stats_part_two(), 1, C.WHITE)
+                WIN.blit(skill_text, ((self.width - skill_text.get_width())//2, C.PADDING * self.counter))
+                self.counter += 1
+        pygame.display.update()
+        view = True
+        while view:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    view = False
+
     def draw_battle_stats(self):
         self.draw_hero_stats()
         self.draw_monster_stats()

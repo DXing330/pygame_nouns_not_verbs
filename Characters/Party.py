@@ -46,6 +46,7 @@ class Item_Bag:
     health_potions: int = 0
     energy_potions: int = 0
     mana_crystals: int = 0
+    repel: int = 0
 
 
 @dataclass
@@ -190,14 +191,45 @@ class Party:
                         copy_hero = copy.deepcopy(hero)
                         self.battle_party.append(copy_hero)
 
+    def check_on_battle_party(self):
+        if len(self.battle_party) <= 0:
+            self.initialize_battle_party(1)
+
+    def view_detailed_stats_skills(self, character):
+        self.draw.draw_background()
+        choices = []
+        if len(character.skill_list) > 0:
+            choices.append("SKILLS")
+        if len(character.passive_skills) > 0:
+            choices.append("PASSIVES")
+        if isinstance(character, Hero):
+            if len(character.conditional_passives) > 0:
+                choices.append("CONDITIONALS")
+        choices.append("LEAVE")
+        pick_from = Pick(choices, False)
+        choice = pick_from.pick()
+        if choice == "LEAVE":
+            pass
+        elif choice == "SKILLS":
+            self.draw.draw_full_skill_details(character.skill_list)
+            self.view_detailed_stats_skills(character)
+        elif choice == "PASSIVES":
+            self.draw.draw_full_skill_details(character.passive_skills)
+            self.view_detailed_stats_skills(character)
+        elif choice == "CONDITIONALS":
+            self.draw.draw_full_skill_details(character.conditional_passives)
+            self.view_detailed_stats_skills(character)
+
     def menu(self, key: int = 0):
         self.draw = Draw()
         self.draw.draw_background()
-        choices = ["STATS", "SPIRIT", "SPIRIT STATS", "CAPTURED"]
+        choices = ["STATS", "SPIRIT", "SPIRIT STATS"]
+        if len(self.summonables) > 0:
+            choices.append("CAPTURED")
         if key == 0:
             choices.append("MANAGE PARTY")
             choices.append("SAVE")
-            choices.append("REST")
+            choices.append("STOP")
         elif key == 1:
             choices.append("ITEM")
         pick_from = Pick(choices, False)
@@ -205,9 +237,11 @@ class Party:
         if choice == "STATS":
             self.draw.draw_background()
             if key == 0:
-                self.draw.draw_full_hero_stats(self.heroes)
+                pick_from = Pick(self.heroes, False)
             if key == 1:
-                self.draw.draw_hero_stats_skills(self.battle_party)
+                pick_from = Pick(self.battle_party, False)
+            hero = pick_from.pick()
+            self.view_detailed_stats_skills(hero)
         if choice == "SPIRIT":
             self.draw.draw_background()
             pick_spirit = Pick(self.spirits, False)
@@ -218,7 +252,9 @@ class Party:
                 spirit.active = True
         if choice == "SPIRIT STATS":
             self.draw.draw_background()
-            self.draw.draw_spirit_stats(self.spirits)
+            pick_from = Pick(self.spirits, False)
+            spirit = pick_from.pick()
+            self.view_detailed_stats_skills(spirit)
         if choice == "PARTY":
             self.manage_battle_party()
         if choice == "SAVE":
@@ -232,8 +268,7 @@ class Party:
             self.draw.draw_background()
             pick_from = Pick(self.summonables, False)
             cap_mon = pick_from.pick()
-            self.draw.draw_background()
-            self.draw.draw_full_hero_stats_skills(cap_mon)
+            self.view_detailed_stats_skills(cap_mon)
         return choice
 
     def write_object(self, object, filename):
@@ -325,6 +360,7 @@ class Party:
         self.quests = []
         self.locations = ["None", "Starter Forest"]
         self.journal.guild_facilities = []
+        self.summonables = []
 
     def load(self):
         heroes_list = self.read_hero_objects("_heroes")

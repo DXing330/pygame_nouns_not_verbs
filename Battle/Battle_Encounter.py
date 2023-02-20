@@ -85,12 +85,10 @@ class Monster_Encounter:
             boss = self.location.bosses[random.randint(0, len(self.location.bosses) - 1)]
             monster = self.monster_factory.make_monster(boss)
             self.monsters.append(monster)
-        if len(self.monsters) <= min_monsters:
-            # Plus one here in case self.amount is zero.
-            for number in range(0, random.randint(max(self.amount - 1, 1), self.amount + 1)):
-                monster_name = self.location.monsters[random.randint(0, len(self.location.monsters) - 1)]
-                monster = self.monster_factory.make_monster(monster_name)
-                self.monsters.append(monster)
+        group = CD.MONSTER_GROUPS.get(self.location.groups[random.randint(0, len(self.location.groups)-1)])
+        for name in group:
+            monster = self.monster_factory.make_monster(name)
+            self.monsters.append(monster)
         for monster in self.monsters:
             self.update_monster_for_battle(monster)
         self.monster_list = copy.deepcopy(self.monsters)
@@ -206,20 +204,20 @@ class Monster_Encounter:
 
     def skill_condition_checker(self, user, skill: Skill, targets: list):
         if skill.condition == "Always":
-            activate = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.power * user.level), targets)
+            activate = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.determine_power(user)), targets)
             activate.make_effect()
         else:
             condition = Conditional_Effect(skill.name, "Skill", skill.condition, skill.condition_specifics, skill.effect, skill.effect_specifics, skill.power)
             for target in targets:
                 fulfill = self.condition_checker.check_target_condition(user, condition, target)
                 if fulfill:
-                    activation = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.power * user.level), [target])
+                    activation = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.determine_power(user)), [target])
                     activation.make_effect()
 
     def skill_activation(self, user, skill: Skill, targets: list, pick_randomly = True):
         if "Summon" in skill.effect:
             if "Monster" in skill.effect:
-                summon = self.monster_factory.make_monster(skill.effect_specifics, max(user.level-1, 1))
+                summon = self.monster_factory.make_monster(skill.effect_specifics, max(user.level-1, skill.power))
                 self.update_monster_for_battle(summon)
                 self.monsters.append(summon)
             else:
@@ -259,6 +257,9 @@ class Monster_Encounter:
         else:
             # Some skills will only activate a portion of the time, ex. some status effects.
             activation = random.randint(0, 99)
+            print (skill)
+            print (skill.chance)
+            print (activation)
             if activation < skill.chance:
                 self.skill_condition_checker(user, skill, targets)
 
@@ -643,6 +644,10 @@ class Monster_Encounter:
             for battler in self.heroes:
                 if hero.name == battler.name:
                     check = battler.name
+                    # Keep permanent stat losses until returning to town.
+                    hero.max_health = min(battler.max_health, hero.max_health)
+                    hero.base_attack = min(battler.base_attack, hero.base_attack)
+                    hero.base_defense = min(battler.base_defense, hero.base_defense)
                     hero.health = min(battler.health, hero.max_health)
                     hero.skill = min(battler.skill, hero.max_skill)
             if check == None:
@@ -677,7 +682,7 @@ class Monster_Encounter:
         elif len(self.heroes) <= 0:
             win = False
             for hero in self.party.heroes:
-                hero.exp -= hero.level
+                hero.exp -= min(hero.level, hero.exp)
                 self.party.items.coins -= min(self.party.items.coins, hero.level)
         return win
     

@@ -54,7 +54,7 @@ class Spirit:
     def update_passive_list(self):
         dict = CD.SPIRIT_PASSIVES.get(self.name)
         if len(self.passive_skills) <= 0:
-            for number in range(0, self.level):
+            for number in range(0, self.level+1):
                 new_skill = dict.get(number)
                 if new_skill != None:
                     real_skill = Skill(**S.ALL_SKILLS.get(new_skill))

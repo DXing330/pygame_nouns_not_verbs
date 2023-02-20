@@ -13,13 +13,13 @@ class Monster(Character):
         self.action = "Attack"
         self.counter = 0
         self.loyalty = 0
+        self.dict = CD.MONSTER_STATS.get(self.name)
 
     def stats_text(self):
         text = str(self.name+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense)))
         return text
 
     def update_stats(self, flow: int = 0):
-        sdict = CD.MONSTER_STATS.get(self.name)
         self.turn = True
         self.skills = True
         self.used_skill = None
@@ -32,16 +32,18 @@ class Monster(Character):
         self.weapon = None
         self.armor = None
         while self.level <= 0:
-            self.level = round(random.gauss(sdict.get("level"), sdict.get("variance")))
+            self.level = round(random.gauss(self.dict.get("level"), self.dict.get("variance")))
         self.update_base_stats()
 
     def update_base_stats(self):
-        sdict = CD.MONSTER_STATS.get(self.name)
-        self.max_health = sdict.get("health") * self.level
-        self.base_attack = sdict.get("attack") * self.level
-        self.base_defense = sdict.get("defense") * self.level
-        self.max_skill = sdict.get("skill") * self.level
-        self.max_skill = sdict.get("skill") * self.level
+        base = self.dict.get("base")
+        base_stats = CD.BASE_STATS.get(base)
+        self.max_health = base_stats.get("health")
+        self.base_attack = base_stats.get("attack")
+        self.base_defense = base_stats.get("defense")
+        self.max_skill = base_stats.get("skill")
+        self.base_speed = base_stats.get("speed")
+        self.update_growth_stats()
         self.accuracy = 100
         self.evasion = 0
         self.damage_dealt = 100
@@ -52,6 +54,14 @@ class Monster(Character):
         self.defense = self.base_defense
         self.speed = self.base_speed
         self.target = None
+
+    def update_growth_stats(self):
+        growth = self.dict.get("growth")
+        growth_stats = CD.GROWTH_STATS.get(growth)
+        self.max_health += growth_stats.get("health") * (self.level-1)
+        self.base_attack += growth_stats.get("attack") * (self.level-1)
+        self.base_defense += growth_stats.get("defense") * (self.level-1)
+        self.max_skill += growth_stats.get("skill") * (self.level-1)
 
     def update_preemptives(self, preemptives: list):
         self.preemptives = preemptives
@@ -87,6 +97,7 @@ class Summon(Monster):
     def __init__(self, name, level = 0):
         self.name = name
         self.level = level
+        self.dict = CD.MONSTER_STATS.get(self.name)
 
     def choose_action(self):
         possiblities = []
@@ -198,6 +209,34 @@ class Assasin(Monster):
         self.skill += 1
         self.useable_skills = []
         if self.skills and self.skill > 0:
+            self.choose_skill()
+        if len(self.useable_skills) > 0:
+            self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]
+            self.action = str(self.used_skill.name)
+
+
+# Slimes will apply status effects normally, when they're low hp they'll split.
+# Burst them down to avoid them splitting.
+class Slime(Monster):
+    def choose_skill(self):
+        low_hp = False
+        if self.health < self.max_health/2:
+            low_hp = True
+        if low_hp:
+            for skill in self.skill_list:
+                if "Split" in skill.name:
+                    self.useable_skills.append[skill]
+        else:
+            for skill in self.skill_list:
+                if "Split" not in skill.name and skill.cooldown <= 0:
+                    self.useable_skills.append[skill]
+
+    def choose_action(self, heroes, monsters):
+        self.action = "Attack"
+        self.used_skill = None
+        self.skill += 1
+        self.useable_skills = []
+        if (self.skills and self.skill > 0) or (self.health < self.max_health/2):
             self.choose_skill()
         if len(self.useable_skills) > 0:
             self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]

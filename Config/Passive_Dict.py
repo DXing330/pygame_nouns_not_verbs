@@ -16,7 +16,7 @@ class Passive_Dict:
         }
         self.STATUSES = {
         "Bleed" : {
-            "name" : "Bleed", "effect" : "Change_Stats", "effect_specifics" : "Max_Health", "power" : -1, "turns" : 5
+            "name" : "Bleed", "effect" : "Change_Stats", "effect_specifics" : "Max_Health", "power" : -0.5, "turns" : 5
         },
         "Burn" : {
             "name" : "Burn", "effect" : "Change_Stats", "effect_specifics" : "All", "power" : -1, "turns" : 5
@@ -64,6 +64,12 @@ class Passive_Dict:
         "_Test" : {
             "name" : "_Test", "timing" : "None", "condition" : "None", "condition_specifics" : "None", "effect" : "None", "effect_specifics" : "None", "power" : 0
         },
+        "Bleed Cure" : {
+            "name" : "Bleed Cure", "timing" : "Passive", "condition" : "Status", "condition_specifics" : "Bleed", "effect" : "Cure_Status", "effect_specifics" : "Bleed", "power" : 1
+        },
+        "Bleed Heal" : {
+            "name" : "Bleed Heal", "timing" : "Passive", "condition" : "Status", "condition_specifics" : "Bleed", "effect" : "Change_Stats", "effect_specifics" : "Max_Health", "power" : 0.5
+        },
         "Drain Blood" : {
             "name" : "Drain Blood", "timing" : "Attack", "condition" : "Status", "condition_specifics" : "Bleed", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 2
         },
@@ -75,6 +81,12 @@ class Passive_Dict:
         },
         "Last Stand" : {
             "name" : "Last Stand", "timing" : "Passive", "condition" : "Low_Health", "condition_specifics" : "30", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 5
+        },
+        "Poison Cure" : {
+            "name" : "Poison Cure", "timing" : "Passive", "condition" : "Status", "condition_specifics" : "Poison", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 2
+        },
+        "Poison Heal" : {
+            "name" : "Poison Heal", "timing" : "Passive", "condition" : "Status", "condition_specifics" : "Poison", "effect" : "Cure_Status", "effect_specifics" : "Poison", "power" : 1
         },
         "Troll Heal" : {
             "name" : "Troll Heal", "timing" : "Passive", "condition" : "Not_Status", "condition_specifics" : "Poison", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : 2

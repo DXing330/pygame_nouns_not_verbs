@@ -21,6 +21,8 @@ class Hero(Character):
 
     def update_stats(self, original = True):
         dict = CD.HERO_STATS.get(self.name)
+        growth = dict.get("growth")
+        growth_dict = CD.GROWTH_STATS.get(growth)
         if original:
             self.max_health = dict.get("bhealth")
             self.base_attack = dict.get("battack")
@@ -34,10 +36,10 @@ class Hero(Character):
             for number in range(self.level):
                 self.update_stats(False)
         elif not original:
-            self.max_health += dict.get("health")
-            self.base_attack += dict.get("attack")
-            self.base_defense += dict.get("defense")
-            self.max_skill += dict.get("skill")
+            self.max_health += growth_dict.get("health")
+            self.base_attack += growth_dict.get("attack")
+            self.base_defense += growth_dict.get("defense")
+            self.max_skill += growth_dict.get("skill")
         self.health = self.max_health
         self.skill = self.max_skill
         self.attack = self.base_attack
