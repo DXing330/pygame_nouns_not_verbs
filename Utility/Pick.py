@@ -40,7 +40,7 @@ class Pick:
                 text = FONT.render(str(thing.name), 1, C.WHITE)
             except:
                 text = FONT.render(str(thing), 1, C.WHITE)
-            possible_widths.append((text.get_width()*(2)))
+            possible_widths.append((text.get_width()*(2.2)))
         self.menu_width = (max(possible_widths)+(C.PADDING*3))
         self.menu = pygame.Rect((WIN.get_width() - self.menu_width)//2, 0, self.menu_width, self.menu_length)
         pygame.draw.rect(WIN, C.BLACK, self.menu)

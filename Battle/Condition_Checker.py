@@ -49,10 +49,10 @@ class Condition_Checker:
                 return True
             return False
         if conditional.condition == "Low_Health":
-            if (target.health/target.max_health) < int(conditional.condition_specifics)/100:
+            if (target.health/target.max_health) <= int(conditional.condition_specifics)/100:
                 return True
             return False
         if conditional.condition == "High_Health":
-            if (target.health/target.max_health) > int(conditional.condition_specifics)/100:
+            if (target.health/target.max_health) >= int(conditional.condition_specifics)/100:
                 return True
             return False

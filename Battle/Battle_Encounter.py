@@ -3,7 +3,7 @@ from Battle.Effect_Factory import *
 from Battle.Location import *
 from Battle.Monster_Factory import Monster_Factory
 from Battle.Condition_Checker import *
-from Battle.Monster_Drops import *
+from Battle.Capture_Monster import *
 from Characters.Party import *
 from Characters.Monster import *
 from Skills.Auras import *
@@ -85,12 +85,10 @@ class Monster_Encounter:
             boss = self.location.bosses[random.randint(0, len(self.location.bosses) - 1)]
             monster = self.monster_factory.make_monster(boss)
             self.monsters.append(monster)
-        if len(self.monsters) <= min_monsters:
-            # Plus one here in case self.amount is zero.
-            for number in range(0, random.randint(max(self.amount - 1, 1), self.amount + 1)):
-                monster_name = self.location.monsters[random.randint(0, len(self.location.monsters) - 1)]
-                monster = self.monster_factory.make_monster(monster_name)
-                self.monsters.append(monster)
+        group = CD.MONSTER_GROUPS.get(self.location.groups[random.randint(0, len(self.location.groups)-1)])
+        for name in group:
+            monster = self.monster_factory.make_monster(name)
+            self.monsters.append(monster)
         for monster in self.monsters:
             self.update_monster_for_battle(monster)
         self.monster_list = copy.deepcopy(self.monsters)
@@ -98,68 +96,44 @@ class Monster_Encounter:
     def prepare_for_battle(self):
         self.heroes = copy.deepcopy(self.party.battle_party)
         for hero in self.heroes:
-            battle_skills = []
-            for skill in hero.skill_list:
-                bskill = Skill(**S.ALL_SKILLS.get(skill))
-                battle_skills.append(bskill)
-            hero.update_skills(battle_skills)
-            battle_passives = []
-            for skill in hero.passive_skills:
-                bpassive = Skill(**S.ALL_SKILLS.get(skill))
-                battle_passives.append(bpassive)
-            hero.update_passive_skills(battle_passives)
             if hero.weapon != None:
                 weapon = Equipment(**E.EQUIPMENT.get(hero.weapon))
                 hero.weapon = weapon
             if hero.armor != None:
                 armor = Equipment(**E.EQUIPMENT.get(hero.armor))
                 hero.armor = armor
-            battle_conditionals = []
-            for passive in hero.conditional_passives:
-                bconditional = Conditional_Effect(**P.CONDITIONALS.get(passive))
-                battle_conditionals.append(bconditional)
-            hero.update_conditonal_passives(battle_conditionals)
         self.spirits = copy.deepcopy(self.party.spirits)
-        for spirit in self.spirits:
-            battle_skills = []
-            for skill in spirit.skill_list:
-                bskill = Skill(**S.ALL_SKILLS.get(skill))
-                battle_skills.append(bskill)
-            spirit.update_skills(battle_skills)
-            battle_passives = []
-            for skill in spirit.passive_skills:
-                bpassive = Skill(**S.ALL_SKILLS.get(skill))
-                battle_passives.append(bpassive)
-            spirit.update_passives(battle_passives)
+        # Keep track of what monsters have been summoned.
+        self.summoned_mons = []
 
     def update_monster_for_battle(self, monster: Monster):
         monster.update_stats()
-        battle_skills = []
+        skills = []
         dictionary = CD.MONSTER_STATS.get(monster.name)
         for word in dictionary.get("skills"):
             bskill = Skill(**S.ALL_SKILLS.get(word))
-            battle_skills.append(bskill)
-        monster.update_skills(battle_skills)
-        battle_passives = []
+            skills.append(bskill)
+        monster.skill_list = skills
+        passives = []
         for word in dictionary.get("passives"):
             bpassive = Skill(**S.ALL_SKILLS.get(word))
-            battle_passives.append(bpassive)
-        monster.update_passive_skills(battle_passives)
-        battle_conditionals = []
+            passives.append(bpassive)
+        monster.passive_skills = passives
+        conditionals = []
         for word in dictionary.get("conditionals"):
             bconditional = Conditional_Effect(**P.CONDITIONALS.get(word))
-            battle_conditionals.append(bconditional)
-        monster.update_conditonal_passives(battle_conditionals)
+            conditionals.append(bconditional)
+        monster.conditional_passives = conditionals
         death_effects = []
         for word in dictionary.get("death_effect"):
             bdeath = Skill(**S.ALL_SKILLS.get(word))
             death_effects.append(bdeath)
-        monster.update_death_skills(death_effects)
+        monster.death_skills = death_effects
         preemptives = []
         for word in dictionary.get("preemptives"):
             preemptive = Skill(**S.ALL_SKILLS.get(word))
             preemptives.append(preemptive)
-        monster.update_preemptives(preemptives)
+        monster.preemptives = preemptives
 
     def monster_targeting(self, user: Monster, skill: Skill):
         target_list = []
@@ -207,7 +181,6 @@ class Monster_Encounter:
 
     def skill_apply_cost_cooldown_use(self, user, skill: Skill, targets: list, pick_randomly = True):
         cost = skill.cost
-        print ("CD: "+str(skill.cooldown))
         if skill.cooldown <= 0 and user.skill > 0:
             skill.cooldown += skill.cooldown_counter
             if skill.cost == "Target":
@@ -224,26 +197,27 @@ class Monster_Encounter:
             print ("Failed")
             print (user.skill)
             print ("COST: "+str(cost))
+            print ("CD: "+str(skill.cooldown))
             self.draw_battle()
             self.draw.draw_text(user.name+" failed to "+skill.name)
             pygame.time.delay(500)
 
     def skill_condition_checker(self, user, skill: Skill, targets: list):
         if skill.condition == "Always":
-            activate = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.power * user.level), targets)
+            activate = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.determine_power(user)), targets)
             activate.make_effect()
         else:
             condition = Conditional_Effect(skill.name, "Skill", skill.condition, skill.condition_specifics, skill.effect, skill.effect_specifics, skill.power)
             for target in targets:
                 fulfill = self.condition_checker.check_target_condition(user, condition, target)
                 if fulfill:
-                    activation = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.power * user.level), [target])
+                    activation = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.determine_power(user)), [target])
                     activation.make_effect()
 
     def skill_activation(self, user, skill: Skill, targets: list, pick_randomly = True):
-        if skill.effect == "Summon":
-            if skill.power < 0:
-                summon = self.monster_factory.make_monster(skill.effect_specifics, max(user.level-1, 1))
+        if "Summon" in skill.effect:
+            if "Monster" in skill.effect:
+                summon = self.monster_factory.make_monster(skill.effect_specifics, max(user.level-1, skill.power))
                 self.update_monster_for_battle(summon)
                 self.monsters.append(summon)
             else:
@@ -294,9 +268,47 @@ class Monster_Encounter:
 
     def hero_skill(self, hero: Character):
         self.draw_battle()
-        pick_from = Pick(hero.battle_skills, False)
+        pick_from = Pick(hero.skill_list, False)
         skill = pick_from.pick_skill()
         self.skill_targeting(hero, skill, False)
+
+    def summoner_skills(self, hero: Hero, action: str):
+        self.draw_battle()
+        if "Summon" in action:
+            hero.summon_limit -= 1
+            if len(self.party.summonables) > 0 and hero.skill > 0:
+                pick_from = Pick(self.party.summonables, False)
+                new_summon = pick_from.pick()
+                hero.skill -= new_summon.level
+                loyal_check = random.randint(0, max(new_summon.loyalty,new_summon.level)+1)
+                self.draw_battle()
+                if loyal_check > new_summon.loyalty:
+                    monster = self.monster_factory.make_monster(new_summon.name, new_summon.level)
+                    self.update_monster_for_battle(monster)
+                    self.monsters.append(monster)
+                    self.draw.draw_text(new_summon.name+" joins the monsters' side.")
+                else:
+                    self.heroes.append(new_summon)
+                    self.summoned_mons.append(new_summon)
+                    self.draw.draw_text(hero.name+" summons a "+new_summon.name+".")
+            else:
+                self.draw.draw_text("Nothing to summon.")
+        elif "Capture" in action:
+            if len(self.monsters) == 1:
+                if hero.skill > self.monsters[0].level:
+                    hero.skill -= self.monsters[0].level
+                    catch = Capture_Monster(self.party, hero, self.monsters[0])
+                    captured = catch.determine_capture()
+                    if captured:
+                        self.monsters[0].health = 0
+                        self.draw.draw_text("You've captured a "+self.monsters[0].name+".")
+                    else:
+                        self.draw.draw_text("You failed to catch the "+self.monsters[0].name+".")
+                else:
+                    self.draw.draw_text("You don't have enough skill to attempt to capture that "+self.monsters[0].name+".")
+            else:
+                self.draw.draw_text("You can't catch more than one enemy at a time.")
+        pygame.time.delay(1000)
 
     def use_item(self, hero: Character):
         self.draw_battle()
@@ -305,7 +317,8 @@ class Monster_Encounter:
             choices.append("Health")
         if self.party.items.energy_potions > 0:
             choices.append("Energy")
-        if len(choices) > 0:
+        choices.append("None")
+        if len(choices) > 1:
             pick_from = Pick(choices, False)
             potion = pick_from.pick()
             self.draw_battle()
@@ -317,6 +330,8 @@ class Monster_Encounter:
                 self.party.items.energy_potions -= 1
                 hero.skill += hero.max_skill//2
                 self.draw.draw_text(hero.name+" drinks an energy potion.")
+            elif potion == "None":
+                self.draw.draw_text(hero.name+" decides to not use a potion.")
         else:
             self.draw.draw_text(hero.name+" fails to drink.")
         pygame.time.delay(1000)
@@ -347,6 +362,8 @@ class Monster_Encounter:
                 self.delay_turn(hero)
             elif "Item" in action:
                 self.use_item(hero)
+            else:
+                self.summoner_skills(hero, action)
         elif len(self.monsters) > 0 and not hero.turn:
             self.draw.draw_text(hero.name+" is stunned.")
             pygame.time.delay(1000)
@@ -380,8 +397,9 @@ class Monster_Encounter:
             if monster.used_skill != None and monster.skills:
                 self.skill_targeting(monster, monster.used_skill)
                 self.draw_battle()
-                self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
-                pygame.time.delay(1000)
+                if monster.used_skill.effect != "Attack":
+                    self.draw.draw_text(monster.name+" uses "+monster.used_skill.name)
+                    pygame.time.delay(1000)
             else:
                 if monster.target != None:
                     target = monster.target
@@ -402,13 +420,13 @@ class Monster_Encounter:
         return True
 
     def attack_conditionals(self, attacker: Character, defender: Character):
-        for conditional in attacker.battle_conditional_passives:
+        for conditional in attacker.conditional_passives:
             if conditional.timing == "Attack":
                 condition = self.condition_checker.check_target_condition(attacker, conditional, defender)
                 if condition:
                     effect = Effect_Factory(conditional.effect, conditional.effect_specifics, round(conditional.power * attacker.level), [attacker])
                     effect.make_effect()
-        for conditional in defender.battle_conditional_passives:
+        for conditional in defender.conditional_passives:
             if conditional.timing == "Defend":
                 condition = self.condition_checker.check_target_condition(defender, conditional, attacker)
                 if condition:
@@ -498,7 +516,7 @@ class Monster_Encounter:
             character.target = None
 
     def passive_step(self, character: Character, prandom = True):
-        for skill in character.battle_skills:
+        for skill in character.skill_list:
             if skill.cooldown > 0:
                 skill.cooldown -= 1
         for buff in character.buffs:
@@ -507,7 +525,7 @@ class Monster_Encounter:
             done = buff.check_turns()
             if done:
                 character.buffs.remove(buff)
-        for conditional in character.battle_conditional_passives:
+        for conditional in character.conditional_passives:
             # Check on passive conditionals.
             if conditional.timing == "Passive":
                 # First check if the condition is met.
@@ -516,7 +534,7 @@ class Monster_Encounter:
                 if condition:
                     effect = Effect_Factory(conditional.effect, conditional.effect_specifics, round(conditional.power * character.level), [character])
                     effect.make_effect()
-        for skill in character.battle_passives:
+        for skill in character.passive_skills:
             self.skill_targeting(character, skill, prandom, False)
         # Temporary health like shields from the previous round will quickly decay.
         if character.temp_health > 0:
@@ -552,7 +570,7 @@ class Monster_Encounter:
 
     def spirit_passives(self, spirit: Spirit):
         # Spirits will use all their passive skills every turn.
-        for skill in spirit.battle_passives:
+        for skill in spirit.passive_skills:
             self.skill_targeting(spirit, skill, True, False)
 
     def speed_rng(self):
@@ -581,7 +599,7 @@ class Monster_Encounter:
                 self.heroes.remove(hero)
         for monster in self.monsters:
             if monster.health <= 0:
-                for skill in monster.battle_death_skills:
+                for skill in monster.death_skills:
                     self.skill_targeting(monster, skill, True, False)
                 self.monsters.remove(monster)
         if len(self.monsters) <= 0 or len(self.heroes) <= 0:
@@ -618,8 +636,6 @@ class Monster_Encounter:
             self.aura_end_step()
         win = self.end_phase()
         if win:
-            drops = Monster_Drops(self.party, self.monster_list)
-            drops.monster_loot()
             self.quest_update()
 
     def end_phase(self):
@@ -629,6 +645,10 @@ class Monster_Encounter:
             for battler in self.heroes:
                 if hero.name == battler.name:
                     check = battler.name
+                    # Keep permanent stat losses until returning to town.
+                    hero.max_health = min(battler.max_health, hero.max_health)
+                    hero.base_attack = min(battler.base_attack, hero.base_attack)
+                    hero.base_defense = min(battler.base_defense, hero.base_defense)
                     hero.health = min(battler.health, hero.max_health)
                     hero.skill = min(battler.skill, hero.max_skill)
             if check == None:
@@ -638,8 +658,11 @@ class Monster_Encounter:
                 self.party.battle_party.remove(hero)
         # If the heroes win then they get rewards.
         if len(self.heroes) > 0:
+            reward_exp = 0
+            for monster in self.monster_list:
+                reward_exp += random.randint(1, monster.level)
             for spirit in self.party.spirits:
-                spirit.exp += random.randint(1, max(1, self.amount))
+                spirit.exp += reward_exp
                 spirit.level_up()
             for hero in self.party.heroes:
                 battled = False
@@ -647,8 +670,12 @@ class Monster_Encounter:
                     if battler.name == hero.name:
                         battled = True
                 if battled:
-                    hero.exp += random.randint(1, max(1, self.amount))
+                    hero.exp += reward_exp
                     hero.level_up()
+            for new_summon in self.summoned_mons:
+                for summon in self.party.summonables:
+                    if summon.name == new_summon.name:
+                        summon.loyalty += 1
             win = True
             self.draw_battle()
             self.draw.draw_text("The heroes win.")
@@ -656,7 +683,7 @@ class Monster_Encounter:
         elif len(self.heroes) <= 0:
             win = False
             for hero in self.party.heroes:
-                hero.exp -= hero.level
+                hero.exp -= min(hero.level, hero.exp)
                 self.party.items.coins -= min(self.party.items.coins, hero.level)
         return win
     

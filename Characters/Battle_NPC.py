@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Character import Character
+from Characters.Character import Character
 from Config.Constants import *
 from Config.NPC_Dict import *
 C = Constants()

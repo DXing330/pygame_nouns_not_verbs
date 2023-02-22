@@ -1,11 +1,12 @@
 import json
 import copy
-from Hero import *
-from NPC import *
-from Spirits import *
-from Equipment import *
-from Encoder_Decoders import *
-from Spirit_Factory import *
+from Characters.Monster import *
+from Characters.Hero import *
+from Characters.Spirits import *
+from Characters.Equipment import *
+from Characters.Monster_Materials import *
+from Characters.Encoder_Decoders import *
+from Characters.Spirit_Factory import *
 from Config.Constants import *
 from Config.Equip_Dict import *
 from Utility.Draw import Draw
@@ -18,6 +19,9 @@ class Quest:
     name: str = None
     # Who gives the quest, where to return to complete the quest.
     giver: str = None
+    # What is the quest for.
+    # Could be random, or story, or someone's questline.
+    reason: str = None
     # Where to complete the quest.
     location: str = None
     # What to do.
@@ -44,12 +48,13 @@ class Item_Bag:
     health_potions: int = 0
     energy_potions: int = 0
     mana_crystals: int = 0
-    sharp_material: int = 0
-    hard_material: int = 0
-    poison_extract: int = 0
-    poison_essense: int = 0
-    monster_extract: int = 0
-    monster_essence: int = 0
+    repel: int = 0
+
+    def view_currency(self):
+        return ("Coins: "+str(self.coins)+", Mana Crystals: "+str(self.mana_crystals))
+    
+    def view_potions(self):
+        return ("Health: "+str(self.health_potions)+", Energy: "+str(self.energy_potions))
 
 
 @dataclass
@@ -70,17 +75,19 @@ class Party:
     spirits: list[Spirit] = None
     equipment: list[str] = None
     items: Item_Bag = Item_Bag(10, 1, 1)
+    materials: Material_Chest = Material_Chest()
     journal: Records = Records()
     quests: list[Quest] = None
     locations: list[str] = None
-    npcs: list[NPC] = None
+    summonables: list[Hero] = None
     # Pick a battle party before every adventure, or use the same one.
     battle_party: list[Hero] = None
 
     def check_quest_completion(self):
         for quest in self.quests:
             # If the heroes take too long then they fail.
-            if self.journal.days > quest.start_day + quest.time_limit:
+            # Story quests can't be failed, the player can keep trying them until they succeed.
+            if (self.journal.days > quest.start_day + quest.time_limit) and quest.reason != "Story":
                 if quest.time_limit > 0:
                     quest.failed = True
             if quest.specifics_amount <= 0 and not quest.failed:
@@ -136,7 +143,7 @@ class Party:
     
     def party_update_stats(self):
         for hero in self.heroes:
-            hero.update_stats()
+            hero.update_stats(False)
 
     def use_potion(self):
         self.draw.draw_background()
@@ -149,23 +156,28 @@ class Party:
             choices.append("None")
             pick_from = Pick(choices, False)
             potion = pick_from.pick()
-        pick_from = Pick(self.battle_party, False)
-        hero: Hero = pick_from.pick()
-        if potion == "Health":
-            self.items.health_potions -= 1
-            hero.health += hero.max_health//3
-        elif potion == "Energy":
-            self.items.energy_potions -= 1
-            hero.skill += hero.max_skill//2
-        elif potion == "None":
-            pass
+        if potion != "None":
+            pick_from = Pick(self.battle_party, False)
+            hero: Hero = pick_from.pick()
+            if potion == "Health":
+                self.items.health_potions -= 1
+                hero.health += hero.max_health//3
+            elif potion == "Energy":
+                self.items.energy_potions -= 1
+                hero.skill += hero.max_skill//2
 
-    def initialize_battle_party(self):
+    def initialize_battle_party(self, counter = 0):
         self.battle_party = []
-        for hero in self.heroes:
-            if hero.name == "Summoner":
-                copy_hero = copy.deepcopy(hero)
-                self.battle_party.append(copy_hero)
+        if counter == 0:
+            for hero in self.heroes:
+                if hero.name == "Summoner":
+                    copy_hero = copy.deepcopy(hero)
+                    self.battle_party.append(copy_hero)
+        if counter == 1:
+            for hero in self.heroes:
+                if len(self.battle_party) < C.PARTY_LIMIT:
+                    copy_hero = copy.deepcopy(hero)
+                    self.battle_party.append(copy_hero)
 
     def manage_battle_party(self):
         self.initialize_battle_party()
@@ -188,23 +200,58 @@ class Party:
                         copy_hero = copy.deepcopy(hero)
                         self.battle_party.append(copy_hero)
 
+    def check_on_battle_party(self):
+        if len(self.battle_party) <= 0:
+            self.initialize_battle_party(1)
+
+    def view_detailed_stats_skills(self, character):
+        self.draw.draw_background()
+        choices = []
+        if len(character.skill_list) > 0:
+            choices.append("SKILLS")
+        if len(character.passive_skills) > 0:
+            choices.append("PASSIVES")
+        if isinstance(character, Hero):
+            if len(character.conditional_passives) > 0:
+                choices.append("CONDITIONALS")
+        choices.append("LEAVE")
+        pick_from = Pick(choices, False)
+        choice = pick_from.pick()
+        if choice == "LEAVE":
+            pass
+        elif choice == "SKILLS":
+            self.draw.draw_full_skill_details(character.skill_list)
+            self.view_detailed_stats_skills(character)
+        elif choice == "PASSIVES":
+            self.draw.draw_full_skill_details(character.passive_skills)
+            self.view_detailed_stats_skills(character)
+        elif choice == "CONDITIONALS":
+            self.draw.draw_full_skill_details(character.conditional_passives)
+            self.view_detailed_stats_skills(character)
+
     def menu(self, key: int = 0):
         self.draw = Draw()
         self.draw.draw_background()
         choices = ["STATS", "SPIRIT", "SPIRIT STATS"]
+        if len(self.summonables) > 0:
+            choices.append("CAPTURED")
         if key == 0:
-            choices.append("PARTY")
+            choices.append("MANAGE PARTY")
+            choices.append("VIEW ITEMS")
             choices.append("SAVE")
+            choices.append("STOP")
         elif key == 1:
-            choices.append("ITEM")
+            choices.append("USE ITEM")
         pick_from = Pick(choices, False)
         choice = pick_from.pick()
         if choice == "STATS":
             self.draw.draw_background()
             if key == 0:
-                self.draw.draw_full_hero_stats(self.heroes)
+                pick_from = Pick(self.heroes, False)
             if key == 1:
-                self.draw.draw_hero_stats_skills(self.battle_party)
+                pick_from = Pick(self.battle_party, False)
+            hero = pick_from.pick()
+            self.view_detailed_stats_skills(hero)
         if choice == "SPIRIT":
             self.draw.draw_background()
             pick_spirit = Pick(self.spirits, False)
@@ -215,7 +262,9 @@ class Party:
                 spirit.active = True
         if choice == "SPIRIT STATS":
             self.draw.draw_background()
-            self.draw.draw_spirit_stats(self.spirits)
+            pick_from = Pick(self.spirits, False)
+            spirit = pick_from.pick()
+            self.view_detailed_stats_skills(spirit)
         if choice == "PARTY":
             self.manage_battle_party()
         if choice == "SAVE":
@@ -223,8 +272,16 @@ class Party:
             self.draw.draw_background()
             self.draw.draw_text("PROGRESS SAVED")
             pygame.time.delay(500)
-        if choice == "ITEM":
+        if choice == "USE ITEM":
             self.use_potion()
+        if choice == "VIEW ITEMS":
+            self.draw.draw_item_bag(self.items)
+        if choice == "CAPTURED":
+            self.draw.draw_background()
+            pick_from = Pick(self.summonables, False)
+            cap_mon = pick_from.pick()
+            self.view_detailed_stats_skills(cap_mon)
+        return choice
 
     def write_object(self, object, filename):
         jsonP = json.dumps(object.__dict__, cls=Skill_Encoder)
@@ -254,12 +311,14 @@ class Party:
         self.write_str_list(self.locations, "_locations")
         self.write_object_list(self.quests, "_quests")
         self.write_object(self.items, "_items")
+        self.write_object(self.materials, "_materials")
         self.write_object(self.journal, "_records")
+        self.write_object_list(self.summonables, "_summonables")
 
     def read_hero_objects(self, filename):
         load_heroes_list = []
         jsonFile = open(filename, "r")
-        heroes_list = json.load(jsonFile)
+        heroes_list = json.load(jsonFile, cls=Skill_Decoder)
         for character in heroes_list:
             hero = Hero(**character)
             load_heroes_list.append(hero)
@@ -269,7 +328,7 @@ class Party:
         factory = Spirit_Factory()
         load_allies_list = []
         jsonFile = open(filename, "r")
-        allies_list = json.load(jsonFile)
+        allies_list = json.load(jsonFile, cls=Skill_Decoder)
         for summon in allies_list:
             ally = Spirit(**summon)
             new_ally = factory.make_spirit(ally)
@@ -312,6 +371,8 @@ class Party:
         self.add_spirit(starter_spirit)
         self.quests = []
         self.locations = ["None", "Starter Forest"]
+        self.journal.guild_facilities = []
+        self.summonables = []
 
     def load(self):
         heroes_list = self.read_hero_objects("_heroes")
@@ -320,6 +381,7 @@ class Party:
         self.spirits = ally_list
         equipment_list = self.read_str_list("_equipment")
         self.equipment = equipment_list
+        self.summonables = self.read_hero_objects("_summonables")
         self.quests = self.read_quest_objects("_quests")
         self.locations = self.read_str_list("_locations")
         jsonFile = open("_items", "r")
@@ -328,3 +390,6 @@ class Party:
         jsonFile = open("_records", "r")
         records = json.load(jsonFile)
         self.journal = Records(**records)
+        jsonFile = open("_materials", "r")
+        materials = json.load(jsonFile)
+        self.materials = Material_Chest(**materials)

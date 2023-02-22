@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class Location:
     name: str
-    monsters: list
+    groups: list
     treasure: list
     weather: list
     dungeon_size: int = 1
