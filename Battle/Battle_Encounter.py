@@ -257,9 +257,6 @@ class Monster_Encounter:
         else:
             # Some skills will only activate a portion of the time, ex. some status effects.
             activation = random.randint(0, 99)
-            print (skill)
-            print (skill.chance)
-            print (activation)
             if activation < skill.chance:
                 self.skill_condition_checker(user, skill, targets)
 
@@ -279,9 +276,10 @@ class Monster_Encounter:
         self.draw_battle()
         if "Summon" in action:
             hero.summon_limit -= 1
-            if len(self.party.summonables) > 0:
+            if len(self.party.summonables) > 0 and hero.skill > 0:
                 pick_from = Pick(self.party.summonables, False)
                 new_summon = pick_from.pick()
+                hero.skill -= new_summon.level
                 loyal_check = random.randint(0, max(new_summon.loyalty,new_summon.level)+1)
                 self.draw_battle()
                 if loyal_check > new_summon.loyalty:
@@ -319,7 +317,8 @@ class Monster_Encounter:
             choices.append("Health")
         if self.party.items.energy_potions > 0:
             choices.append("Energy")
-        if len(choices) > 0:
+        choices.append("None")
+        if len(choices) > 1:
             pick_from = Pick(choices, False)
             potion = pick_from.pick()
             self.draw_battle()
@@ -331,6 +330,8 @@ class Monster_Encounter:
                 self.party.items.energy_potions -= 1
                 hero.skill += hero.max_skill//2
                 self.draw.draw_text(hero.name+" drinks an energy potion.")
+            elif potion == "None":
+                self.draw.draw_text(hero.name+" decides to not use a potion.")
         else:
             self.draw.draw_text(hero.name+" fails to drink.")
         pygame.time.delay(1000)

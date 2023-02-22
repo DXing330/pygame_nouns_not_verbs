@@ -11,12 +11,20 @@ from Config.Constants import *
 Q = Quest_Dict()
 C = Constants()
 
+class Heroes_Dict:
+    def __init__(self):
+        self.candidates = {
+        "Warrior" : Hero("Warrior",[],[],[],[],[],10,4),
+        "Hunter" : Hero("Hunter",[],[],[],[],[],10,6)
+        }
+
 
 class Guild:
     def __init__(self, party: Party):
         self.party = party
         self.draw = Draw()
         self.bool = True
+        self.new_heroes = Heroes_Dict()
 
     def draw_text(self, text: str, line: int = 1):
         self.draw.draw_text(text, line)
@@ -32,12 +40,9 @@ class Guild:
             if choice == "LEAVE":
                 self.bool = False
             elif choice == "TALK":
-                # Want to recruit other party members through quests.
-                '''tavern = Tavern(self.party)
-                tavern.recruit_stage()'''
-                self.bool = False
-            elif choice == "QUEST":
                 self.quest()
+            elif choice == "QUEST":
+                self.random_quest()
             elif "FINISH" in choice:
                 self.finish_quests()
             elif "POTIONS" in choice:
@@ -72,7 +77,7 @@ class Guild:
                 pygame.time.delay(2000)
                 self.bool = False
         elif self.party.journal.guild_progress >= 0:
-            self.options = ["QUEST", "TALK", "LEAVE"]
+            self.options = ["TALK", "QUEST", "LEAVE"]
             if "Potions" in self.party.journal.guild_facilities:
                 self.options.append("POTIONS")
             if "Smith" in self.party.journal.guild_facilities:
@@ -84,6 +89,13 @@ class Guild:
 
     # Want a function that will generate random daily quests.
     def random_quest(self):
+        for quest in self.party.quests:
+            if quest.reason == "Story":
+                self.draw_background()
+                self.draw_text("There's more important things to do right now.")
+                self.draw_text("Focus on the task I gave you.", 2)
+                pygame.time.delay(2000)
+                self.bool = False
         if len(self.party.quests) >= self.party.journal.rank:
             self.draw_text("Looks like you have enough quests to keep yourself busy for awhile.")
             self.draw_text("Why don't you finish a few before trying to take anymore?", 2)
@@ -123,7 +135,7 @@ class Guild:
         self.draw_background()
         if self.party.journal.rank == 1 and self.party.journal.rank_exp == 0:
             self.draw_text("Huh, you want a quest?")
-            self.draw_text("Not many people here give requests.", 2)
+            self.draw_text("The quest board isn't good enough for you?", 2)
             self.draw_text("Oh I know, how about you bring us 50 gold so we can fix that leak in our roof.", 3)
             pygame.time.delay(2000)
             self.party.journal.rank_exp += 1
@@ -162,23 +174,38 @@ class Guild:
             self.party.journal.rank += 1
             self.party.locations.append("Wolf Den")
             pygame.time.delay(2000)
-        elif self.party.journal.rank == 3:
-            strong = False
-            for hero in self.party.heroes:
-                if hero.level >= 8:
-                    strong = True
-            if strong:
-                self.draw_text("Looks like you're pretty strong now.")
+        elif self.party.journal.rank == 3 and self.party.journal.rank_exp == 0:
+            self.draw_text("Some of our members have gone missing.")
+            pygame.time.delay(1000)
+            self.draw_text("They went to the Dark Forest to hunt a troll I think.", 2)
+            pygame.time.delay(1000)
+            self.draw_text("They haven't come back though, can you go try to find them?", 3)
+            pygame.time.delay(1000)
+            self.party.journal.rank_exp += 1
+            new_quest = Quest(**Q.STORY_QUESTS.get("Save Warrior"))
+            self.party.quests.append(new_quest)
+        elif self.party.journal.rank == 3 and self.party.journal.rank_exp == 1:
+            finished = False
+            for quest in self.party.quests:
+                if quest.reason == "Story" and quest.completed:
+                    finished = True
+                    self.party.quests.remove(quest)
+            if finished:
+                self.draw_text("I heard what you did back there.")
                 pygame.time.delay(1000)
-                self.draw_text("I'll let you know about a place full of tough monsters.", 2)
-                self.draw_text("Be careful though, lots of strong people have died there.", 3)
+                self.draw_text("Good job.", 2)
+                self.draw_text("The guy you saved, he wants to join you.", 3)
                 pygame.time.delay(1000)
-                self.draw_text("Maybe try to find some more allies before you go.", 4)
+                self.draw_text("Take care of him ok?", 4)
+                self.draw_text("We don't have many monster hunters left in this place", 5)
+                new_hero = self.new_heroes.candidates.get("Warrior")
+                self.party.add_hero(new_hero)
                 pygame.time.delay(1000)
                 self.party.journal.rank += 1
+                self.party.journal.rank_exp = 0
                 self.party.locations.append("Evil Forest")
-            elif not strong:
-                self.draw_text("Lot more requests to work on.")
+            elif not finished:
+                self.draw_text("I know it's hard but please find them.")
                 pygame.time.delay(1000)
                 self.random_quest()
         elif self.party.journal.rank == 4:
@@ -195,12 +222,9 @@ class Guild:
                 pygame.time.delay(1000)
                 self.party.journal.rank += 1
                 self.party.journal.guild_facilities.append("Trainer")
-            else:
-                self.draw_text("Lot more requests to work on.")
-                pygame.time.delay(1000)
-                self.random_quest()
         else:
-            self.random_quest()
+            self.draw_text("Why don't you look at the quest board?")
+            pygame.time.delay(1000)
         self.inside()
 
     def check_delivery(self, quest: Quest):

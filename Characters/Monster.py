@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 import random
-from Character import *
+from Characters.Character import *
 from Config.Character_Dict import *
 CD = Character_Dict()
 

@@ -1,13 +1,12 @@
 import json
 import copy
-from Monster import *
-from Hero import *
-from NPC import *
-from Spirits import *
-from Equipment import *
-from Monster_Materials import *
-from Encoder_Decoders import *
-from Spirit_Factory import *
+from Characters.Monster import *
+from Characters.Hero import *
+from Characters.Spirits import *
+from Characters.Equipment import *
+from Characters.Monster_Materials import *
+from Characters.Encoder_Decoders import *
+from Characters.Spirit_Factory import *
 from Config.Constants import *
 from Config.Equip_Dict import *
 from Utility.Draw import Draw
@@ -20,6 +19,9 @@ class Quest:
     name: str = None
     # Who gives the quest, where to return to complete the quest.
     giver: str = None
+    # What is the quest for.
+    # Could be random, or story, or someone's questline.
+    reason: str = None
     # Where to complete the quest.
     location: str = None
     # What to do.
@@ -47,6 +49,12 @@ class Item_Bag:
     energy_potions: int = 0
     mana_crystals: int = 0
     repel: int = 0
+
+    def view_currency(self):
+        return ("Coins: "+str(self.coins)+", Mana Crystals: "+str(self.mana_crystals))
+    
+    def view_potions(self):
+        return ("Health: "+str(self.health_potions)+", Energy: "+str(self.energy_potions))
 
 
 @dataclass
@@ -78,7 +86,8 @@ class Party:
     def check_quest_completion(self):
         for quest in self.quests:
             # If the heroes take too long then they fail.
-            if self.journal.days > quest.start_day + quest.time_limit:
+            # Story quests can't be failed, the player can keep trying them until they succeed.
+            if (self.journal.days > quest.start_day + quest.time_limit) and quest.reason != "Story":
                 if quest.time_limit > 0:
                     quest.failed = True
             if quest.specifics_amount <= 0 and not quest.failed:
@@ -228,10 +237,11 @@ class Party:
             choices.append("CAPTURED")
         if key == 0:
             choices.append("MANAGE PARTY")
+            choices.append("VIEW ITEMS")
             choices.append("SAVE")
             choices.append("STOP")
         elif key == 1:
-            choices.append("ITEM")
+            choices.append("USE ITEM")
         pick_from = Pick(choices, False)
         choice = pick_from.pick()
         if choice == "STATS":
@@ -262,8 +272,10 @@ class Party:
             self.draw.draw_background()
             self.draw.draw_text("PROGRESS SAVED")
             pygame.time.delay(500)
-        if choice == "ITEM":
+        if choice == "USE ITEM":
             self.use_potion()
+        if choice == "VIEW ITEMS":
+            self.draw.draw_item_bag(self.items)
         if choice == "CAPTURED":
             self.draw.draw_background()
             pick_from = Pick(self.summonables, False)

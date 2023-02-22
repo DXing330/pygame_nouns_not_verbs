@@ -14,6 +14,14 @@ class Draw:
         self.width = WIN.get_width()
         self.height = WIN.get_height()
 
+    def view_drawing(self):
+        pygame.display.update()
+        view = True
+        while view:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    view = False
+
     def draw_bg_and_text(self, background, text: str, height = 1):
         self.draw_background(background)
         self.draw_text(text, height)
@@ -116,12 +124,7 @@ class Draw:
             passives_text = FONT.render(spirit.passives_text(), 1, C.WHITE)
             WIN.blit(passives_text, ((self.width - passives_text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
-        pygame.display.update()
-        view = True
-        while view:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    view = False
+        self.view_drawing()
 
     def draw_hero_stats_skills(self, heroes):
         self.counter = 1
@@ -138,12 +141,7 @@ class Draw:
             conditionals_text = FONT.render(hero.conditionals_text(), 1, C.WHITE)
             WIN.blit(conditionals_text, ((self.width - conditionals_text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
-        pygame.display.update()
-        view = True
-        while view:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    view = False
+        self.view_drawing()
 
     def draw_hero_stats(self):
         self.counter = 1
@@ -160,12 +158,7 @@ class Draw:
             stats_text = FONT.render(hero.full_stats_text(), 1, C.WHITE)
             WIN.blit(stats_text, ((self.width - stats_text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
-        pygame.display.update()
-        view = True
-        while view:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    view = False
+        self.view_drawing()
 
     def draw_full_hero_stats_skills(self, hero):
         stats_text = FONT.render(hero.full_stats_text(), 1, C.WHITE)
@@ -176,12 +169,7 @@ class Draw:
         WIN.blit(passives_text, ((self.width - passives_text.get_width())//2, C.PADDING * 3))
         conditionals_text = FONT.render(hero.conditionals_text(), 1, C.WHITE)
         WIN.blit(conditionals_text, ((self.width - conditionals_text.get_width())//2, C.PADDING * 4))
-        pygame.display.update()
-        view = True
-        while view:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    view = False
+        self.view_drawing()
 
     def draw_full_skill_details(self, skill_list):
         WIN.fill((0, 0, 0))
@@ -198,12 +186,18 @@ class Draw:
                 skill_text = FONT.render(skill.view_stats_part_two(), 1, C.WHITE)
                 WIN.blit(skill_text, ((self.width - skill_text.get_width())//2, C.PADDING * self.counter))
                 self.counter += 1
-        pygame.display.update()
-        view = True
-        while view:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    view = False
+        self.view_drawing()
+
+    def draw_item_bag(self, bag):
+        WIN.fill((0, 0, 0))
+        self.counter = 1
+        coin_text = FONT.render(bag.view_currency(), 1, C.WHITE)
+        WIN.blit(coin_text, ((self.width - coin_text.get_width())//2, C.PADDING * self.counter))
+        self.counter += 1
+        potion_text = FONT.render(bag.view_potions(), 1, C.WHITE)
+        WIN.blit(potion_text, ((self.width - potion_text.get_width())//2, C.PADDING * self.counter))
+        self.counter += 1
+        self.view_drawing()
 
     def draw_battle_stats(self):
         self.draw_hero_stats()

@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 from dataclasses import dataclass
-from Character import Character
+from Characters.Character import Character
 from Config.Constants import *
 from Config.Character_Dict import *
 from Config.Skill_Dict import *
