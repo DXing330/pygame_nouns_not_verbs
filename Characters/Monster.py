@@ -241,3 +241,23 @@ class Slime(Monster):
         if len(self.useable_skills) > 0:
             self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]
             self.action = str(self.used_skill.name)
+
+
+# Dragons are the strongest monsters.
+class Dragon(Monster):
+    # The dragon will keep using it's breathe attack.
+    def choose_skill(self):
+        for skill in self.skill_list:
+            if skill.targets == "All_Hero":
+                self.useable_skills.append(skill)
+    
+    def choose_action(self, heroes, monsters):
+        self.action = "Attack"
+        self.used_skill = None
+        self.skill += 1
+        self.useable_skills = []
+        if (self.skills and self.skill > 0):
+            self.choose_skill()
+        if len(self.useable_skills) > 0:
+            self.used_skill = self.useable_skills[random.randint(0, len(self.useable_skills) - 1)]
+            self.action = str(self.used_skill.name)

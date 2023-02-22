@@ -70,6 +70,9 @@ class Skill_Dict:
         "Cure Partner" : {
             "name" : "Cleanse", "effect" : "Cure_Status", "effect_specifics" : "All", "power" : 1, "targets" : "Partner", "cost" : 0, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
+        "Cure Self" : {
+            "name" : "Cleanse", "effect" : "Cure_Status", "effect_specifics" : "All", "power" : 1, "targets" : "Self", "cost" : 2, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+        },
         "Curse Self" : {
             "name" : "Curse", "effect" : "Add_Status", "effect_specifics" : "Curse", "power" : 1, "targets" : "Self", "cost" : 0, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
@@ -188,7 +191,7 @@ class Skill_Dict:
             "name" : "Make Rain", "effect" : "Aura", "effect_specifics" : "Rain", "power" : 0, "targets" : "None", "cost" : 5, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 5, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Mass Flame Send" : {
-            "name" : "Flame Send", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -2, "targets" : "All_Hero", "cost" : 1, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Flame Send", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "All_Hero", "cost" : 1, "scale" : "Attack", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Nothing" : {
             "name" : "Nothing", "effect" : "None", "effect_specifics" : "None", "power" : 0, "targets" : "Self", "cost" : 0, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"

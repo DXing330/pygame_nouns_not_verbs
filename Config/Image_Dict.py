@@ -3,7 +3,6 @@ import pygame
 pygame.init()
 import os
 from Config.Constants import *
-
 C = Constants()
 WIN = pygame.display.set_mode((C.WIDTH, C.HEIGHT), pygame.RESIZABLE)
 # Characters
@@ -17,6 +16,9 @@ SMALL_BEAST = pygame.transform.scale(BEAST, (C.PLAYER_SIZE, C.PLAYER_SIZE))
 DEMON = pygame.image.load(os.path.join("Assets", "demon.png")).convert()
 DEMON.set_colorkey((0, 0, 0))
 DEMON = pygame.transform.scale(DEMON, (C.BIG_MONSTER, C.BIG_MONSTER))
+DRAGON = pygame.image.load(os.path.join("Assets", "dragon.png")).convert()
+DRAGON.set_colorkey((0, 0, 0))
+DRAGON = pygame.transform.scale(DRAGON, (C.BIG_MONSTER * 1.5, C.BIG_MONSTER * 1.5))
 GOBLIN = pygame.image.load(os.path.join("Assets", "goblin.png")).convert()
 GOBLIN.set_colorkey((0, 0, 0))
 GOBLIN = pygame.transform.scale(GOBLIN, (C.PLAYER_SIZE, C.PLAYER_SIZE))
@@ -46,7 +48,7 @@ SLIME.set_colorkey((0, 0, 0))
 SLIME = pygame.transform.scale(SLIME, (C.MONSTER_SIZE, C.MONSTER_SIZE))
 SUMMONER = pygame.image.load(os.path.join("Assets", "summoner.png")).convert()
 SUMMONER.set_colorkey((0, 0, 0))
-SUMMONER = pygame.transform.scale(SUMMONER, (C.PLAYER_SIZE, C.PLAYER_SIZE * (1.5)))
+SUMMONER = pygame.transform.scale(SUMMONER, (C.PLAYER_SIZE, C.PLAYER_SIZE * 1.4))
 TROLL = pygame.image.load(os.path.join("Assets", "troll.png")).convert()
 TROLL.set_colorkey((0, 0, 0))
 TROLL = pygame.transform.scale(TROLL, (C.BIG_MONSTER, C.BIG_MONSTER))
@@ -58,7 +60,7 @@ VAMPIRE.set_colorkey((0, 0, 0))
 VAMPIRE = pygame.transform.scale(VAMPIRE, (C.PLAYER_SIZE, C.PLAYER_SIZE))
 WARRIOR = pygame.image.load(os.path.join("Assets", "warrior.png")).convert()
 WARRIOR.set_colorkey((0, 0, 0))
-WARRIOR = pygame.transform.scale(WARRIOR, (C.PLAYER_SIZE, C.PLAYER_SIZE))
+WARRIOR = pygame.transform.scale(WARRIOR, (C.PLAYER_SIZE * 1.1, C.PLAYER_SIZE * 1.5))
 # Backgrounds
 FOREST = pygame.image.load(os.path.join("Assets", "forest1.png")).convert()
 CAVE = pygame.image.load(os.path.join("Assets", "cave.png")).convert()
@@ -71,7 +73,7 @@ VILLAGE = pygame.image.load(os.path.join("Assets", "village.png")).convert()
 class Image_Dict:
     def __init__(self):
         self.IMAGES = {
-            "Angel": ANGEL, "Cave": CAVE, "Demon": DEMON, "Forest": FOREST, "Goblin": GOBLIN, "Golem": GOLEM,
+            "Angel": ANGEL, "Cave": CAVE, "Demon": DEMON, "Dragon": DRAGON, "Forest": FOREST, "Goblin": GOBLIN, "Golem": GOLEM,
             "Guild": GUILD, "Hob Goblin": BIG_GOBLIN, "Hunter": HUNTER, "Imp": IMP, "Orc": ORC, "Maid": SUMMONER,
             "Map": MAP, "Rat": RAT, "Big Rat": BIG_RAT, "Giant Rat": GIANT_RAT, "Serpent": SERPENT, "Slime": SLIME,
             "Smith": SMITH, "Summoner": SUMMONER, "Troll": TROLL, "Turret": TURRET, "Vampire": VAMPIRE,

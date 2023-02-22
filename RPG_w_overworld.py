@@ -1,12 +1,11 @@
 import pygame
-pygame.init()
-
-
+from Maps.Maze_Zone import *
 from Buildings.Guildv2 import *
 from Config.Location_Dict import *
 from Maps.Labyrinth_Zone import *
 
 L = Location_Dict()
+pygame.init()
 WIN = pygame.display.set_mode((C.WIDTH, C.HEIGHT), pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
@@ -92,10 +91,15 @@ class RPG_GAME:
                                 pass
                             else:
                                 self.party.journal.days += 1
-                                battle_area = Labyrinth(self.party, location)
-                                battle_area.generate_labyrinth()
-                                battle_area.lab_loop()
-                                self.party.check_quest_completion()
+                                kind_of_location = random.randint(0, 0)
+                                if kind_of_location == 0:
+                                    battle_area = Labyrinth(self.party, location)
+                                    battle_area.generate_labyrinth()
+                                    battle_area.lab_loop()
+                                    self.party.check_quest_completion()
+                                elif kind_of_location == 1:
+                                    battle_area = Maze_Zone(self.party, location)
+                                    battle_area.explore_maze()
                             self.party.check_on_battle_party()
                             self.draw_overworld()
                         if self.guild_rect.contains(self.player.rect):
@@ -114,6 +118,7 @@ class RPG_GAME:
                 self.player.determine_movement("down")
             if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT] or keys[pygame.K_UP] or keys[pygame.K_DOWN]:
                 self.draw_overworld()
+            clock.tick(600)
 
 
 def Play():

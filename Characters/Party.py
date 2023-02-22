@@ -207,6 +207,7 @@ class Party:
     def view_detailed_stats_skills(self, character):
         self.draw.draw_background()
         choices = []
+        choices.append("STATS")
         if len(character.skill_list) > 0:
             choices.append("SKILLS")
         if len(character.passive_skills) > 0:
@@ -219,6 +220,9 @@ class Party:
         choice = pick_from.pick()
         if choice == "LEAVE":
             pass
+        elif choice == "STATS":
+            self.draw.draw_hero_stats_skills([character])
+            self.view_detailed_stats_skills(character)
         elif choice == "SKILLS":
             self.draw.draw_full_skill_details(character.skill_list)
             self.view_detailed_stats_skills(character)
@@ -232,7 +236,7 @@ class Party:
     def menu(self, key: int = 0):
         self.draw = Draw()
         self.draw.draw_background()
-        choices = ["STATS", "SPIRIT", "SPIRIT STATS"]
+        choices = ["QUESTS", "STATS", "SPIRIT", "SPIRIT STATS"]
         if len(self.summonables) > 0:
             choices.append("CAPTURED")
         if key == 0:
@@ -265,7 +269,7 @@ class Party:
             pick_from = Pick(self.spirits, False)
             spirit = pick_from.pick()
             self.view_detailed_stats_skills(spirit)
-        if choice == "PARTY":
+        if choice == "MANAGE PARTY":
             self.manage_battle_party()
         if choice == "SAVE":
             self.save()
@@ -276,6 +280,11 @@ class Party:
             self.use_potion()
         if choice == "VIEW ITEMS":
             self.draw.draw_item_bag(self.items)
+        if choice == "QUESTS":
+            self.draw.draw_background()
+            self.draw.draw_quests(self.quests)
+            '''pick_from = Pick(self.quests, False)
+            quest = pick_from.pick()'''
         if choice == "CAPTURED":
             self.draw.draw_background()
             pick_from = Pick(self.summonables, False)

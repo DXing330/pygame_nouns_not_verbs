@@ -127,6 +127,7 @@ class Draw:
         self.view_drawing()
 
     def draw_hero_stats_skills(self, heroes):
+        WIN.fill((0, 0, 0))
         self.counter = 1
         for hero in heroes:
             stats_text = FONT.render(hero.stats_text(), 1, C.WHITE)
@@ -220,6 +221,7 @@ class Draw:
             if not quest.completed and not quest.failed:
                 self.draw_text("Quest: "+quest.name+" L: "+quest.location+" R: "+quest.requirement+" S: "+quest.specifics+" A: "+str(quest.specifics_amount), self.counter)
                 self.counter += 1
+        self.view_drawing()
 
     def change_name(self, hero):
         edit = True

@@ -14,6 +14,8 @@ class Monster_Factory:
             new_monster = Assasin(name, level, -9)
         elif "Slime" in name:
             new_monster = Slime(name, level, catch_rate)
+        elif "Dragon" in name:
+            new_monster = Dragon(name, level, catch_rate)
         else:
             new_monster = Monster(name, level, catch_rate)
         return new_monster

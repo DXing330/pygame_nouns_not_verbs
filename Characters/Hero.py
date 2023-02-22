@@ -47,7 +47,10 @@ class Hero(Character):
         self.speed = self.base_speed
 
     def stats_text(self):
-        text = str(self.name+"~ HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" SKL: "+str(round(self.skill)))
+        if self.temp_health > 0:
+            text = str(self.name+"~ HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" SKL: "+str(round(self.skill)))
+        else:
+            text = str(self.name+"~ HP: "+str(round(self.health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" SKL: "+str(round(self.skill)))
         return text
 
     def full_stats_text(self):

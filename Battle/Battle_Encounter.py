@@ -78,6 +78,28 @@ class Monster_Encounter:
                 self.clear_weather()
             self.battle_auras.append(aura)
 
+    # Normally pick a random amount of monsters from the location to fight.
+    def generate_monsters_from_scratch(self):
+        group = CD.MONSTER_GROUPS.get(self.location.groups[random.randint(0, len(self.location.groups)-1)])
+        for name in group:
+            monster = self.monster_factory.make_monster(name)
+            self.monsters.append(monster)
+
+    # Some fights will have the enemies predefined.
+    def generate_monsters_from_name_list(self):
+        monsters = []
+        for monster in self.monsters:
+            new_monster = self.monster_factory.make_monster(monster)
+            monsters.append(new_monster)
+        self.monsters = monsters
+
+    def generate_monsters_from_names_with_boss(self):
+        for monster in self.monsters:
+            if isinstance(monster, Monster):
+                self.monsters.remove(monster)
+                self.monsters.append(monster.name)
+        self.generate_monsters_from_name_list()
+
     def generate_monsters(self):
         min_monsters = 0
         if self.boss:
@@ -85,10 +107,12 @@ class Monster_Encounter:
             boss = self.location.bosses[random.randint(0, len(self.location.bosses) - 1)]
             monster = self.monster_factory.make_monster(boss)
             self.monsters.append(monster)
-        group = CD.MONSTER_GROUPS.get(self.location.groups[random.randint(0, len(self.location.groups)-1)])
-        for name in group:
-            monster = self.monster_factory.make_monster(name)
-            self.monsters.append(monster)
+        if len(self.monsters) <= min_monsters:
+            self.generate_monsters_from_scratch()
+        elif len(self.monsters) > min_monsters and not self.boss:
+            self.generate_monsters_from_name_list()
+        elif len(self.monsters) > min_monsters and self.boss:
+            self.generate_monsters_from_names_with_boss()
         for monster in self.monsters:
             self.update_monster_for_battle(monster)
         self.monster_list = copy.deepcopy(self.monsters)
@@ -685,6 +709,7 @@ class Monster_Encounter:
             for hero in self.party.heroes:
                 hero.exp -= min(hero.level, hero.exp)
                 self.party.items.coins -= min(self.party.items.coins, hero.level)
+            self.party.battle_party = []
         return win
     
     def quest_update(self):

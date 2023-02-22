@@ -167,6 +167,7 @@ class Guild:
             self.draw_text("We might be able to afford some new armor with this.", 3)
             self.draw_text("Reward? Oh right, here's some coins for your troubles.", 4)
             self.party.items.coins += 50
+            self.party.items.mana_crystals -= 5
             pygame.time.delay(500)
             self.draw_text("Look you can buy some armor when we get the next shipment, ok?", 5)
             self.party.journal.guild_facilities.append("Smith")
@@ -174,7 +175,7 @@ class Guild:
             self.party.journal.rank += 1
             self.party.locations.append("Wolf Den")
             pygame.time.delay(2000)
-        elif self.party.journal.rank == 3 and self.party.journal.rank_exp == 0:
+        elif self.party.journal.rank == 3 and self.party.journal.rank_exp == 0 and self.party.journal.reputation > 4:
             self.draw_text("Some of our members have gone missing.")
             pygame.time.delay(1000)
             self.draw_text("They went to the Dark Forest to hunt a troll I think.", 2)
@@ -208,20 +209,19 @@ class Guild:
                 self.draw_text("I know it's hard but please find them.")
                 pygame.time.delay(1000)
                 self.random_quest()
-        elif self.party.journal.rank == 4:
-            if self.party.journal.reputation > 10:
-                self.draw_text("You've been helping a lot of people around here.")
-                pygame.time.delay(1000)
-                self.draw_text("It's been awhile since I've seen someone like you.", 2)
-                self.draw_text("Most people move on from here when they're as strong as you are.", 3)
-                pygame.time.delay(1000)
-                self.draw_text("What I'm trying to say is thanks.", 4)
-                pygame.time.delay(1000)
-                self.draw_text("If you want, maybe I can teach you somethings.", 5)
-                self.draw_text("I may be too old to work in the field now but I can at least share what I've learned.", 6)
-                pygame.time.delay(1000)
-                self.party.journal.rank += 1
-                self.party.journal.guild_facilities.append("Trainer")
+        elif self.party.journal.rank == 4 and self.party.journal.reputation > 10:
+            self.draw_text("You've been helping a lot of people around here.")
+            pygame.time.delay(1000)
+            self.draw_text("It's been awhile since I've seen someone like you.", 2)
+            self.draw_text("Most people move on from here when they're as strong as you are.", 3)
+            pygame.time.delay(1000)
+            self.draw_text("What I'm trying to say is thanks.", 4)
+            pygame.time.delay(1000)
+            self.draw_text("If you want, maybe I can teach you somethings.", 5)
+            self.draw_text("I may be too old to work in the field now but I can at least share what I've learned.", 6)
+            pygame.time.delay(1000)
+            self.party.journal.rank += 1
+            self.party.journal.guild_facilities.append("Trainer")
         else:
             self.draw_text("Why don't you look at the quest board?")
             pygame.time.delay(1000)

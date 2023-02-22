@@ -4,11 +4,17 @@ class Character_Dict:
         "Blob" : {
             "health" : 20, "attack" : 5, "defense" : 5, "skill" : 5, "speed" : 9
         },
+        "Dragon" : {
+            "health" : 40, "attack" : 20, "defense" : 20, "skill" : 10, "speed" : 10
+        },
         "Fodder" : {
             "health" : 10, "attack" : 5, "defense" : 1, "skill" : 2, "speed" : 9
         },
         "Glass_Cannon" : {
             "health" : 15, "attack" : 15, "defense" : 5, "skill" : 10, "speed" : 10
+        },
+        "God" : {
+            "health" : 99, "attack" : 99, "defense" : 99, "skill" : 99, "speed" : 99
         },
         "Mob" : {
             "health" : 15, "attack" : 10, "defense" : 5, "skill" : 5, "speed" : 9
@@ -33,11 +39,17 @@ class Character_Dict:
         "Blob" : {
             "health" : 9, "attack" : 1, "defense" : 0, "skill" : 0
         },
+        "Dragon" : {
+            "health" : 18, "attack" : 4, "defense" : 4, "skill" : 2
+        },
         "Fodder" : {
             "health" : 2, "attack" : 1, "defense" : 0, "skill" : 1
         },
         "Glass_Cannon" : {
             "health" : 6, "attack" : 4, "defense" : 1, "skill" : 2
+        },
+        "God" : {
+            "health" : 99, "attack" : 99, "defense" : 99, "skill" : 99
         },
         "Mob" : {
             "health" : 5, "attack" : 2, "defense" : 1, "skill" : 1
@@ -71,7 +83,7 @@ class Character_Dict:
         }
         self.HERO_SKILLS = {
         "Summoner" : {
-            0 : "Command Spirit", 2 : "Summon Turret", 4 : "Summon Two Turret", 6 : "Summon Golem", 8 : "Summon Strong Golem"
+            0 : "Command Spirit", 2 : "Summon Turret"
         },
         "Hunter" : {
             0 : "Poison Monster Attack", 2 : "Blind Monster", 4 : "Spot Monster Weakness", 6 : "Bind Monster", 8 : "Stun Monster Attack"
@@ -80,7 +92,7 @@ class Character_Dict:
             0 : "Shield Self", 2 : "Fortify Self", 4 : "Taunt Monster", 6 : "Shield Heroes", 8 : "Taunt Monsters"
         },
         "Warrior" : {
-            0 : "Double Attack", 2 : "Shield Self", 4 : "Focus", 6 : "Wide Slash", 8 : "Triple Slash"
+            0 : "Double Attack", 2 : "Focus", 4 : "Wide Slash", 6 : "Triple Slash"
         }
         }
         self.SPIRIT_SKILLS = {
@@ -117,6 +129,9 @@ class Character_Dict:
         },
         "Demon" : {
             "level" : 10, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : ["Fireball Heroes"], "preemptives" : [], "conditionals" : ["Last Stand"]
+        },
+        "Dragon" : {
+            "level" : 20, "variance" : 1, "base" : "Dragon", "growth" : "Dragon", "skills" : ["Fireball Heroes"], "passives" : ["Cure Self", "Heal Self"], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Elemental" : {
             "level" : 8, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []

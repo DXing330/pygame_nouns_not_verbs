@@ -11,9 +11,9 @@ class Player_Rect:
         self.y_velocity = 0
 
     def update_dimensions(self, win_width, win_height):
-        bigger_dimension = max(win_width, win_height)
-        self.rect.width = bigger_dimension // 20
-        self.rect.height = bigger_dimension // 20
+        smaller_dimension = min(win_width, win_height)
+        self.rect.width = smaller_dimension // 20
+        self.rect.height = smaller_dimension // 20
 
     def reset_velocity(self):
         self.x_velocity = 0
@@ -27,7 +27,7 @@ class Player_Rect:
                 if self.x_velocity > 0:
                     self.rect.x = collidable.left - self.rect.width
                 elif self.x_velocity < 0:
-                    self.rect.x = collidable.right + self.rect.width
+                    self.rect.x = collidable.right
                 if self.y_velocity > 0:
                     self.rect.y = collidable.top - self.rect.height
                 elif self.y_velocity < 0:

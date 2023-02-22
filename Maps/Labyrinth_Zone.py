@@ -4,7 +4,7 @@ from Characters.Battle_NPC import Battle_NPC
 from Characters.Party import *
 from Maps.Player_Rect import Player_Rect
 from Utility.Draw import Draw
-
+clock = pygame.time.Clock()
 
 class Labyrinth(Battle_Zone):
     def __init__(self, party, location):
@@ -88,7 +88,7 @@ class Labyrinth(Battle_Zone):
     def determine_treasure(self):
         treasure = random.randint(0, 1)
         if treasure == 1:
-            self.party.items.mana_crystals += random.randint(0, self.floor_size//2)
+            self.party.items.mana_crystals += random.randint(1, self.floor_size//2)
         elif treasure == 0:
             self.party.items.coins += self.total_floors * self.floor_size
 
@@ -245,3 +245,4 @@ class Labyrinth(Battle_Zone):
                 battle.start_phase()
                 self.draw_passages()
                 self.lab = not self.check_on_party()
+            clock.tick(150)
