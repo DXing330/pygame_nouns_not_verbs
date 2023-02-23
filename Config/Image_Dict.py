@@ -73,9 +73,32 @@ VILLAGE = pygame.image.load(os.path.join("Assets", "village.png")).convert()
 class Image_Dict:
     def __init__(self):
         self.IMAGES = {
-            "Angel": ANGEL, "Cave": CAVE, "Demon": DEMON, "Dragon": DRAGON, "Forest": FOREST, "Goblin": GOBLIN, "Golem": GOLEM,
-            "Guild": GUILD, "Hob Goblin": BIG_GOBLIN, "Hunter": HUNTER, "Imp": IMP, "Orc": ORC, "Maid": SUMMONER,
-            "Map": MAP, "Rat": RAT, "Big Rat": BIG_RAT, "Giant Rat": GIANT_RAT, "Serpent": SERPENT, "Slime": SLIME,
-            "Smith": SMITH, "Summoner": SUMMONER, "Troll": TROLL, "Turret": TURRET, "Vampire": VAMPIRE,
-            "Village": VILLAGE, "Warrior": WARRIOR, "Werewolf": BEAST, "Wolf": SMALL_BEAST
+            "Angel": ANGEL,
+            "Cave": CAVE,
+            "Demon": DEMON,
+            "Dragon": DRAGON,
+            "Forest": FOREST,
+            "Goblin": GOBLIN,
+            "Golem": GOLEM,
+            "Guild": GUILD,
+            "Hob Goblin": BIG_GOBLIN,
+            "Hunter": HUNTER,
+            "Imp": IMP,
+            "Orc": ORC,
+            "Maid": SUMMONER,
+            "Map": MAP,
+            "Rat": RAT,
+            "Big Rat": BIG_RAT,
+            "Giant Rat": GIANT_RAT,
+            "Serpent": SERPENT,
+            "Slime": SLIME,
+            "Smith": SMITH,
+            "Summoner": SUMMONER,
+            "Troll": TROLL,
+            "Turret": TURRET,
+            "Vampire": VAMPIRE,
+            "Village": VILLAGE,
+            "Warrior": WARRIOR,
+            "Werewolf": BEAST,
+            "Wolf": SMALL_BEAST
         }
