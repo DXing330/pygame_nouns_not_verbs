@@ -293,7 +293,7 @@ class Monster_Encounter:
     def hero_skill(self, hero: Character):
         self.draw_battle()
         pick_from = Pick(hero.skill_list, False)
-        skill = pick_from.pick_skill()
+        skill = pick_from.pick(1)
         self.skill_targeting(hero, skill, False)
 
     def summoner_skills(self, hero: Hero, action: str):
@@ -700,6 +700,8 @@ class Monster_Encounter:
                 for summon in self.party.summonables:
                     if summon.name == new_summon.name:
                         summon.loyalty += 1
+                        summon.exp += reward_exp
+                        summon.level_up(False)
             win = True
             self.draw_battle()
             self.draw.draw_text("The heroes win.")
@@ -710,6 +712,10 @@ class Monster_Encounter:
                 hero.exp -= min(hero.level, hero.exp)
                 self.party.items.coins -= min(self.party.items.coins, hero.level)
             self.party.battle_party = []
+            for new_summon in self.summoned_mons:
+                for summon in self.party.summonables:
+                    if summon.name == new_summon.name:
+                        summon.loyalty -= summon.level
         return win
     
     def quest_update(self):

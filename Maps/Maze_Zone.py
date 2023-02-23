@@ -185,7 +185,7 @@ class Maze:
         pygame.draw.rect(WIN, (200, 200, 200), self.player.rect)
 
     def update_player_location(self):
-        pygame.draw.rect(WIN, (0, 100, 0), self.player.rect)
+        WIN.blit(self.player.current_sprite, (self.player.rect.x, self.player.rect.y))
         pygame.display.flip()
 
 

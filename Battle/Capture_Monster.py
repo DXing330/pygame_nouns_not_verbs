@@ -66,7 +66,7 @@ class Capture_Monster:
     def catch_monster(self):
         self.adjust_skills(self.monster.skill_list)
         self.adjust_skills(self.monster.passive_skills)
-        self.adjust_skills(self.monster.death_skills)
         self.adjust_stats()
-        new_summonable = Hero(self.monster.name,self.monster.skill_list,self.monster.passive_skills,self.monster.conditional_passives,[],[],10,self.monster.level,self.monster.max_health,self.monster.health,self.monster.base_attack,self.monster.base_defense,self.monster.base_speed,self.monster.attack,self.monster.defense,self.monster.speed,100,0,100,100,self.monster.max_skill,self.monster.skill,True,True,True,False,0,None,None,0,0,0)
+        max_level = round(random.gauss(self.monster.level * 2, self.monster.level//2))
+        new_summonable = Hero(self.monster.name,self.monster.skill_list,self.monster.passive_skills,self.monster.conditional_passives,[],[],max_level,self.monster.level,self.monster.max_health,self.monster.health,self.monster.base_attack,self.monster.base_defense,self.monster.base_speed,self.monster.attack,self.monster.defense,self.monster.speed,100,0,100,100,self.monster.max_skill,self.monster.skill,True,True,True,False,0,None,None,0,0,0)
         self.party.summonables.append(new_summonable)

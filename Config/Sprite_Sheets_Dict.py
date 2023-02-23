@@ -13,6 +13,17 @@ class Sprite_Sheet_Dict:
         self.SPRITE_SHEETS = {
         "Walk" : PLAYER_WALK
         }
+        self.PLAYER_SPRITE_HEIGHTS = {
+        0 : 0,
+        1 : 50,
+        2 : 98,
+        3 : 146
+        }
+        self.PLAYER_SPRITE_WIDTHS = {
+        0 : 0,
+        1 : 49,
+        2 : 98
+        }
 
 
 class Sprite_Sheet:
@@ -45,7 +56,7 @@ test_sprite.get_sprite(98, 146, 49, 54)
 ]
 
 running = True
-count_limit = len(walk_sprites) - 1
+count_limit = (len(walk_sprites)//4) - 1
 count = 0
 while running:
     for event in pygame.event.get():
@@ -54,9 +65,18 @@ while running:
     if count > count_limit:
         count -= count_limit
     image = walk_sprites[count]
-    image = pygame.transform.scale(image, (80, 80))
+    image = pygame.transform.scale(image, (50, 50))
+    image_2 = walk_sprites[count+3]
+    image_2 = pygame.transform.scale(image_2, (50, 50))
+    image_3 = walk_sprites[count+6]
+    image_3 = pygame.transform.scale(image_3, (50, 50))
+    image_4 = walk_sprites[count+9]
+    image_4 = pygame.transform.scale(image_4, (50, 50))
     WIN.fill((200, 200, 200))
-    WIN.blit(image, (80, 80))
+    WIN.blit(image, (160, 240))
+    WIN.blit(image_2, (80, 160))
+    WIN.blit(image_3, (240, 160))
+    WIN.blit(image_4, (160, 80))
     pygame.display.update()
     pygame.time.delay(250)
     count += 1

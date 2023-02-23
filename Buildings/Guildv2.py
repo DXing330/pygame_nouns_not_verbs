@@ -88,22 +88,36 @@ class Guild:
                 self.options.append("FINISH QUEST")
 
     # Want a function that will generate random daily quests.
+    # Want to make the function only generate once per day.
     def random_quest(self):
+        self.draw_background()
         for quest in self.party.quests:
             if quest.reason == "Story":
-                self.draw_background()
                 self.draw_text("There's more important things to do right now.")
                 self.draw_text("Focus on the task I gave you.", 2)
                 pygame.time.delay(2000)
                 self.bool = False
+        if self.party.journal.daily_quests:
+            self.draw_text("You've already seen the quests for today.")
+            self.draw_text("We don't get that many, the ones you didn't want are gone by now.", 2)
+            self.draw_text("We'll probably have a few more tomorrow.", 3)
+            self.bool = False
+            pygame.time.delay(2000)
         if len(self.party.quests) >= self.party.journal.rank:
             self.draw_text("Looks like you have enough quests to keep yourself busy for awhile.")
             self.draw_text("Why don't you finish a few before trying to take anymore?", 2)
             self.bool = False
             pygame.time.delay(2000)
+        # Keep track of whether you viewed quests today or not.
+        self.party.journal.daily_quests = True
         # Need to determine what level of quests are possible.
         possible_quests = []
-        while len(possible_quests) < self.party.journal.rank:
+        number_quests = round(random.gauss(0, self.party.journal.rank//2))
+        if number_quests <= 0:
+            self.draw_text("Sorry, no quests today.")
+            self.bool = False
+            pygame.time.delay(2000)
+        while len(possible_quests) < number_quests and self.bool:
             num = random.randint(1, self.party.journal.rank)
             quest = Q.QUEST_RANKS.get(num)
             if quest != None:
@@ -122,7 +136,7 @@ class Guild:
         while len(self.party.quests) < self.party.journal.rank and self.bool:
             self.draw_background()
             pick_from = Pick(choices, False)
-            choice = pick_from.wide_pick()
+            choice = pick_from.pick(2)
             if choice == "LEAVE":
                 self.bool = False
             else:
@@ -263,7 +277,6 @@ class Guild:
         for quest in self.party.quests:
             if quest.giver == "Guild":
                 self.check_quest(quest)
-            for number in range(0, len(self.party.quests)):
-                if quest.completed or quest.failed:
-                    self.party.quests.remove(quest)
+            if quest.completed or quest.failed:
+                self.party.quests.remove(quest)
         self.inside()

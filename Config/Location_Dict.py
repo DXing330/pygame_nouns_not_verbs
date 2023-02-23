@@ -7,9 +7,9 @@ class Location_Dict:
         3 : {"name" : "Evil Forest", "monsters" : ["Troll", "Hob Goblin", "Orc"], "treasure" : [], "weather" : ["Fog", "Rain", "None"], "dungeon_size" : 5, "events" : [], "image" : "Forest", "boss" : True, "bosses" : ["Vampire", "Demon"]}
         }
         self.LOCATIONS_NAMES = {
-        "None" : {"name" : "Town", "groups" : [], "treasure" : [], "weather" : ["None"], "dungeon_size" : 0, "events" : [], "image" : "Forest", "boss" : False, "bosses" : []},
-        "Starter Forest" : {"name" : "Starter Forest", "groups" : ["SF1", "SF2", "SF3", "SF4", "SF5", "SF6"], "treasure" : [], "weather" : ["None"], "dungeon_size" : 2, "events" : [], "image" : "Forest", "boss" : False, "bosses" : []},
-        "Dark Forest" : {"name" : "Dark Forest", "groups" : ["DF1", "DF2", "DF3", "DF4", "DF5", "DF6"], "treasure" : [], "weather" : ["Rain", "None"], "dungeon_size" : 3, "events" : [], "image" : "Forest", "boss" : True, "bosses" : ["Hob Goblin", "Troll"]},
-        "Wolf Den" : {"name" : "Wolf Den", "groups" : ["WD1", "WD2", "WD3", "WD4", "WD5", "WD6"], "treasure" : [], "weather" : ["Darkness"], "dungeon_size" : 4, "events" : [], "image" : "Cave", "boss" : True, "bosses" : ["Werewolf"]},
-        "Evil Forest" : {"name" : "Evil Forest", "groups" : ["EF1", "EF2", "EF3", "EF4", "EF5", "EF6"], "treasure" : [], "weather" : ["Fog", "Rain", "None"], "dungeon_size" : 5, "events" : [], "image" : "Forest", "boss" : True, "bosses" : ["Vampire", "Demon"]}
+        "None" : {"name" : "Town", "groups" : [], "treasure" : [], "weather" : ["None"], "dungeon_size" : 0, "events" : [], "image" : "Forest", "boss" : False, "bosses" : [], "kind" : "Tunnel"},
+        "Starter Forest" : {"name" : "Starter Forest", "groups" : ["SF1", "SF2", "SF3", "SF4", "SF5", "SF6"], "treasure" : [], "weather" : ["None"], "dungeon_size" : 2, "events" : [], "image" : "Forest", "boss" : False, "bosses" : [], "kind" : "Tunnel"},
+        "Dark Forest" : {"name" : "Dark Forest", "groups" : ["DF1", "DF2", "DF3", "DF4", "DF5", "DF6"], "treasure" : [], "weather" : ["Rain", "None"], "dungeon_size" : 3, "events" : [], "image" : "Forest", "boss" : True, "bosses" : ["Hob Goblin", "Troll"], "kind" : "Tunnel"},
+        "Wolf Den" : {"name" : "Wolf Den", "groups" : ["WD1", "WD2", "WD3", "WD4", "WD5", "WD6"], "treasure" : [], "weather" : ["Darkness"], "dungeon_size" : 4, "events" : [], "image" : "Cave", "boss" : True, "bosses" : ["Werewolf"], "kind" : "Tunnel"},
+        "Evil Forest" : {"name" : "Evil Forest", "groups" : ["EF1", "EF2", "EF3", "EF4", "EF5", "EF6"], "treasure" : [], "weather" : ["Fog", "Rain", "None"], "dungeon_size" : 5, "events" : [], "image" : "Forest", "boss" : True, "bosses" : ["Vampire", "Demon"], "kind" : "Tunnel"}
         }

@@ -12,4 +12,5 @@ class Location:
     image: any = None
     boss: bool = False
     bosses: list = None
+    kind: str = "Tunnel"
     quest: bool = False

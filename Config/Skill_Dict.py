@@ -125,7 +125,7 @@ class Skill_Dict:
             "name" : "Fireball", "effect" : "Skill", "effect_specifics" : "Fireball Heroes", "power" : 0, "targets" : "All_Hero", "cost" : 3, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 3, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Flame Send" : {
-            "name" : "Flame Send", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -1, "targets" : "Hero", "cost" : 1, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Flame Send", "effect" : "Change_Stats", "effect_specifics" : "Health", "power" : -0.5, "targets" : "Hero", "cost" : 2, "scale" : "Attack", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Focus" : {
             "name" : "Focus", "effect" : "Change_Stats", "effect_specifics" : "Damage_Dealt", "power" : 5, "targets" : "Self", "cost" : 0, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"

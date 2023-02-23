@@ -67,6 +67,7 @@ class Records:
     guild_facilities: list = None
     reputation: int = 0
     infamy: int = 0
+    daily_quests: bool = False
     
 
 @dataclass
@@ -283,8 +284,6 @@ class Party:
         if choice == "QUESTS":
             self.draw.draw_background()
             self.draw.draw_quests(self.quests)
-            '''pick_from = Pick(self.quests, False)
-            quest = pick_from.pick()'''
         if choice == "CAPTURED":
             self.draw.draw_background()
             pick_from = Pick(self.summonables, False)

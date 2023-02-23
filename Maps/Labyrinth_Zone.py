@@ -126,7 +126,7 @@ class Labyrinth(Battle_Zone):
                     color = (130, 100, 100)
             pygame.draw.rect(WIN, color, passage)
         self.draw_rescue_npc_location()
-        pygame.draw.rect(WIN, (0, 255, 0), self.player.rect)
+        WIN.blit(self.player.current_sprite, (self.player.rect.x, self.player.rect.y))
         pygame.display.update()
 
     def track_passages(self, passage):
@@ -223,16 +223,16 @@ class Labyrinth(Battle_Zone):
                         if passage != None:
                             self.change_floor(passage)
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT] and self.player.rect.x > 2:
-                self.player.determine_movement("left")
-            if keys[pygame.K_RIGHT] and self.player.rect.x < (self.width - self.player.rect.width):
-                self.player.determine_movement("right")
-            if keys[pygame.K_UP] and self.player.rect.y > 2:
+            if keys[pygame.K_UP] and self.player.rect.y > 0:
                 self.player.determine_movement("up")
-            if keys[pygame.K_DOWN] and self.player.rect.y < (self.height - self.player.rect.height):
+            if keys[pygame.K_DOWN] and self.player.rect.y < (self.height - (self.player.rect.height)):
                 self.player.determine_movement("down")
+            if keys[pygame.K_LEFT] and self.player.rect.x > 0:
+                self.player.determine_movement("left")
+            if keys[pygame.K_RIGHT] and self.player.rect.x < (self.width - (self.player.rect.width) - self.player.move_speed):
+                self.player.determine_movement("right")
             if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT] or keys[pygame.K_UP] or keys[pygame.K_DOWN]:
-                self.counter += self.movement
+                self.counter += self.player.move_speed
                 self.draw_passages()
             if self.player.rect.colliderect(self.rescue_npc_rect):
                 self.reach_rescuee()
@@ -245,4 +245,4 @@ class Labyrinth(Battle_Zone):
                 battle.start_phase()
                 self.draw_passages()
                 self.lab = not self.check_on_party()
-            clock.tick(150)
+            clock.tick(10)

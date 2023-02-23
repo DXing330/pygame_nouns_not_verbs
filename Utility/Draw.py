@@ -130,7 +130,7 @@ class Draw:
         WIN.fill((0, 0, 0))
         self.counter = 1
         for hero in heroes:
-            stats_text = FONT.render(hero.stats_text(), 1, C.WHITE)
+            stats_text = FONT.render(hero.full_stats_text(), 1, C.WHITE)
             WIN.blit(stats_text, ((self.width - stats_text.get_width())//2, C.PADDING * self.counter))
             self.counter += 1
             skills_text = FONT.render(hero.skills_text(), 1, C.WHITE)

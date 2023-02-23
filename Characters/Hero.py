@@ -21,6 +21,8 @@ class Hero(Character):
 
     def update_stats(self, original = True):
         dict = CD.HERO_STATS.get(self.name)
+        if dict == None:
+            dict = CD.MONSTER_STATS.get(self.name)
         growth = dict.get("growth")
         growth_dict = CD.GROWTH_STATS.get(growth)
         if original:
@@ -48,13 +50,13 @@ class Hero(Character):
 
     def stats_text(self):
         if self.temp_health > 0:
-            text = str(self.name+"~ HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" SKL: "+str(round(self.skill)))
+            text = str(self.name+"~HP:"+str(round(self.health+self.temp_health))+";A:"+str(round(self.attack))+";D:"+str(round(self.defense))+";SKL:"+str(round(self.skill)))
         else:
-            text = str(self.name+"~ HP: "+str(round(self.health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" SKL: "+str(round(self.skill)))
+            text = str(self.name+"~HP:"+str(round(self.health))+";A:"+str(round(self.attack))+";D:"+str(round(self.defense))+";SKL:"+str(round(self.skill)))
         return text
 
     def full_stats_text(self):
-        text = str(self.name+"~ MAX HP: "+str(self.max_health)+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" MAX SKL: "+str(self.max_skill)+" SKL: "+str(round(self.skill))+" LOYALTY: "+str(round(self.loyalty)))
+        text = str(self.name+"~ LVL: "+str(self.level)+" MAX HP: "+str(self.max_health)+" HP: "+str(round(self.health+self.temp_health))+" ATK: "+str(round(self.attack))+" DEF: "+str(round(self.defense))+" MAX SKL: "+str(self.max_skill)+" SKL: "+str(round(self.skill))+" LOYALTY: "+str(round(self.loyalty)))
         return text
     
     def skills_text(self):
@@ -97,12 +99,13 @@ class Hero(Character):
         if skill not in self.passive_skills:
             self.passive_skills.append(skill)
 
-    def level_up(self):
+    def level_up(self, skills = True):
         if self.exp > self.level ** 2 and self.level < self.max_level:
             self.exp = 0
             self.level += 1
             self.update_stats(False)
-            self.update_skill_list(False)
+            if skills:
+                self.update_skill_list(False)
 
     def choose_action(self):
         possiblities = []
