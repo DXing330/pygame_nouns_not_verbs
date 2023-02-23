@@ -1,1 +1,1 @@
-[]
+[{"name": "Goblin Slaying", "giver": "Guild", "reason": null, "location": "Any", "requirement": "Kill", "specifics": "Goblin", "specifics_amount": 1, "start_day": 33, "time_limit": 10, "completed": false, "failed": false, "reward_type": "Coins", "reward_amount": 1}, {"name": "Goblin Slaying", "giver": "Guild", "reason": null, "location": "Any", "requirement": "Kill", "specifics": "Goblin", "specifics_amount": -2, "start_day": 33, "time_limit": 11, "completed": true, "failed": false, "reward_type": "Coins", "reward_amount": 1}]
