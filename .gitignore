@@ -1,2 +1,8 @@
 **/*.pyc
 **/_*
+_heroes
+_items
+_quests
+_records
+_spirits
+_summonables
