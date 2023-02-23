@@ -17,8 +17,7 @@ class RPG_GAME:
         self.player = Player_Rect()
         self.width = C.WIDTH
         self.height = C.HEIGHT
-        self.battle_rect = pygame.Rect(self.width - self.width // 6, self.height - self.width // 6, self.width // 6,
-                                       self.width // 6)
+        self.battle_rect = pygame.Rect(self.width - self.width // 6, self.height - self.width // 6, self.width // 6, self.width // 6)
         self.guild_rect = pygame.Rect(self.width - self.width // 6, 0, self.width // 6, self.width // 6)
         self.locations = []
         self.game = True
@@ -55,8 +54,7 @@ class RPG_GAME:
     def update_dimensions(self):
         self.height = WIN.get_height()
         self.width = WIN.get_width()
-        self.battle_rect = pygame.Rect(self.width - self.width // 8, self.height - self.width // 8, self.width // 8,
-                                       self.width // 8)
+        self.battle_rect = pygame.Rect(self.width - self.width // 8, self.height - self.width // 8, self.width // 8, self.width // 8)
         self.guild_rect = pygame.Rect(self.width - self.width // 8, 0, self.width // 8, self.width // 8)
         self.player.update_dimensions(WIN.get_width(), WIN.get_height())
 
@@ -64,7 +62,7 @@ class RPG_GAME:
         WIN.fill((0, 0, 0))
         pygame.draw.rect(WIN, (0, 0, 100), self.guild_rect)
         pygame.draw.rect(WIN, (220, 0, 0), self.battle_rect)
-        pygame.draw.rect(WIN, (0, 255, 0), self.player.rect)
+        WIN.blit(self.player.current_sprite, (self.player.rect.x, self.player.rect.y))
         pygame.display.update()
 
     def game_loop(self):
@@ -91,13 +89,13 @@ class RPG_GAME:
                                 pass
                             else:
                                 self.party.journal.days += 1
-                                kind_of_location = random.randint(0, 0)
-                                if kind_of_location == 0:
+                                self.party.journal.daily_quests = False
+                                if location.kind == "Tunnel":
                                     battle_area = Labyrinth(self.party, location)
                                     battle_area.generate_labyrinth()
                                     battle_area.lab_loop()
                                     self.party.check_quest_completion()
-                                elif kind_of_location == 1:
+                                elif location.kind == "Maze":
                                     battle_area = Maze_Zone(self.party, location)
                                     battle_area.explore_maze()
                             self.party.check_on_battle_party()
@@ -108,17 +106,17 @@ class RPG_GAME:
                             self.update_locations()
                             self.draw_overworld()
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT] and self.player.rect.x > 2:
-                self.player.determine_movement("left")
-            if keys[pygame.K_RIGHT] and self.player.rect.x < (self.width - self.player.rect.width):
-                self.player.determine_movement("right")
-            if keys[pygame.K_UP] and self.player.rect.y > 2:
+            if keys[pygame.K_UP] and self.player.rect.y > self.player.move_speed:
                 self.player.determine_movement("up")
-            if keys[pygame.K_DOWN] and self.player.rect.y < (self.height - self.player.rect.height):
+            if keys[pygame.K_DOWN] and self.player.rect.y < (self.height - (self.player.rect.height)):
                 self.player.determine_movement("down")
+            if keys[pygame.K_LEFT] and self.player.rect.x > self.player.move_speed:
+                self.player.determine_movement("left")
+            if keys[pygame.K_RIGHT] and self.player.rect.x < (self.width - (self.player.rect.width) - self.player.move_speed):
+                self.player.determine_movement("right")
             if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT] or keys[pygame.K_UP] or keys[pygame.K_DOWN]:
                 self.draw_overworld()
-            clock.tick(600)
+            clock.tick(10)
 
 
 def Play():
