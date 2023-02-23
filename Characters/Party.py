@@ -244,7 +244,6 @@ class Party:
             choices.append("MANAGE PARTY")
             choices.append("VIEW ITEMS")
             choices.append("SAVE")
-            choices.append("STOP")
         elif key == 1:
             choices.append("USE ITEM")
         pick_from = Pick(choices, False)

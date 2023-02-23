@@ -106,13 +106,13 @@ class RPG_GAME:
                             self.update_locations()
                             self.draw_overworld()
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_UP] and self.player.rect.y > self.player.move_speed:
+            if keys[pygame.K_UP] and self.player.rect.y >= self.player.move_speed:
                 self.player.determine_movement("up")
             if keys[pygame.K_DOWN] and self.player.rect.y < (self.height - (self.player.rect.height)):
                 self.player.determine_movement("down")
-            if keys[pygame.K_LEFT] and self.player.rect.x > self.player.move_speed:
+            if keys[pygame.K_LEFT] and self.player.rect.x >= self.player.move_speed:
                 self.player.determine_movement("left")
-            if keys[pygame.K_RIGHT] and self.player.rect.x < (self.width - (self.player.rect.width) - self.player.move_speed):
+            if keys[pygame.K_RIGHT] and self.player.rect.x <= (self.width - (self.player.rect.width) - self.player.move_speed):
                 self.player.determine_movement("right")
             if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT] or keys[pygame.K_UP] or keys[pygame.K_DOWN]:
                 self.draw_overworld()
