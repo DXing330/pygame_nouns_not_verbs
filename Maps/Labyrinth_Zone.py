@@ -176,7 +176,7 @@ class Labyrinth(Battle_Zone):
         self.reached_rescue_npc = True
         draw = Draw()
         draw.draw_background()
-        draw.draw_text("Please save me!")
+        draw.draw_text("Please help me!")
         pygame.time.delay(1000)
 
     def finished_lab(self):
