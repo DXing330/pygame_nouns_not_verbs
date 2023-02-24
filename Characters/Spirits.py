@@ -25,6 +25,10 @@ class Spirit:
     def stats_text(self):
         return (self.name+": "+" LVL: "+str(self.level)+" ACTIVE: "+str(self.active))
     
+    def full_stats_text(self):
+        text = str(self.name+"~ LVL: "+str(self.level)+" EXP: "+str(round(self.exp)))
+        return text
+    
     def skills_text(self):
         skill_list = []
         for skill in self.skill_list:
@@ -36,6 +40,9 @@ class Spirit:
         for skill in self.passive_skills:
             skill_list.append(skill.name)
         return ("Passives: "+str(skill_list))
+    
+    def conditionals_text(self):
+        return None
 
     def update_skill_list(self):
         dict = CD.SPIRIT_SKILLS.get(self.name)
@@ -43,13 +50,18 @@ class Spirit:
             for number in range(0, self.level):
                 new_skill = dict.get(number)
                 if new_skill != None:
-                    real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
-                    self.learn_skill(real_skill)
+                    self.learn_skill(new_skill)
         else:
             new_skill = dict.get(self.level)
             if new_skill != None:
-                real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
-                self.learn_skill(real_skill)
+                self.learn_skill(new_skill)
+
+    # The angel's passive effects are too strong, try to nerf their effectiveness a bit.
+    def adjust_passive(self, passive: Skill):
+        passive.chance = min(passive.chance, 50)
+        if passive.targets == "Partner":
+            passive.condition = "Low_Health"
+            passive.condition_specifics = "50"
 
     def update_passive_list(self):
         dict = CD.SPIRIT_PASSIVES.get(self.name)
@@ -57,21 +69,23 @@ class Spirit:
             for number in range(0, self.level+1):
                 new_skill = dict.get(number)
                 if new_skill != None:
-                    real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
-                    self.learn_passive(real_skill)
+                    self.learn_passive(new_skill)
+
         else:
             new_skill = dict.get(self.level)
             if new_skill != None:
-                real_skill = Skill(**S.ALL_SKILLS.get(new_skill))
-                self.learn_passive(real_skill)
+                self.learn_passive(new_skill)
 
-    def learn_skill(self, skill: str):
-        if skill not in self.skill_list:
-            self.skill_list.append(skill)
+    def learn_skill(self, skill):
+        real_skill = Skill(**S.ALL_SKILLS.get(skill))
+        if real_skill not in self.skill_list:
+            self.skill_list.append(real_skill)
     
-    def learn_passive(self, skill: str):
-        if skill not in self.passive_skills:
-            self.passive_skills.append(skill)
+    def learn_passive(self, skill):
+        real_skill = Skill(**S.ALL_SKILLS.get(skill))
+        self.adjust_passive(real_skill)
+        if real_skill not in self.passive_skills:
+            self.passive_skills.append(real_skill)
 
     def level_up(self):
         if self.exp > self.level ** 2 and self.level < self.max_level:
