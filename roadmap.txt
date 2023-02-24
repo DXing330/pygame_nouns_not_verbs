@@ -1,2 +1,3 @@
 -conditional death skill that causes them to revive
     -need some kind of status or other effect to stop them from reviving
+-nerf some skill chances, especially passive ones
