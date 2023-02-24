@@ -169,9 +169,9 @@ class Smith:
 
     def confirm_purchase(self, equip, cost):
         self.draw.draw_background("Smith")
-        self.draw.draw_text(str(equip)+", COST: "+str(cost))
-        self.draw.draw_text("Do you want to buy this one?", 2)
-        self.draw.draw_text("Coins: "+str(self.party.items.coins), 3)
+        self.draw.draw_text(str(equip)+", COST: "+str(cost), 4)
+        self.draw.draw_text("Do you want to buy this one?", 5)
+        self.draw.draw_text("Coins: "+str(self.party.items.coins), 6)
         pygame.time.delay(2000)
         options = ["YES", "NO"]
         pick_from = Pick(options, False)

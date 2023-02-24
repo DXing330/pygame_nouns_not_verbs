@@ -29,7 +29,7 @@ class Condition_Checker:
                 if buff.name == conditional.condition_specifics:
                     return True
             return False
-        if conditional.condition == "User Buff":
+        if conditional.condition == "User_Buff":
             for buff in user.buffs:
                 if buff.name == conditional.condition_specifics:
                     return True

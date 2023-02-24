@@ -130,9 +130,6 @@ class Character_Dict:
         "Demon" : {
             "level" : 10, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : ["Double Slash", "Fireball Heroes"], "passives" : [], "death_effect" : ["Fireball Heroes"], "preemptives" : [], "conditionals" : ["Last Stand"]
         },
-        "Dragon" : {
-            "level" : 20, "variance" : 1, "base" : "Dragon", "growth" : "Dragon", "skills" : ["Fireball Heroes"], "passives" : ["Cure Self", "Heal Self"], "death_effect" : [], "preemptives" : [], "conditionals" : []
-        },
         "Elemental" : {
             "level" : 8, "variance" : 2, "base" : "Regular", "growth" : "Regular", "skills" : [], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
@@ -144,6 +141,9 @@ class Character_Dict:
         },
         "Goblin" : {
             "level" : 1, "variance" : 1, "base" : "Mob", "growth" : "Mob", "skills" : ["Blind Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : ["High Morale"]
+        },
+        "Gold Dragon" : {
+            "level" : 20, "variance" : 1, "base" : "Dragon", "growth" : "Dragon", "skills" : ["Fireball Heroes"], "passives" : ["Cure Self", "Heal Self"], "death_effect" : [], "preemptives" : [], "conditionals" : []
         },
         "Golem" : {
             "level" : 1, "variance" : 0, "base" : "Regular", "growth" : "Regular", "skills" : ["Fortify Hero"], "passives" : [], "death_effect" : [], "preemptives" : [], "conditionals" : []

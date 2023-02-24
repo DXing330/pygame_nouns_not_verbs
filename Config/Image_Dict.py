@@ -22,7 +22,7 @@ DRAGON = pygame.transform.scale(DRAGON, (C.BIG_MONSTER * 1.5, C.BIG_MONSTER * 1.
 GOBLIN = pygame.image.load(os.path.join("Assets", "goblin.png")).convert()
 GOBLIN.set_colorkey((0, 0, 0))
 GOBLIN = pygame.transform.scale(GOBLIN, (C.PLAYER_SIZE, C.PLAYER_SIZE))
-BIG_GOBLIN = pygame.transform.scale(GOBLIN, (C.MONSTER_SIZE, C.MONSTER_SIZE))
+BIG_GOBLIN = pygame.transform.scale(GOBLIN, (C.PLAYER_SIZE, C.PLAYER_SIZE*1.4))
 GOLEM = pygame.image.load(os.path.join("Assets", "golem.png")).convert()
 GOLEM.set_colorkey((0, 0, 0))
 GOLEM = pygame.transform.scale(GOLEM, (C.MONSTER_SIZE, C.MONSTER_SIZE))

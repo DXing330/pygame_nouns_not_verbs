@@ -67,6 +67,7 @@ class RPG_GAME:
 
     def game_loop(self):
         if self.game:
+            self.update_dimensions()
             self.update_locations()
             self.draw_overworld()
             self.party.initialize_battle_party(1)
@@ -116,7 +117,7 @@ class RPG_GAME:
                 self.player.determine_movement("right")
             if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT] or keys[pygame.K_UP] or keys[pygame.K_DOWN]:
                 self.draw_overworld()
-            clock.tick(10)
+            clock.tick(15)
 
 
 def Play():

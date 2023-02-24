@@ -250,6 +250,9 @@ class Dragon(Monster):
         for skill in self.skill_list:
             if skill.targets == "All_Hero":
                 self.useable_skills.append(skill)
+        for skill in self.useable_skills:
+            if skill.cooldown > 0:
+                self.useable_skills.remove(skill)
     
     def choose_action(self, heroes, monsters):
         self.action = "Attack"

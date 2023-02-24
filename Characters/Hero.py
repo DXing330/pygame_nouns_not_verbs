@@ -61,18 +61,24 @@ class Hero(Character):
     
     def skills_text(self):
         skill_list = []
+        if len(self.skill_list) <= 0:
+            return None
         for skill in self.skill_list:
             skill_list.append(skill.name)
         return ("Skills: "+str(skill_list))
     
     def passives_text(self):
         skill_list = []
+        if len(self.passive_skills) <= 0:
+            return None
         for skill in self.passive_skills:
             skill_list.append(skill.name)
         return ("Passives: "+str(skill_list))
     
     def conditionals_text(self):
         skill_list = []
+        if len(self.conditional_passives) <= 0:
+            return None
         for skill in self.conditional_passives:
             skill_list.append(skill.name)
         return ("Conditionals: "+str(skill_list))

@@ -279,7 +279,7 @@ class Maze_Zone():
             if self.maze.treasure_rect.contains(self.maze.player.rect):
                 self.find_treasure()
                 if self.treasure_limit <= 0:
-                    self.generate_battle(["Dragon"])
+                    self.generate_battle(["Gold Dragon"])
                     self.treasure_limit = random.gauss(self.maze.map.size, self.maze.map.size//3)
                     maze = not self.check_on_party()
                     self.maze.draw_map()

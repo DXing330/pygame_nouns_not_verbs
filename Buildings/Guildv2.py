@@ -112,7 +112,7 @@ class Guild:
         self.party.journal.daily_quests = True
         # Need to determine what level of quests are possible.
         possible_quests = []
-        number_quests = round(random.gauss(0, self.party.journal.rank//2))
+        number_quests = round(random.gauss(-1, self.party.journal.rank//2))
         if number_quests <= 0:
             self.draw_text("Sorry, no quests today.")
             self.bool = False

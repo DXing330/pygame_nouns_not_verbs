@@ -277,7 +277,7 @@ class Party:
             self.draw.draw_text("PROGRESS SAVED")
             pygame.time.delay(500)
         if choice == "USE ITEM":
-            self.use_potion()
+            pass
         if choice == "VIEW ITEMS":
             self.draw.draw_item_bag(self.items)
         if choice == "QUESTS":

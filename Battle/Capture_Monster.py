@@ -19,9 +19,9 @@ class Capture_Monster:
         self.catch_rate += max(0, (self.catcher.level - self.monster.level))
         if self.catch_rate > 0:
             # If the monster is lower health relatively speaking, then it's easier to catch the monster.
-            self.catch_rate = round(self.catch_rate * min(10, max(1, (self.catcher.health/self.monster.health))))
+            self.catch_rate = self.catch_rate * min(10, max(1, (self.catcher.health/self.monster.health)))
             # If the monster has less skill, relatively speaking, then it's easier to catch.
-            self.catch_rate = round(self.catch_rate * min(10, max(1, (self.catcher.max_skill/self.monster.max_skill))))
+            self.catch_rate = self.catch_rate * min(10, max(1, (self.catcher.max_skill/self.monster.max_skill)))
         catch = random.randint(1, 100)
         if catch <= self.catch_rate:
             captured = True

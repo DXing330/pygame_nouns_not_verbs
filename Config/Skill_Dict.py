@@ -5,7 +5,7 @@ class Skill_Dict:
             "name" : "Test", "effect" : "None", "effect_specifics" : "None", "power" : 0, "targets" : "None", "cost" : 0, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Assasinate Hero" : {
-            "name" : "Assasinate", "effect" : "Attack", "effect_specifics" : "Basic", "power" : 2, "targets" : "Hero", "cost" : 0, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "User Buff", "condition_specifics" : "Invisible"
+            "name" : "Assasinate", "effect" : "Attack", "effect_specifics" : "Basic", "power" : 2, "targets" : "Hero", "cost" : 0, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 0, "chance" : 100, "condition" : "User_Buff", "condition_specifics" : "Invisible"
         },
         "Bind Hero" : {
             "name" : "Throw Net", "effect" : "Attack", "effect_specifics" : "Entangle", "power" : 1, "targets" : "Hero", "cost" : 2, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
@@ -38,7 +38,7 @@ class Skill_Dict:
             "name" : "Burn", "effect" : "Add_Status", "effect_specifics" : "Burn", "power" : 1, "targets" : "All_Hero", "cost" : 2, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
         },
         "Call Goblin" : {
-            "name" : "Call Goblin", "effect" : "Summon_Monster", "effect_specifics" : "Goblin", "power" : -1, "targets" : "None", "cost" : 3, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
+            "name" : "Call Goblin", "effect" : "Summon_Monster", "effect_specifics" : "Goblin", "power" : -1, "targets" : "None", "cost" : 3, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "High_Health", "condition_specifics" : "60"
         },
         "Call Wolf" : {
             "name" : "Call Wolf", "effect" : "Summon_Monster", "effect_specifics" : "Wolf", "power" : -1, "targets" : "None", "cost" : 3, "scale" : "Level", "cooldown" : 0, "cooldown_counter" : 2, "chance" : 100, "condition" : "Always", "condition_specifics" : "Always"
