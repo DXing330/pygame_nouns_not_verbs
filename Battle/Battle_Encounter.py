@@ -201,7 +201,7 @@ class Monster_Encounter:
         if cost:
             self.skill_apply_cost_cooldown_use(user, skill, target_list, pick_randomly)
         elif not cost:
-            self.skill_activation(user, skill, target_list, pick_randomly)
+            self.skill_condition_checker(user, skill, target_list, pick_randomly)
 
     def skill_apply_cost_cooldown_use(self, user, skill: Skill, targets: list, pick_randomly = True):
         cost = skill.cost
@@ -216,7 +216,7 @@ class Monster_Encounter:
             elif skill.cost == "Self":
                 cost = user.level
             user.skill -= cost
-            self.skill_activation(user, skill, targets, pick_randomly)
+            self.skill_condition_checker(user, skill, targets, pick_randomly)
         else:
             print ("Failed")
             print (user.skill)
@@ -226,22 +226,27 @@ class Monster_Encounter:
             self.draw.draw_text(user.name+" failed to "+skill.name)
             pygame.time.delay(500)
 
-    def skill_condition_checker(self, user, skill: Skill, targets: list):
+    def skill_condition_checker(self, user, skill: Skill, targets: list, pick_randomly = True):
         if skill.condition == "Always":
-            activate = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.determine_power(user)), targets)
-            activate.make_effect()
+            self.skill_activation(user, skill, targets, pick_randomly)
         else:
             condition = Conditional_Effect(skill.name, "Skill", skill.condition, skill.condition_specifics, skill.effect, skill.effect_specifics, skill.power)
-            for target in targets:
-                fulfill = self.condition_checker.check_target_condition(user, condition, target)
+            # If the skill has targets then the conditional refers to the targets.
+            if len(targets) > 0:
+                for target in targets:
+                    fulfill = self.condition_checker.check_target_condition(user, condition, target)
+                    if fulfill:
+                        self.skill_activation(user, skill, [target], pick_randomly)
+            # If the skill has no targets then the conditional refers to the user.
+            else:
+                fulfill = self.condition_checker.check_passive_condition(user, condition)
                 if fulfill:
-                    activation = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.determine_power(user)), [target])
-                    activation.make_effect()
+                    self.skill_activation(user, skill, targets, pick_randomly)
 
     def skill_activation(self, user, skill: Skill, targets: list, pick_randomly = True):
         if "Summon" in skill.effect:
             if "Monster" in skill.effect:
-                summon = self.monster_factory.make_monster(skill.effect_specifics, max(user.level-1, skill.power))
+                summon = self.monster_factory.make_monster(skill.effect_specifics, max(user.level-1, skill.power), -9)
                 self.update_monster_for_battle(summon)
                 self.monsters.append(summon)
             else:
@@ -269,7 +274,7 @@ class Monster_Encounter:
         elif skill.effect == "Skill":
             for word in S.COMPOUND_SKILLS.get(skill.effect_specifics):
                 new_skill = Skill(**S.ALL_SKILLS.get(word))
-                self.skill_activation(user, new_skill, targets, pick_randomly)
+                self.skill_condition_checker(user, new_skill, targets, pick_randomly)
         elif skill.effect == "Attack":
             if skill.effect_specifics == "Basic":
                 status = None
@@ -281,8 +286,9 @@ class Monster_Encounter:
         else:
             # Some skills will only activate a portion of the time, ex. some status effects.
             activation = random.randint(0, 99)
-            if activation < skill.chance:
-                self.skill_condition_checker(user, skill, targets)
+            if activation <= skill.chance:
+                activation = Effect_Factory(skill.effect, skill.effect_specifics, round(skill.determine_power(user)), targets)
+                activation.make_effect()
 
     def hero_attack(self, hero):
         self.draw_battle()
@@ -399,7 +405,7 @@ class Monster_Encounter:
             skill, targets = spirit.choose_action(self.heroes)
             # If the spirit has already picked targets then activate the skill.
             if skill != None and len(targets) > 0:
-                self.skill_activation(spirit, skill, targets)
+                self.skill_condition_checker(spirit, skill, targets)
                 self.draw.draw_text(spirit.name+" uses "+skill.name)
                 pygame.time.delay(1000)
             # If the spirit hasn't already picked targets then pick them normally.

@@ -179,6 +179,22 @@ class Labyrinth(Battle_Zone):
         draw.draw_text("Please help me!")
         pygame.time.delay(1000)
 
+    def use_item(self):
+        choices = []
+        if self.party.items.health_potions > 0 or self.party.items.energy_potions > 0:
+            choices.append("USE POTION")
+        if self.party.items.repel > 0:
+            choices.append("USE REPEL")
+        choices.append("None")
+        pick_from = Pick(choices, False)
+        choice = pick_from.pick()
+        if choice == "None":
+            pass
+        elif choice == "USE POTION":
+            self.party.use_potion()
+        elif choice == "USE REPEL":
+            self.reset_counter()
+
     def finished_lab(self):
         self.party.items.coins += self.total_floors * (self.floor_size//2)
         for quest in self.party.quests:
@@ -203,7 +219,9 @@ class Labyrinth(Battle_Zone):
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_x:
-                        self.party.menu(1)
+                        choice = self.party.menu(1)
+                        if choice == "USE ITEM":
+                            self.use_item()
                         self.draw_passages()
                     if event.key == pygame.K_SPACE:
                         pygame.event.clear()
@@ -239,7 +257,7 @@ class Labyrinth(Battle_Zone):
                 self.draw_passages()
             if self.counter >= self.counter_limit:
                 self.reset_counter()
-                battle = Monster_Encounter(self.party, self.location, random.randint(1, max(1, self.floor)), [], [], [self.weather])
+                battle = Monster_Encounter(self.party, self.location, random.randint(1, self.floor+1), [], [], [self.weather])
                 if self.location.boss and battle.amount == self.location.dungeon_size:
                     battle.boss = True
                 battle.start_phase()
