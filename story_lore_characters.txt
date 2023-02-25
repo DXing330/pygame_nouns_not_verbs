@@ -30,3 +30,13 @@ Summoner:
         -the angel is the one that binds the souls together
     -costs more energy to summon bigger/stronger things
 -
+
+Warrior:
+-born in the same town as the summoner
+-father/parents were hunters
+    -learned how to fight from them
+-no special magic but physically powerful
+-lost his previous party to a troll attack
+    -joined the summoner's party after being saved
+        -loyal and respectful to the summoner
+-

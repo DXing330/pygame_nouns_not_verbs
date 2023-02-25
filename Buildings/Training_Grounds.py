@@ -2,8 +2,10 @@ from Utility.Draw import *
 from Utility.Pick import Pick
 
 class Training_Area:
-    def __init__(self, party):
+    def __init__(self, party, tier = 1):
         self.party = party
+        # At higher tier's more and better training will become availible.
+        self.tier = tier
         self.draw = Draw()
         self.bool = True
 
@@ -55,19 +57,38 @@ class Training_Area:
         self.draw.draw_background("Guild")
         pick_from = Pick(hero.skill_list, False)
         skill = pick_from.pick()
-        index = hero.skill_list.index(skill)
         self.draw.draw_background("Guild")
-        if "+" in skill:
-            self.draw.draw_text("Sorry you're already as good as I was at that.", 1)
-            pygame.time.delay(2000)
+        if "+" in skill.name and self.tier <= 1:
+            self.draw.draw_text("You're already as good as I was at that.", 1)
         else:
             # It costs experience to strengthen skills.
             # Needs at least 100 exp so only level capped (or higher than level 10) characters can upgrade skills.
-            if hero.exp > 100:
-                hero.skill_list[index] += "+"
-                hero.exp -= 100
-                self.draw.draw_text("I hope this is useful for you.", 1)
-                pygame.time.delay(1000)
+            # Training makes skills more efficient or decrease their cooldown.
+            if hero.exp >= 100:
+                choices = []
+                if skill.cost > 0:
+                    choices.append("COST")
+                if skill.cooldown_counter > 0:
+                    choices.append("COOLDOWN")
+                choices.append("NONE")
+                if len(choices) <= 1:
+                    self.draw.draw_text("There's not much to improve on with that technique.", 1)
+                else:
+                    pick_from = Pick(choices, False)
+                    choice = pick_from.pick()
+                    self.draw.draw_background("Guild")
+                    if choice == "COST":
+                        skill.name += "+"
+                        skill.cost -= 1
+                        hero.exp -= 100
+                        self.draw.draw_text("Seems like your movements are more efficient now.", 1)
+                    elif choice == "COOLDOWN":
+                        skill.name += "+"
+                        skill.cooldown_counter -= 1
+                        hero.exp -= 100
+                        self.draw.draw_text("Seems like you're able to rebalance faster now.", 1)
+                    elif choice == "NONE":
+                        self.draw.draw_text("Another time then.", 1)
             else:
                 self.draw.draw_text("Seems like you need more experience before you can master this technique.", 1)
-                pygame.time.delay(2000)
+        pygame.time.delay(2000)

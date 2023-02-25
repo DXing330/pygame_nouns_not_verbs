@@ -36,11 +36,14 @@ Magic:
 Monsters:
 -creatures that have mana within them
 -generally more intelligent and powerful that creatures without mana
-    -also usually more aggressive
+    -also usually more aggressive and less fearful of humans
 -naturally occuring, can breed normally
 -some creatures that consume mana may become monsters
 -considered a threat to civilization
     -monster hunter guilds work hard to cull their numbers
+-can be tamed
+    -respect strength
+    -still have slight rebellious instincts regardless of how tamed
 
 Spirit Realm:
 -not physical

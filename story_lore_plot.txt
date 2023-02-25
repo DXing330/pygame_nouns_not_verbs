@@ -1,4 +1,50 @@
 Overarching Goals:
-    -world peace
-    -kill all demons
-    -make the village great again
+    1.kill all demons
+        -kill lucifer the master of demons
+            -find him
+                -find his loyal generals who are doing his bidding
+                    -defeat and interrogate them
+                    -gather up clues to narrow down his location
+                -find a way to reach his location
+                    -need special materials and skilled craftsmen
+            -gather an army
+                -talk to people and convince them to join the cause
+                    -money helps
+            -fight him
+                -seal him for eternityTM
+        -kill all demon portal masters who can open portals from the spirit realm
+            -need to make sure those pesky fae don't mess with portals either
+        -seal all demonic portals
+            -ensure that demons are trapped in the spirit realm where the angels can trap them
+    2.make the village great again
+        -acquire lots of money for renovations
+        -hire skilled workers
+            -need a monster expert so the the summoner can train their tamed monsters
+        -build a new road through the town
+            -road needs to go from a big city to another big city
+            -no big cities have a shortest path through the village or they already have better roads
+                -make a new big city
+                    -some rare resource is discovered in the forest
+                        -maybe a new dungeon or something
+                        -maybe demonic portal
+                            -this can easily tie into the kill all demons goals
+                            -portal is a great source of mana crystals from all the weak demons coming out
+                                -also a great danger from the occasional powerful demon coming out
+                            -angel wants to destroy the portal
+                            -town leader wants to keep it since it's drawing lots of people in
+                                -compromise is sealing the portal a bit so that it's smaller
+                                    -problem is others want to keep it large, it's more profitable that way
+                                        -need to both find the materials to seal it and deal with obstacles
+                    -clear a path for it, promise riches and people will come
+                        -this is where the player will come in
+                        -need to protect the worked and pass the time while they clear the path
+                        -want to fund the operation and build the initial settlement near the resource
+                            -compete/fight with the local lord over control
+                                -need to get the duke/prince/king/baron/governor/whoever to acknowledge your right
+
+Basic Story Beats:
+    -explore the town
+    -join the monster hunter guild
+    -gain experience and allies
+    -conqueor the local area
+    -move onto bigger things
